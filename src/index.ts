@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Socket } from 'socket.io';
+import ActionManager from './structures/ActionManager';
 
 require('dotenv').config();
 
@@ -22,5 +23,7 @@ io.on('connection', (socket: Socket) => {
         console.log(`message: ${message}`);
     });
 });
+
+const manager = new ActionManager();
 
 server.listen(1);
