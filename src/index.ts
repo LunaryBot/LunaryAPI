@@ -12,6 +12,7 @@ const io = require('socket.io')(server, {
         methods: ['GET', 'POST']
     }
 });
+const manager = new ActionManager();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(require('cors')());
@@ -19,11 +20,17 @@ app.use(require('cors')());
 io.on('connection', (socket: Socket) => {
     console.log(`Socket connected: ${socket.id}`);
 
-    socket.on('message', (message: string) => {
-        console.log(`message: ${message}`);
+    socket.onAny((event: string, data: any) => {
+        data = { 
+            op: event,
+            data
+        }
+
+        const res = manager.execute(data);
+
+        console.log(res);
     });
 });
 
-const manager = new ActionManager();
 
 server.listen(1);
