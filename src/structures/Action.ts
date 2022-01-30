@@ -4,7 +4,7 @@ class Action {
         this.op = op;
     }
     
-    execute(data: any) {}
+    async execute(data: any): Promise<any> {}
 }
 
 export default Action;

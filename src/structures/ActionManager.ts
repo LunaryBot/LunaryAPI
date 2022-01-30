@@ -11,7 +11,7 @@ class ActionManager {
         this.load();
     }
 
-    public execute({op, nonce = null, data = null}: { op: string, nonce: string|null, data: any}) {
+    public async execute({op, nonce = null, data = null}: { op: string, nonce: string|null, data: any}): Promise<any> {
         const action = this._actions.find(a => a.op === op);
         if (!action) {
             return {
@@ -26,8 +26,8 @@ class ActionManager {
         return {
             op,
             nonce,
-            data: action.execute(data)
-        }
+            data: await action.execute(data)
+        };
     }
 
     public load(): Action[] {

@@ -20,16 +20,16 @@ app.use(require('cors')());
 io.on('connection', (socket: Socket) => {
     console.log(`Socket connected: ${socket.id}`);
 
-    socket.onAny((event: string, data: any) => {
+    socket.onAny(async(event: string, data: any) => {
         data = { 
             op: event,
             nonce: data?.nonce || null,
             data: data?.data
         }
 
-        const res = manager.execute(data);
+        const { op, ..._data } = await manager.execute(data);
 
-        console.log(res);
+        socket.emit(op, _data);
     });
 });
 

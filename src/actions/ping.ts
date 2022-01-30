@@ -5,7 +5,7 @@ class PingAction extends Action {
         super('ping');
     }
 
-    execute() {
+    async execute() {
         return {
             op: 'pong'
         };
