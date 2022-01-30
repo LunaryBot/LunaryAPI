@@ -23,7 +23,8 @@ io.on('connection', (socket: Socket) => {
     socket.onAny((event: string, data: any) => {
         data = { 
             op: event,
-            data
+            nonce: data?.nonce || null,
+            data: data?.data
         }
 
         const res = manager.execute(data);

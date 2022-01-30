@@ -11,18 +11,23 @@ class ActionManager {
         this.load();
     }
 
-    public execute({op, data = null}: { op: string, data: any}) {
+    public execute({op, nonce = null, data = null}: { op: string, nonce: string|null, data: any}) {
         const action = this._actions.find(a => a.op === op);
         if (!action) {
             return {
                 op: 'error',
+                nonce,
                 data: {
                     message: 'Action not found'
                 }
             };
-        }
+        };
 
-        return action.execute(data);
+        return {
+            op,
+            nonce,
+            data: action.execute(data)
+        }
     }
 
     public load(): Action[] {
