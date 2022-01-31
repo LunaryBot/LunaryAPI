@@ -2,7 +2,9 @@ import Action from '../structures/Action';
 
 class PingAction extends Action {
     constructor() {
-        super('ping');
+        super({
+            op: 'ping'
+        });
     }
 
     async execute() {
