@@ -11,4 +11,9 @@ socket.onAny((eventName, { nonce, data }) => {
     }, { breakLength: 2 });
 })
 
+function send(op, data) {
+    socket.emit(op, data);
+}
+
 module.exports = socket;
+module.exports.send = send;

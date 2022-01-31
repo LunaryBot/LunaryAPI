@@ -28,6 +28,11 @@ class Databases {
         return app.database();
     }
 
+    async getGuildDatabase(guildId: string) {
+        const db = await this.guilds.ref(`Servers/${guildId}`).once("value");
+        return db.val() || {};
+    }
+
     static getData(key: string) {
         return Object.fromEntries(
             Object.entries(process.env)
