@@ -4,10 +4,12 @@ interface IRequireds {
 
 class Action {
     op: string;
+    isGuild: boolean;
     requireds: IRequireds;
     
-    constructor({op, requireds}: {op: string, requireds?: IRequireds}) {
+    constructor({op,isGuild, requireds}: {op: string, isGuild?: boolean, requireds?: IRequireds}) {
         this.op = op;
+        this.isGuild = !!isGuild;
         this.requireds = {};
     }
     

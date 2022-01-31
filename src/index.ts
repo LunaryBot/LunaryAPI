@@ -33,8 +33,6 @@ io.on('connection', async(socket: Socket) => {
             Authorization: `Bearer ${token}`
         }
     }).catch(() => {}))?.data as User;
-    
-    console.log(user);
 
     if(!user) {
         return disconnect('Invalid token');
@@ -44,6 +42,7 @@ io.on('connection', async(socket: Socket) => {
         data = {
             op: event,
             nonce: data?.nonce || null,
+            guildId: data?.guildId || null,
             data: data?.data
         }
 
