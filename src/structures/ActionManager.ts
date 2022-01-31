@@ -1,17 +1,35 @@
 import { Socket } from 'socket.io';
 import Action from './Action';
+import Databases from './Databases';
 import { readdirSync } from 'fs';
+import { User } from '../types'
 
 class ActionManager {
     private _actions: Action[] = [];
+    private dbs: Databases;
     
-    constructor() {
+    constructor(dbs: Databases) {
         this._actions = [];
+        this.dbs = dbs;
 
         this.load();
     }
 
-    public async execute({op, nonce = null, data = null}: { op: string, nonce: string|null, data: any}): Promise<any> {
+    public async execute({
+        op, 
+        nonce = null,
+        user,
+        userId,
+        guildId = null,
+        data = null
+    }: { 
+        op: string, 
+        nonce: string|null,
+        user: User,
+        userId: string,
+        guildId: string|null, 
+        data: any
+    }): Promise<any> {
         const action = this._actions.find(a => a.op === op);
         if (!action) {
             return {
@@ -23,10 +41,26 @@ class ActionManager {
             };
         };
 
+        if(action.isGuild && !guildId) {
+            return {
+                op: 'error',
+                nonce,
+                data: {
+                    message: 'Guild ID not provided'
+                }
+            };
+        }
+
         return {
             op,
             nonce,
-            data: await action.execute(data)
+            data: await action.execute({
+                dbs: this.dbs,
+                manager: this,
+                user,
+                userId: userId,
+                guildId: guildId,
+            }, data)
         };
     }
 

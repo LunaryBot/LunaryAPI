@@ -3,6 +3,7 @@ import express, { Request, Response } from 'express';
 import { Socket } from 'socket.io';
 import ActionManager from './structures/ActionManager';
 import { URLS, User } from './types';
+import Databases from './structures/Databases';
 
 require('dotenv').config();
 
@@ -14,7 +15,8 @@ const io = require('socket.io')(server, {
         methods: ['GET', 'POST']
     }
 });
-const manager = new ActionManager();
+const dbs = new Databases();
+const manager = new ActionManager(dbs);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(require('cors')());
@@ -39,14 +41,19 @@ io.on('connection', async(socket: Socket) => {
     }
 
     socket.onAny(async(event: string, data: any) => {
-        data = {
+        console.log(`Socket event: ${event}`);
+        if(event === 'disconnect') {
+            return;
+        };
+
+        const { op, ..._data } = await manager.execute({
             op: event,
             nonce: data?.nonce || null,
             guildId: data?.guildId || null,
-            data: data?.data
-        }
-
-        const { op, ..._data } = await manager.execute(data);
+            data: data?.data,
+            user,
+            userId: user.id
+        });
 
         socket.emit(op, _data);
     });

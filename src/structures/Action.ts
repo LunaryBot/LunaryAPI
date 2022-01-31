@@ -1,3 +1,7 @@
+import Databases from './Databases';
+import ActionManager from './ActionManager';
+import { User, IContext } from '../types'
+
 interface IRequireds {
     permissions?: number;
 }
@@ -13,7 +17,7 @@ class Action {
         this.requireds = {};
     }
     
-    async execute(data: any): Promise<any> {}
+    async execute(ctx: IContext, data: any): Promise<any> {}
 }
 
 export default Action;

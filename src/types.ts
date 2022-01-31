@@ -1,3 +1,6 @@
+import Databases from "./structures/Databases";
+import ActionManager from "./structures/ActionManager";
+
 export enum URLS {
 	BASE = 'https://discord.com/api/oauth2/authorize',
 	TOKEN = 'https://discord.com/api/oauth2/token',
@@ -27,4 +30,12 @@ export interface GuildData {
 	permissions: number;
 	features: string[];
 	permissions_new: string;
+}
+
+export interface IContext {
+    dbs: Databases;
+    manager: ActionManager;
+    user: User;
+    userId: string;
+    guildId: string|null;
 }
