@@ -2,16 +2,6 @@ import firebase from "firebase";
 require("dotenv").config();
 
 const keys = ['apiKey', 'appId', 'authDomain', 'databaseURL', 'measurementId', 'messagingSenderId', 'projectId', 'storageBucket']
-interface IAppData {
-    apiKey: string,
-    appId: string,
-    authDomain: string,
-    databaseURL: string,
-    measurementId: string,
-    messagingSenderId: string,
-    projectId: string,
-    storageBucket: string
-}
 
 class Databases {
     guilds: firebase.database.Database;

@@ -1,7 +1,7 @@
 import Action from '../structures/Action';
 import { IContext } from '../types';
 
-class PingAction extends Action {
+class GetGuildSettingsAction extends Action {
     constructor() {
         super({
             op: 'getGuildSettings',
@@ -17,4 +17,4 @@ class PingAction extends Action {
     }
 }
 
-export default PingAction;
+export default GetGuildSettingsAction;
