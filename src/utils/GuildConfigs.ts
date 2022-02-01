@@ -8,6 +8,4 @@ class GuildConfigs extends Bitfield {
     }
 }
 
-console.log(new GuildConfigs(0).set(GuildConfigs.FLAGS.MANDATORY_REASON));
-
 export default GuildConfigs;

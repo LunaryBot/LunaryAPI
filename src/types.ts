@@ -39,3 +39,5 @@ export interface IContext {
     userId: string;
     guildId: string|null;
 }
+
+export type Tbit = string | number | bigint | object | any[];
