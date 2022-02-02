@@ -5,8 +5,11 @@ const keys = ['apiKey', 'appId', 'authDomain', 'databaseURL', 'measurementId', '
 
 class Databases {
     guilds: firebase.database.Database;
+   
+    logs: firebase.database.Database;
     constructor() {
         this.guilds = this.initializeDatabase('GuildsDB');
+        this.logs = this.initializeDatabase('LogsDB');
     }
 
     initializeDatabase(name: string): firebase.database.Database {
@@ -20,6 +23,11 @@ class Databases {
 
     async getGuildDatabase(guildId: string) {
         const db = await this.guilds.ref(`Servers/${guildId}`).once("value");
+        return db.val() || {};
+    }
+
+    async getLogs() {
+        const db = await this.logs.ref().once("value");
         return db.val() || {};
     }
 
