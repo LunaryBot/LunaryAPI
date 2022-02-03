@@ -13,7 +13,7 @@ const UnknownUser = {
     public_flags: 0,
 }
 
-async function getUser(userId: string): Promise<User|undefined>  {
+async function getUser(userId: string): Promise<User>  {
     if(!users || !(users instanceof Map)) users = new Map();
     
     let user: User|undefined = users.get(userId);
@@ -32,7 +32,7 @@ async function getUser(userId: string): Promise<User|undefined>  {
         users.set(userId, user);
     }
 
-    return user
+    return user || UnknownUser
 }
 
 export default getUser;
