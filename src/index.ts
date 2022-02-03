@@ -72,4 +72,4 @@ io.on('connection', async(socket: Socket) => {
 });
 
 
-server.listen(1);
+server.listen(3000);
