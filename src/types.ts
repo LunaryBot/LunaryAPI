@@ -10,16 +10,19 @@ export enum URLS {
 }
 
 export interface User {
-	avatar: string;
-	discriminator: string;
-	email: string;
-	flags: number;
-	id: string;
-	locale: string;
-	mfa_enabled: boolean;
-	public_flags: number;
 	username: string;
-	verified: boolean;
+	id: string;
+	discriminator: string;
+	avatar: string|null;
+	public_flags: number;
+	banner?: string;
+	banner_color?: string;
+	accent_color?: number;
+	flags?: number;
+	locale?: string;
+	email?: string;
+	mfa_enabled?: boolean;
+	verified?: boolean;
 }
 
 export interface GuildData {
@@ -41,3 +44,14 @@ export interface IContext {
 }
 
 export type Tbit = string | number | bigint | object | any[];
+
+export interface ILog {
+	id: string;
+	type: number;
+	reason: string;
+	date: number;
+	time?: number;
+	user: string|User;
+	author: string|User;
+	server: string;
+}
