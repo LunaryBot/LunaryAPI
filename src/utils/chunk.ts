@@ -1,4 +1,4 @@
-function chunk(array: Array<any>, size = 1) {
+function chunk(array: any[], size = 1) {
     size = Math.max(toInteger(size), 0)
     const length = array == null ? 0 : array.length
     if (!length || size < 1) {
