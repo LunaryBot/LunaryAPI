@@ -35,7 +35,7 @@ class UpdateGuildSettingsAction extends Action {
     }
 
     async execute(ctx: IContext, data: IUpdateGuildSettingsData) {
-        const { updateType, settingsData } = data;
+        const { updateType, settingsData } = data || {};
         if(!updateType || !(updateType in SettingsSchema)) return {
             message: 'Invalid update type.'
         }
