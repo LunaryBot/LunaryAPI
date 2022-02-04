@@ -40,6 +40,8 @@ io.on('connection', async(socket: Socket) => {
         return disconnect('Invalid token');
     }
 
+    socket.emit('ready', { data: { user } })
+
     socket.onAny(async(event: string, data: any) => {
         console.log(`Socket event: ${event}`);
         if(event === 'disconnect') {
