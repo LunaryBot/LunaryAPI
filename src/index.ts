@@ -2,8 +2,9 @@ import axios from 'axios';
 import express, { Request, Response } from 'express';
 import { Socket } from 'socket.io';
 import ActionManager from './structures/ActionManager';
-import { URLS, User } from './types';
+import { IGuildSuper, URLS, User } from './types';
 import Databases from './structures/Databases';
+import GetGuildAction from './actions/getGuild';
 
 require('dotenv').config();
 
@@ -17,12 +18,13 @@ const io = require('socket.io')(server, {
 });
 const dbs = new Databases();
 const manager = new ActionManager(dbs);
+const getGuild = new GetGuildAction();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(require('cors')());
 
 io.on('connection', async(socket: Socket) => {
-    const { token } = socket.handshake.query;
+    const { token, guildId } = socket.handshake.query;
 
     console.log(`Socket connected: ${socket.id}`);
 
@@ -40,7 +42,21 @@ io.on('connection', async(socket: Socket) => {
         return disconnect('Invalid token');
     }
 
-    socket.emit('ready', { data: { user } })
+    const data: { user: User, guild?: IGuildSuper } = { user };
+
+    if(guildId && typeof guildId == 'string') {
+        const guildData = await getGuild.execute({
+            dbs,
+            guildId,
+            user,
+            userId: user.id,
+            manager,
+        }, null)
+
+        data.guild = guildData
+    }
+
+    socket.emit('ready', { data: { ...data } })
 
     socket.onAny(async(event: string, data: any) => {
         console.log(`Socket event: ${event}`);
