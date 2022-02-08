@@ -55,3 +55,54 @@ export interface ILog {
 	author: string|User;
 	server: string;
 }
+
+export interface IChannel {
+	id: string;
+	name: string;
+	type: string;
+	deleted: boolean;
+	guildId: string;
+	guild: string;
+	parentId: string;
+	permissionOverwrites: string[];
+	nsfw: boolean;
+	position: number;
+	rawPosition: number;
+	topic: string|null;
+	lastMessageId: string|null;
+	rateLimitPerUser: number;
+	createdTimestamp: number;
+}
+
+export interface IRole {
+	id: string;
+	name: string;
+	color: number;
+	hoist: boolean;
+	position: number;
+	permissions: number;
+	managed: boolean;
+	mentionable: boolean;
+	createdTimestamp: number;
+	deleted: boolean;
+	icon: string|null;
+	rawPosition: number;
+	unicodeEmoji: boolean;
+	guild: string;
+}
+
+export interface IGuild {
+	name: string;
+	id: string;
+	icon: string;
+	channels: IChannel[];
+	roles: IRole[];
+	shardID: number;
+	cluserID: string;
+}
+
+export interface IGuildSuper extends IGuild {
+	modlogs_channel: string;
+	punishments_channel: string;
+	configs: number;
+}
