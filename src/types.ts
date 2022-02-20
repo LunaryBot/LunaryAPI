@@ -25,7 +25,7 @@ export interface User {
 	verified?: boolean;
 }
 
-export interface GuildData {
+export interface IGuildData {
 	icon: string;
 	id: string;
 	name: string;

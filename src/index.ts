@@ -2,11 +2,14 @@ import axios from 'axios';
 import express, { Request, Response } from 'express';
 import { Socket } from 'socket.io';
 import ActionManager from './structures/ActionManager';
-import { IGuildSuper, URLS, User } from './types';
+import { IGuildSuper, URLS, User, IGuildData } from './types';
+import { Permissions } from './Constants';
 import Databases from './structures/Databases';
 import GetGuildAction from './actions/getGuild';
 
 require('dotenv').config();
+
+const ps = Permissions.ADMINISTRATOR;
 
 const app = express();
 const server = require('http').createServer(app);
@@ -24,7 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(require('cors')());
 
 io.on('connection', async(socket: Socket) => {
-    const { token, guildId } = socket.handshake.query;
+    const { token, guildId, fetchGuilds } = socket.handshake.query;
 
     console.log(`Socket connected: ${socket.id}`);
 
@@ -38,22 +41,39 @@ io.on('connection', async(socket: Socket) => {
         }
     }).catch(() => {}))?.data as User;
 
-    if(!user) {
+    if(!user?.id) {
         return disconnect('Invalid token');
     }
 
-    const data: { user: User, guild?: IGuildSuper } = { user };
+    const data: { user: User, guild?: IGuildSuper, guilds?: IGuildData[] } = { user };
 
-    if(guildId && typeof guildId == 'string') {
-        const guildData = await getGuild.execute({
-            dbs,
-            guildId,
-            user,
-            userId: user.id,
-            manager,
-        }, null)
+    if((guildId && typeof guildId == 'string') || fetchGuilds) {
+        const guilds = (await axios.get(URLS.GUILDS, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).catch(() => {}))?.data as IGuildData[];
 
-        data.guild = guildData
+        data.guilds = guilds;
+
+        if(guildId) {
+            const guild = guilds?.find(g => g.id == guildId);
+
+            if(!guild || (!guild.owner && !((guild.permissions & ps) == ps))) {
+                return disconnect('Missing Access');
+            };
+
+            const guildData = await getGuild.execute({
+                dbs,
+                guildId: guild.id,
+                user,
+                userId: user.id,
+                manager,
+            }, null);
+
+
+            data.guild = guildData;
+        };
     }
 
     socket.emit('ready', { data: { ...data } })
@@ -67,7 +87,7 @@ io.on('connection', async(socket: Socket) => {
         const { op, ..._data } = await manager.execute({
             op: event,
             nonce: data?.nonce || null,
-            guildId: data?.guildId || null,
+            guildId: guildId?.toString() || null,
             data: data?.data,
             user,
             userId: user.id
@@ -90,4 +110,4 @@ io.on('connection', async(socket: Socket) => {
 });
 
 
-server.listen(3000);
+server.listen(1);
