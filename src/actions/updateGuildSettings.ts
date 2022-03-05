@@ -4,7 +4,7 @@ const idRegex = /^\d{17,19}$/i
 import GuildConfigs from '../utils/GuildConfigs';
 
 interface IUpdateGuildSettingsData {
-    updateType: 'moderation';
+    updateType: 'moderation' | 'permissions';
     settingsData: any;
 }
 
@@ -23,6 +23,19 @@ const SettingsSchema = {
             if(typeof value !== 'number' && isNaN(value)) return false;
             return Number(value);
         }
+    },
+    permissions: (data: { [id: string]: number }, db: any) => {
+        if(!data || typeof data !== 'object') return false;
+
+        const permissions: { [id: string]: number } = db?.permissions || {};
+
+        for(const id in data) {
+            if(idRegex.test(id) && typeof data[id] == 'number' && !isNaN(data[id])) {
+                permissions[id] = Number(data[id]);
+            }
+        }
+
+        return { permissions };
     }
 }
 
@@ -48,16 +61,23 @@ class UpdateGuildSettingsAction extends Action {
         let newdbData: any = {}
         const SubSchema: any = SettingsSchema[data.updateType];
 
-        Object.entries(settingsData || {}).forEach(([key, value]: [string, any]) => {
-            const _ = SubSchema[key];
+        if(typeof SubSchema == 'object') {
+            Object.entries(settingsData || {}).forEach(([key, value]: [string, any]) => {
+                const _ = SubSchema[key];
 
-            if(_) {
-                const _value = _(value);
-                if(_value) newdbData[key] = _value;
-            }
-        });
+                if(_) {
+                    const _value = _(value);
+                    if(_value) newdbData[key] = _value;
+                }
+            });
+        } else if(typeof SubSchema == 'function') {
+            const _ = SubSchema(settingsData, dbData);
+            if(_) newdbData = _;
+        }
 
         newdbData = Object.assign(dbData, newdbData);
+
+        ctx.dbs.guilds.ref(`Servers/${ctx.guildId}`).update(newdbData);
         
         return {
             ...newdbData
