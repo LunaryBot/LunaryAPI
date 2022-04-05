@@ -7,7 +7,7 @@ const api = axios.create({
 
 describe('auth tests', () => {
     it('test valid token', async () => {
-        const res = await api.get('/auth?token=' + process.env.TEST_TOKEN);
+        const res = await api.get('/auth?token=' + process.env.TEST_TOKEN).catch(err => err.response);
 
         console.log(res.data);
         expect(res.status).toBe(200);

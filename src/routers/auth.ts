@@ -66,9 +66,9 @@ class AuthRouter extends BaseRouter {
 
             const tokenData = await this.dbs.getToken(token as string);
             
-            if(!tokenData || !tokenData?.access_token || !tokenData?.expires_in)  return res.status(401).json({ message: 'Invalid token' });
+            if(!tokenData || !tokenData?.access_token)  return res.status(401).json({ message: 'Invalid token' });
 
-            if(Date.now() >= tokenData.expires_in) {
+            if(!tokenData?.expires_in || Date.now() >= tokenData.expires_in) {
                 this.dbs.deleteToken(token as string);
                 
                 return res.status(401).json({ message: 'Token expired' });
