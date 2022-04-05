@@ -12,12 +12,12 @@ class Utils {
 
         const tokenData = await dbs.getToken(token as string);
         
-        if(!tokenData || !tokenData?.access_token)  return { status: 401, message: 'Invalid token' };
+        if(!tokenData || !tokenData?.access_token)  return { status: 498, message: 'Invalid token' };
 
         if(!tokenData?.expires_in || Date.now() >= tokenData.expires_in) {
             dbs.deleteToken(token as string);
             
-            return { status: 401, message: 'Token expired' };
+            return { status: 498, message: 'Token expired' };
         }
 
         const data = (await axios.get(URLS.USER, {
@@ -26,7 +26,7 @@ class Utils {
             }
         }).catch(e => {}))?.data || {};
 
-        if(!data?.id) return { status: 401, message: 'Invalid token' };
+        if(!data?.id) return { status: 498, message: 'Invalid token' };
 
         return { status: 200, ...data };
     }
