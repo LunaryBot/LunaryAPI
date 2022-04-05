@@ -13,6 +13,17 @@ class Databases {
         this.users = this.initializeDatabase('UsersDB');
         this.logs = this.initializeDatabase('LogsDB');
         this.api = this.initializeDatabase('ApiDB');
+
+        // Clean up old tokens
+        setInterval(async() => {
+            const logs = await this.getLogs();
+
+            for(const [key, value] of Object.entries(logs) as [string, any][]) {
+                if(value.expires_in <= Date.now()) {
+                    await this.deleteToken(key);
+                }
+            }
+        }, 1000 * 60 * 60);
     }
 
     initializeDatabase(name: string): firebase.database.Database {

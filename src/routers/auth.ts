@@ -34,11 +34,9 @@ class AuthRouter extends BaseRouter {
             body.append('client_id', process.env.DISCORD_CLIENT_ID);
             body.append('client_secret', process.env.DISCORD_CLIENT_SECRET);
             body.append('grant_type', 'authorization_code');
-            body.append('redirect_uri', `http://localhost:2005/auth/callback`);
+            body.append('redirect_uri', `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}`);
             body.append('scope', 'identify guilds');
             body.append('code', code as string);
-            
-            console.log(body.toString());
 
             const data = (await axios.post(URLS.TOKEN, body.toString(), {
                 headers: {
