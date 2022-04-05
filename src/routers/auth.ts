@@ -58,29 +58,15 @@ class AuthRouter extends BaseRouter {
         });
 
         this.router.get('/', async(req, res) => {
-            const { token } = req.query;
+            const { token } = req.query as { token: string };
 
             if(!token) return res.status(401).json({ message: 'No token provided' });
 
-            const tokenData = await this.dbs.getToken(token as string);
-            
-            if(!tokenData || !tokenData?.access_token)  return res.status(401).json({ message: 'Invalid token' });
+            const d = await Utils.login({ token, dbs: this.dbs });
 
-            if(!tokenData?.expires_in || Date.now() >= tokenData.expires_in) {
-                this.dbs.deleteToken(token as string);
-                
-                return res.status(401).json({ message: 'Token expired' });
-            }
+            const { status, ...data } = d;
 
-            const data = (await axios.get(URLS.USER, {
-                headers: {
-                    Authorization: `Bearer ${tokenData.access_token}`
-                }
-            }).catch(e => {}))?.data || {};
-
-            if(!data?.id) return res.status(401).json({ message: 'Invalid token' });
-
-            res.status(200).json(data);
+            res.status(status).json(data);
         });
     }
 }
