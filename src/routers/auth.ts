@@ -51,7 +51,7 @@ class AuthRouter extends BaseRouter {
             await this.dbs.setToken(token, { 
                 access_token: data.access_token, 
                 refresh_token: data.refresh_token,
-                expires_in: Date.now() + data.expires_in
+                expires_in: Date.now() + (data.expires_in * 1000)
             });
 
             res.redirect(`${process.env.WEBSITE_URL}/login?token=${token}`);
