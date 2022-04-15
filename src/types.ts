@@ -21,3 +21,8 @@ export interface User {
 	mfa_enabled?: boolean;
 	verified?: boolean;
 }
+
+export interface VoteData {
+	platform: string,
+	date: number
+}
