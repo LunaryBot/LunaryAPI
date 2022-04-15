@@ -1,3 +1,4 @@
+import { VoteData } from '../types';
 import firebase from 'firebase';
 
 const keys = ['apiKey', 'appId', 'authDomain', 'databaseURL', 'measurementId', 'messagingSenderId', 'projectId', 'storageBucket']
@@ -47,6 +48,17 @@ class Databases {
 
     async deleteToken(token: string) {
         await this.api.ref(`Tokens/${token}`).remove();
+    }
+
+    async addVote(user: string, platform: string) {
+        const db = (await this.users.ref(`Users/${user}`).once('value')).val();
+        let votes: Array<VoteData> = [];
+        if (db && db.votes) votes = db.votes;
+        votes.push({
+            platform,
+            date: Date.now()
+        });
+        await this.users.ref(`Users/${user}`)[db ? 'update' : 'set']({ votes });
     }
     
     async getGuildDatabase(guildId: string) {
