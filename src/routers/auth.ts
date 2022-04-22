@@ -7,15 +7,17 @@ import Databases from '../structures/Databases';
 
 import Utils from '../utils/Utils';
 import { URLS } from '../types';
+import { Client } from 'eris';
 
 class AuthRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; app: Express, wss: WebSocketServer }) {
+    constructor(data: { dbs: Databases; app: Express, wss: WebSocketServer, client: Client }) {
         super({
             wss: data.wss,
             app: data.app,
             router: Router(),
             dbs: data.dbs,
-            path: '/auth'
+            path: '/auth',
+            client: data.client
         });
 
         this.router.get('/callback', async(req, res) => {
@@ -59,7 +61,7 @@ class AuthRouter extends BaseRouter {
 
         this.router.get('/', async(req, res) => {
             const { token } = req.query as { token: string };
-
+            
             if(!token) return res.status(401).json({ message: 'No token provided' });
 
             const d = await Utils.login({ token, dbs: this.dbs });
