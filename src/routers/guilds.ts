@@ -1,6 +1,7 @@
 import { Router, Express, Request } from 'express';
 import { WebSocketServer } from 'ws';
 import axios from 'axios';
+import { Client } from 'eris';
 
 import BaseRouter from '../structures/BaseRouter';
 import Databases from '../structures/Databases';
@@ -9,13 +10,14 @@ import Utils from '../utils/Utils';
 import { URLS, User } from '../types';
 
 class GuildsRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; app: Express, wss: WebSocketServer }) {
+    constructor(data: { dbs: Databases; app: Express, wss: WebSocketServer, client: Client }) {
         super({
             wss: data.wss,
             app: data.app,
             router: Router(),
             dbs: data.dbs,
-            path: '/guilds'
+            path: '/guilds',
+            client: data.client
         });
 
         const botApi = axios.create({

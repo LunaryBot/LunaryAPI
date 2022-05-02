@@ -39,8 +39,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(require('cors')());
 
-new AuthRouter({ app, wss, dbs });
-new GuildsRouter({ app, wss, dbs });
+new AuthRouter({ app, wss, dbs, client });
+new GuildsRouter({ app, wss, dbs, client });
 new AuthRouter({ app, wss, dbs, client });
 new WebhooksRouter({ app, wss, dbs, client });
 
