@@ -1,6 +1,7 @@
 import { Router, Express } from 'express';
 import { WebSocketServer } from 'ws';
 import axios from 'axios';
+import jwt from 'jsonwebtoken';
 
 import BaseRouter from '../structures/BaseRouter';
 import Databases from '../structures/Databases';
@@ -48,15 +49,11 @@ class AuthRouter extends BaseRouter {
 
             if(!data.access_token) return res.status(498).json({ message: 'No access token provided' });
 
-            const token = Utils.generateToken();
-
-            await this.dbs.setToken(token, { 
+            res.send(await jwt.sign({ 
                 access_token: data.access_token, 
                 refresh_token: data.refresh_token,
                 expires_in: Date.now() + (data.expires_in * 1000)
-            });
-
-            res.redirect(`${process.env.WEBSITE_URL}/login?token=${token}`);
+            }, process.env.JWT_SECRET));
         });
 
         this.router.get('/', async(req, res) => {

@@ -1,6 +1,7 @@
 import Databases from '../structures/Databases';
 import axios from 'axios';
 import { URLS } from '../types';
+import jwt from 'jsonwebtoken';
 
 class Utils {
     static generateToken() {
@@ -9,26 +10,28 @@ class Utils {
 
     static async login({ token, dbs }: { token: string, dbs: Databases }) {
         if(!token) return { status: 401, message: 'No token provided' }
-
-        const tokenData = await dbs.getToken(token as string);
         
-        if(!tokenData || !tokenData?.access_token)  return { status: 498, message: 'Invalid token' };
+        try {
+            const tokenData = await jwt.verify(token as string, process.env.JWT_SECRET) as { access_token: string, refresh_token: string, expires_in: number };
+        
+            if(!tokenData || !tokenData?.access_token) return { status: 498, message: 'Invalid token' };
 
-        if(!tokenData?.expires_in || Date.now() >= tokenData.expires_in) {
-            dbs.deleteToken(token as string);
-            
-            return { status: 498, message: 'Token expired' };
-        }
-
-        const data = (await axios.get(URLS.USER, {
-            headers: {
-                Authorization: `Bearer ${tokenData.access_token}`
+            if(!tokenData?.expires_in || Date.now() >= tokenData.expires_in) {
+                return { status: 498, message: 'Token expired' };
             }
-        }).catch(e => {}))?.data || {};
 
-        if(!data?.id) return { status: 498, message: 'Invalid token' };
+            const data = (await axios.get(URLS.USER, {
+                headers: {
+                    Authorization: `Bearer ${tokenData.access_token}`
+                }
+            }).catch(e => {}))?.data || {};
 
-        return { status: 200, ...data };
+            if(!data?.id) return { status: 498, message: 'Invalid token' };
+
+            return { status: 200, ...data };
+        } catch(e) {
+            return { status: 401, message: 'Invalid token' }
+        }
     }
 }
 

@@ -44,7 +44,6 @@ class GuildsRouter extends BaseRouter {
                 return res.status(status).send(data);
             }
 
-            // @ts-ignore
             req.user = data;
 
             next();
@@ -63,6 +62,9 @@ class GuildsRouter extends BaseRouter {
             }).catch(e => e.response);
 
             const { status, data } = response || {};
+
+            delete data?.member?.user;
+            data.user = req.user;
 
             res.status(status).json(data);
         });
