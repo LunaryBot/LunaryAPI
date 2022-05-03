@@ -94,7 +94,7 @@ class GuildsRouter extends BaseRouter {
 
                     if(fn) {
                         const _value = fn(value);
-                        
+
                         if(_value) newdbData[key] = _value;
                     }
                 });
@@ -102,6 +102,12 @@ class GuildsRouter extends BaseRouter {
                 const _value = SubSchema(data, dbData);
 
                 if(_value) newdbData = _value;
+            }
+
+            if(!Object.keys(newdbData).length) {
+                return res.status(304).json({
+                    message: 'No valid settings data.',
+                });
             }
 
             newdbData = Object.assign(dbData, newdbData);
