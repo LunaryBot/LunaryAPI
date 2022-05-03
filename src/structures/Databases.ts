@@ -14,17 +14,6 @@ class Databases {
         this.users = this.initializeDatabase('UsersDB');
         this.logs = this.initializeDatabase('LogsDB');
         this.api = this.initializeDatabase('ApiDB');
-
-        // Clean up old tokens
-        setInterval(async() => {
-            const logs = await this.getLogs();
-
-            for(const [key, value] of Object.entries(logs) as [string, any][]) {
-                if(value.expires_in <= Date.now()) {
-                    await this.deleteToken(key);
-                }
-            }
-        }, 1000 * 60 * 60);
     }
 
     initializeDatabase(name: string): firebase.database.Database {
@@ -35,19 +24,6 @@ class Databases {
         };
         
         return app.database();
-    }
-
-    async setToken(token: string, data: { access_token: string, refresh_token: string, expires_in: number }) {
-        await this.api.ref(`Tokens/${token}`).set(data);
-    }
-
-    async getToken(token: string) {
-        const db = await this.api.ref(`Tokens/${token}`).once("value");
-        return db.val();
-    }
-
-    async deleteToken(token: string) {
-        await this.api.ref(`Tokens/${token}`).remove();
     }
 
     async addVote(user: string, platform: string) {
@@ -61,9 +37,13 @@ class Databases {
         await this.users.ref(`Users/${user}`)[db ? 'update' : 'set']({ votes });
     }
     
-    async getGuildDatabase(guildId: string) {
+    async getGuild(guildId: string) {
         const db = await this.guilds.ref(`Servers/${guildId}`).once("value");
         return db.val() || {};
+    }
+
+    async setGuild(guildId: string, data: any) {
+        await this.guilds.ref(`Servers/${guildId}`).set(data);
     }
 
     async getLogs() {

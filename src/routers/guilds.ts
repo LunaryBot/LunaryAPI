@@ -1,4 +1,4 @@
-import { Router, Express, Request } from 'express';
+import { Router, Express } from 'express';
 import { WebSocketServer } from 'ws';
 import axios from 'axios';
 import { Client } from 'eris';
@@ -7,7 +7,7 @@ import BaseRouter from '../structures/BaseRouter';
 import Databases from '../structures/Databases';
 
 import Utils from '../utils/Utils';
-import { URLS, User } from '../types';
+import * as GuildSettings from '../utils/GuildSettings';
 
 class GuildsRouter extends BaseRouter {
     constructor(data: { dbs: Databases; app: Express, wss: WebSocketServer, client: Client }) {
@@ -56,18 +56,63 @@ class GuildsRouter extends BaseRouter {
 
             const response = await botApi.get(`/guilds/${guildID}`, {
                 headers: {
-                    //@ts-ignore
-                    RequesterId: (req.user as User).id,
+                    RequesterId: req.user?.id,
                 }
             }).catch(e => e.response);
 
-            const { status, data } = response || {};
+            const { status = 500, data } = response || {};
 
-            delete data?.member?.user;
-            data.user = req.user;
+            if(data?.guild && status == 200) {
+                delete data?.member?.user;
+                data.user = req.user;
+
+                data.guild.settings = await this.dbs.getGuild(guildID);
+            }
 
             res.status(status).json(data);
         });
+
+        this.router.patch('/:guildID', async(req, res) => {
+            const { type, data } = (req.body || {}) as { type: string, data: string };
+            if(!type || !(type in GuildSettings.Schema)) return {
+                message: 'Invalid update type.'
+            }
+
+            if(!data || typeof data !== 'object') return {
+                message: 'Invalid settings data.'
+            }
+
+            const dbData = await this.dbs.getGuild(req.params.guildID);
+
+            let newdbData: any = {};
+
+            const SubSchema: any = GuildSettings.Schema[type as 'moderation' | 'permissions'];
+
+            if(typeof SubSchema == 'object') {
+                Object.entries(data || {}).forEach(([key, value]: [string, any]) => {
+                    const fn = SubSchema[key];
+
+                    if(fn) {
+                        const _value = fn(value);
+                        
+                        if(_value) newdbData[key] = _value;
+                    }
+                });
+            } else if(typeof SubSchema == 'function') {
+                const _value = SubSchema(data, dbData);
+
+                if(_value) newdbData = _value;
+            }
+
+            newdbData = Object.assign(dbData, newdbData);
+
+            await this.dbs.setGuild(req.params.guildID, newdbData);
+            
+            res.status(200).json({
+                message: 'Successfully updated guild settings.',
+                data: newdbData
+            });
+        })
     }
 }
 

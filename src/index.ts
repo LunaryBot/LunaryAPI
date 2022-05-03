@@ -36,7 +36,7 @@ const dbs = new Databases();
 new vCodesWrapper(client, dbs).connect();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(require('cors')());
 
 new AuthRouter({ app, wss, dbs, client });
