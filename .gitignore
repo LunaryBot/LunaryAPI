@@ -4,4 +4,4 @@ yarn.lock
 
 .env
 
-dist/
+build/
