@@ -1,6 +1,5 @@
 import { Router, Express } from 'express';
 import { WebSocketServer } from 'ws';
-import axios from 'axios';
 import { Client } from 'eris';
 
 import BaseRouter from '../structures/BaseRouter';
@@ -18,14 +17,7 @@ class UsersRouter extends BaseRouter {
             path: '/users',
             client: data.client
         });
-
-        const botApi = axios.create({
-            baseURL: process.env.BOT_API_URL,
-            headers: {
-                Authorization: `${process.env.BOT_API_TOKEN}`,
-            },
-        });
-
+        
         this.router.use(async (req, res, next) => {
             if(!req.headers.authorization) {
                 return res.status(401).send({
