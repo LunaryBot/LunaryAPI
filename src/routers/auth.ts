@@ -61,7 +61,7 @@ class AuthRouter extends BaseRouter {
             
             if(!token) return res.status(401).json({ message: 'No token provided' });
 
-            const d = await Utils.login({ token, dbs: this.dbs });
+            const d = await Utils.login(token);
 
             const { status, ...data } = d;
 

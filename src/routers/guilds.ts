@@ -36,7 +36,7 @@ class GuildsRouter extends BaseRouter {
 
             const token = req.headers.authorization;
 
-            const d = await Utils.login({ token, dbs: this.dbs });
+            const d = await Utils.login(token);
 
             const { status, ...data } = d;
 
@@ -118,7 +118,7 @@ class GuildsRouter extends BaseRouter {
                 message: 'Successfully updated guild settings.',
                 data: newdbData
             });
-        })
+        });
     }
 }
 

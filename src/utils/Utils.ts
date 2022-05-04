@@ -8,7 +8,7 @@ class Utils {
         return (Date.now().toString(36) + Array(4).fill(0).map(() => Math.random().toString(36)).join('')).split('').map(c => Math.random() > 0.5 ? c.toUpperCase() : c).join('').replace(/\./g, '');
     }
 
-    static async login({ token, dbs }: { token: string, dbs: Databases }) {
+    static async login(token: string) {
         if(!token) return { status: 401, message: 'No token provided' }
         
         try {
