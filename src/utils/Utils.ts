@@ -1,6 +1,6 @@
 import Databases from '../structures/Databases';
 import axios from 'axios';
-import { URLS } from '../types';
+import { URLS } from '../@types/index';
 import jwt from 'jsonwebtoken';
 
 class Utils {

@@ -7,7 +7,7 @@ import BaseRouter from '../structures/BaseRouter';
 import Databases from '../structures/Databases';
 
 import Utils from '../utils/Utils';
-import { URLS } from '../types';
+import { URLS } from '../@types/index';
 import { Client } from 'eris';
 
 class AuthRouter extends BaseRouter {

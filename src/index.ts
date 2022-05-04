@@ -7,6 +7,7 @@ import { Client, User } from 'eris';
 import AuthRouter from './routers/auth';
 import GuildsRouter from './routers/guilds';
 import WebhooksRouter from './routers/webhooks';
+import UsersRouter from './routers/users';
 
 import 'dotenv/config';
 import { vCodesWrapper } from './votes/vCodes';
@@ -43,6 +44,7 @@ new AuthRouter({ app, wss, dbs, client });
 new GuildsRouter({ app, wss, dbs, client });
 new AuthRouter({ app, wss, dbs, client });
 new WebhooksRouter({ app, wss, dbs, client });
+new UsersRouter({ app, wss, dbs, client });
 
 client.on('messageCreate', async(message) => {
     switch(message.webhookID) {

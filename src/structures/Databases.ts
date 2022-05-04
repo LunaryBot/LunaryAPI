@@ -1,4 +1,4 @@
-import { VoteData } from '../types';
+import { VoteData } from '../@types/index';
 import firebase from 'firebase';
 
 const keys = ['apiKey', 'appId', 'authDomain', 'databaseURL', 'measurementId', 'messagingSenderId', 'projectId', 'storageBucket']
@@ -35,6 +35,11 @@ class Databases {
             date: Date.now()
         });
         await this.users.ref(`Users/${user}`)[db ? 'update' : 'set']({ votes });
+    }
+
+    async getUser(userId: string) {
+        const db = await this.users.ref(`Users/${userId}`).once("value");
+        return db.val() || {};
     }
     
     async getGuild(guildId: string) {
