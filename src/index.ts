@@ -34,7 +34,7 @@ client.presence = {
 }
 
 const dbs = new Databases();
-new vCodesWrapper(client, dbs).connect();
+new vCodesWrapper(client, dbs).connect().catch(err => console.log(`[vCodes] ${err.message}`));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
