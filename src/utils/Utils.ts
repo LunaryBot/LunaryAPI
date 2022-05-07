@@ -2,6 +2,7 @@ import Databases from '../structures/Databases';
 import axios from 'axios';
 import { URLS } from './Constants';
 import jwt from 'jsonwebtoken';
+import { Guild } from '../@types';
 
 class Utils {
     static generateToken() {
@@ -29,6 +30,30 @@ class Utils {
             if(!data?.id) return { status: 498, message: 'Invalid token' };
 
             return { status: 200, ...data };
+        } catch(e) {
+            return { status: 401, message: 'Invalid token' }
+        }
+    }
+
+    static async getUserGuilds(token: string) {
+        if(!token) return { status: 401, message: 'No token provided' }
+        
+        try {
+            const tokenData = await jwt.verify(token as string, process.env.JWT_SECRET) as { access_token: string, refresh_token: string, expires_in: number };
+        
+            if(!tokenData || !tokenData?.access_token) return { status: 498, message: 'Invalid token' };
+
+            if(!tokenData?.expires_in || Date.now() >= tokenData.expires_in) {
+                return { status: 498, message: 'Token expired' };
+            }
+
+            const data = (await axios.get(URLS.GUILDS, {
+                headers: {
+                    Authorization: `Bearer ${tokenData.access_token}`
+                }
+            }).catch(e => {}))?.data || [];
+
+            return { status: 200, guilds: data as Guild };
         } catch(e) {
             return { status: 401, message: 'Invalid token' }
         }

@@ -14,6 +14,16 @@ export interface User {
 	verified?: boolean;
 }
 
+export interface Guild {
+	icon: string;
+	id: string;
+	name: string;
+	owner: boolean;
+	permissions: number;
+	features: string[];
+	permissions_new: string;
+}
+
 export interface VoteData {
 	platform: string,
 	date: number

@@ -1,6 +1,6 @@
 import { Router, Express } from 'express';
 import { WebSocketServer } from 'ws';
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { Client } from 'eris';
 
 import BaseRouter from '../structures/BaseRouter';
@@ -8,8 +8,11 @@ import Databases from '../structures/Databases';
 
 import Utils from '../utils/Utils';
 import * as GuildSettings from '../utils/GuildSettings';
+import { Guild } from '../@types';
 
 class GuildsRouter extends BaseRouter {
+    public botApi: AxiosInstance;
+
     constructor(data: { dbs: Databases; app: Express, wss: WebSocketServer, client: Client }) {
         super({
             wss: data.wss,
@@ -20,7 +23,7 @@ class GuildsRouter extends BaseRouter {
             client: data.client
         });
 
-        const botApi = axios.create({
+        this.botApi = axios.create({
             baseURL: process.env.BOT_API_URL,
             headers: {
                 Authorization: `${process.env.BOT_API_TOKEN}`,
@@ -47,14 +50,35 @@ class GuildsRouter extends BaseRouter {
             req.user = data;
 
             next();
-        })
+        });
+
+        this.router.get('/@me', async (req, res) => {
+            const d = await Utils.getUserGuilds(req.headers.authorization as string);
+
+            const { status, ...data } = d;
+
+            if(Array.isArray(data?.guilds)) {
+                const filteredGuilds = await (data.guilds as Guild[]).filter(guild => guild.owner === true || (guild.permissions & 8) === 8).map(guild => guild.id);
+
+                // @ts-ignore
+                data.guilds = data.guilds.map(guild => {
+                    if(filteredGuilds.includes(guild.id)) {
+                        guild.access = true;
+                    }
+
+                    return guild as Guild;
+                }) as Guild[];
+            }
+
+            res.status(status).json( Array.isArray(data?.guilds) ? data.guilds : data );
+        });
 
         this.router.get('/:guildID', async(req, res) => {
             const guildID = req.params.guildID;
 
             if(!guildID) return res.status(401).json({ message: 'No id provided' });
 
-            const response = await botApi.get(`/guilds/${guildID}`, {
+            const response = await this.botApi.get(`/guilds/${guildID}`, {
                 headers: {
                     RequesterId: req.user?.id,
                 }
@@ -119,6 +143,14 @@ class GuildsRouter extends BaseRouter {
                 data: newdbData
             });
         });
+    }
+
+    private async filterGuilds(guilds: string[]) {
+        const botGuilds = await this.botApi.post('/guilds', {
+            guilds,
+        }).catch(e => e.response);
+
+        return botGuilds.data || [];
     }
 }
 
