@@ -1,4 +1,4 @@
-import { Router, Express } from 'express';
+import { Router, Express, query } from 'express';
 import { WebSocketServer } from 'ws';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
@@ -49,11 +49,13 @@ class AuthRouter extends BaseRouter {
 
             if(!data.access_token) return res.status(498).json({ message: 'No access token provided' });
 
-            res.send(await jwt.sign({ 
+            const token = await jwt.sign({ 
                 access_token: data.access_token, 
                 refresh_token: data.refresh_token,
                 expires_in: Date.now() + (data.expires_in * 1000)
-            }, process.env.JWT_SECRET));
+            }, process.env.JWT_SECRET);
+
+            res.redirect(`${process.env.WEBSITE_URL}/auth/callback?token=${token}${(req.query.state ? `&state=${req.query.state}` : '')}`);
         });
 
         this.router.get('/', async(req, res) => {
