@@ -19,12 +19,6 @@ declare global {
             readonly VCODES_TOKEN: string;
         }
     }
-
-    namespace Express {
-        interface Request {
-            user: User;
-        }
-    }
 };
 
 export {};

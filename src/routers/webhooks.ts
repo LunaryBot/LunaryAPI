@@ -1,12 +1,13 @@
 import { Client, User } from 'eris';
 import { Router, Express } from 'express';
 import { WebSocketServer } from 'ws';
+import Gateway from '../structures/Gateway';
 
 import BaseRouter from '../structures/BaseRouter';
 import Databases from '../structures/Databases';
 
 class WebhooksRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; app: Express, wss: WebSocketServer, client: Client }) {
+    constructor(data: { dbs: Databases; app: Express, wss: Gateway, client: Client }) {
         super({
             wss: data.wss,
             app: data.app,

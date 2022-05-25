@@ -3,18 +3,22 @@ import express from 'express';
 import http from 'http';
 import Databases from './structures/Databases';
 import { Client, User } from 'eris';
+import Server from './structures/Server';
 
 import AuthRouter from './routers/auth';
 import GuildsRouter from './routers/guilds';
 import WebhooksRouter from './routers/webhooks';
 import UsersRouter from './routers/users';
+import MainRouter from './routers/main';
+
+console.log(require('express/lib/router/layer'));
 
 import 'dotenv/config';
 import { vCodesWrapper } from './votes/vCodes';
 
 const app = express();
-const server = http.createServer(app);
-const wss = new WebSocketServer({ server });
+const server = new Server(app);
+// const wss = new Gateway({ server });
 const client = new Client(process.env.DISCORD_BOT_TOKEN, {
     messageLimit: 0,
     autoreconnect: true,
@@ -34,13 +38,13 @@ client.presence = {
 }
 
 const dbs = new Databases();
-new vCodesWrapper(client, dbs).connect().catch(err => console.log(`[vCodes] ${err.message}`));
+// new vCodesWrapper(client, dbs).connect().catch(err => console.log(`[vCodes] ${err.message}`));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(require('cors')());
 
-[AuthRouter, GuildsRouter, WebhooksRouter, UsersRouter].map(router => new router({ app, wss, dbs, client }));
+[AuthRouter, GuildsRouter, WebhooksRouter, UsersRouter, MainRouter].map(router => new router({ app, wss: server.gateway, dbs, client }));
 
 client.on('messageCreate', async(message) => {
     switch(message.webhookID) {

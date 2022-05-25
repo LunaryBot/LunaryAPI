@@ -5,6 +5,7 @@ import { Client } from 'eris';
 
 import BaseRouter from '../structures/BaseRouter';
 import Databases from '../structures/Databases';
+import Gateway from '../structures/Gateway';
 
 import Utils from '../utils/Utils';
 import * as GuildSettings from '../utils/GuildSettings';
@@ -13,7 +14,7 @@ import { Guild } from '../@types';
 class GuildsRouter extends BaseRouter {
     public botApi: AxiosInstance;
 
-    constructor(data: { dbs: Databases; app: Express, wss: WebSocketServer, client: Client }) {
+    constructor(data: { dbs: Databases; app: Express, wss: Gateway, client: Client }) {
         super({
             wss: data.wss,
             app: data.app,
