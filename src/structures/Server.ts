@@ -14,16 +14,6 @@ class Server extends http.Server {
         this.gateway = new Gateway(this, { noServer: true });
 
         this.on('upgrade', this.handleUpgrade.bind(this));
-
-        this.ws('/test', (req, ws) => {
-            console.log('test ws ' + req.originalUrl);
-            ws.send(JSON.stringify({ test: 'test ws' }));
-        });
-
-        this.ws('/test2', (req, ws) => {
-            console.log('test ws ' + req.originalUrl);
-            ws.send(JSON.stringify({ test: 'test2 ws' }));
-        });
     }
 
     private handleUpgrade(req: Request, socket: WebSocket, upgradeHead: Buffer) {

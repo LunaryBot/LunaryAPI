@@ -9,13 +9,13 @@ import Databases from '../structures/Databases';
 import Utils from '../utils/Utils';
 import { Guild } from '../@types';
 import Gateway from '../structures/Gateway';
+import Server from '../structures/Server';
 
 class UsersRouter extends BaseRouter {
     public botApi: AxiosInstance;
-    constructor(data: { dbs: Databases; app: Express, wss: Gateway, client: Client }) {
+    constructor(data: { dbs: Databases; server: Server, wss: Gateway, client: Client }) {
         super({
-            wss: data.wss,
-            app: data.app,
+            server: data.server,
             router: Router(),
             dbs: data.dbs,
             path: '/users',

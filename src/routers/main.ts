@@ -5,12 +5,12 @@ import Gateway from '../structures/Gateway';
 
 import BaseRouter from '../structures/BaseRouter';
 import Databases from '../structures/Databases';
+import Server from '../structures/Server';
 
 class MainRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; app: Express, wss: Gateway, client: Client }) {
+    constructor(data: { dbs: Databases; server: Server, wss: Gateway, client: Client }) {
         super({
-            wss: data.wss,
-            app: data.app,
+            server: data.server,
             router: Router(),
             dbs: data.dbs,
             path: '*',
