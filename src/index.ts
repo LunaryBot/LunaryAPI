@@ -44,7 +44,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(require('cors')());
 
-[AuthRouter, GuildsRouter, WebhooksRouter, UsersRouter, MainRouter].map(router => new router({ app, wss: server.gateway, dbs, client }));
+[AuthRouter, GuildsRouter, WebhooksRouter, UsersRouter, MainRouter].map(router => new router({ server, dbs, client }));
 
 client.on('messageCreate', async(message) => {
     switch(message.webhookID) {
