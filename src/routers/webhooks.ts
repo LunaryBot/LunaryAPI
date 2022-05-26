@@ -8,7 +8,7 @@ import Databases from '../structures/Databases';
 import Server from '../structures/Server';
 
 class WebhooksRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; server: Server, wss: Gateway, client: Client }) {
+    constructor(data: { dbs: Databases; server: Server, client: Client }) {
         super({
             server: data.server,
             router: Router(),
@@ -17,7 +17,7 @@ class WebhooksRouter extends BaseRouter {
             client: data.client
         });
 
-        this.router.post('/topgg', async(req, res) => {
+        this.post('/topgg', async(req, res) => {
             const authorization = req.get('authorization');
             if (!authorization || authorization !== process.env.TOPGG_TOKEN) return res.status(401).send();
 

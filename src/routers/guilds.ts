@@ -31,7 +31,7 @@ class GuildsRouter extends BaseRouter {
             },
         });
 
-        this.router.use(async (req, res, next) => {
+        this.use(async (req, res, next) => {
             if(!req.headers.authorization) {
                 return res.status(401).send({
                     message: 'No token provided'
@@ -53,7 +53,7 @@ class GuildsRouter extends BaseRouter {
             next();
         });
 
-        this.router.get('/@me', async (req, res) => {
+        this.get('/@me', async (req, res) => {
             const d = await Utils.getUserGuilds(req.headers.authorization as string);
 
             const { status, ...data } = d;
@@ -74,7 +74,7 @@ class GuildsRouter extends BaseRouter {
             res.status(status).json( Array.isArray(data?.guilds) ? data.guilds : data );
         });
 
-        this.router.get('/:guildID', async(req, res) => {
+        this.get('/:guildID', async(req, res) => {
             const guildID = req.params.guildID;
 
             if(!guildID) return res.status(401).json({ message: 'No id provided' });
@@ -97,7 +97,7 @@ class GuildsRouter extends BaseRouter {
             res.status(status).json(data);
         });
 
-        this.router.patch('/:guildID', async(req, res) => {
+        this.patch('/:guildID', async(req, res) => {
             const { type, data } = (req.body || {}) as { type: string, data: string };
             if(!type || !(type in GuildSettings.Schema)) return {
                 message: 'Invalid update type.'

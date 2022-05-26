@@ -30,7 +30,7 @@ class UsersRouter extends BaseRouter {
         });
 
         
-        this.router.use(async (req, res, next) => {
+        this.use(async (req, res, next) => {
             if(!req.headers.authorization) {
                 return res.status(401).send({
                     message: 'No token provided'
@@ -52,7 +52,7 @@ class UsersRouter extends BaseRouter {
             next();
         });
 
-        this.router.get('/@me', async(req, res) => {
+        this.get('/@me', async(req, res) => {
             const settings = await this.dbs.getUser(req.user.id) || {};
 
             res.status(200).json({
@@ -61,7 +61,7 @@ class UsersRouter extends BaseRouter {
             });
         });
 
-        this.router.get('/@me/guilds', async (req, res) => {
+        this.get('/@me/guilds', async (req, res) => {
             const d = await Utils.getUserGuilds(req.headers.authorization as string);
 
             const { status, ...data } = d;
@@ -80,6 +80,12 @@ class UsersRouter extends BaseRouter {
             }
 
             res.status(status).json( Array.isArray(data?.guilds) ? data.guilds : data );
+        });
+
+        this.ws('/test', (ws, req) => {
+            ws.on('message', (msg) => {
+                console.log(msg);
+            });
         });
     }
 

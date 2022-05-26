@@ -22,7 +22,7 @@ class AuthRouter extends BaseRouter {
             client: data.client
         });
 
-        this.router.get('/callback', async(req, res) => {
+        this.get('/callback', async(req, res) => {
             const { code, error } = req.query;
 
             if(!code) {
@@ -59,7 +59,7 @@ class AuthRouter extends BaseRouter {
             res.redirect(`${process.env.WEBSITE_URL}/auth/callback?token=${token}${(req.query.state ? `&state=${req.query.state}` : '')}`);
         });
 
-        this.router.get('/', async(req, res) => {
+        this.get('/', async(req, res) => {
             const { token } = req.query as { token: string };
             
             if(!token) return res.status(401).json({ message: 'No token provided' });

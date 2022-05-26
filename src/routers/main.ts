@@ -8,7 +8,7 @@ import Databases from '../structures/Databases';
 import Server from '../structures/Server';
 
 class MainRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; server: Server, wss: Gateway, client: Client }) {
+    constructor(data: { dbs: Databases; server: Server, client: Client }) {
         super({
             server: data.server,
             router: Router(),
