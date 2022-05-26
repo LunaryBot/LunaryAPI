@@ -27,27 +27,33 @@ class BaseRouter {
     }
 
     public get get() {
-        return this.app.get;
+        return this.router.get.bind(this.router);
     }
 
     public get post() {
-        return this.app.post;
+        return this.router.post.bind(this.router);
+    }
+
+    public get patch() {
+        return this.router.patch.bind(this.router);
     }
 
     public get put() {
-        return this.app.put;
+        return this.router.put.bind(this.router);
     }
 
     public get delete() {
-        return this.app.delete;
+        return this.router.delete.bind(this.router);
     }
 
     public get use() {
-        return this.app.use;
+        return this.router.use.bind(this.router);
     }
 
-    public get ws() {
-        return this.server.ws;
+    public ws(path: string, callback: (req: Request, ws: WebSocket) => void) {
+        this.app.use(`${this.path}${path}`, (req, res) => {
+            res.sendWs(callback);
+        });
     }
 }
 
