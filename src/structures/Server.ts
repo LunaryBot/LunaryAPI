@@ -11,7 +11,7 @@ class Server extends http.Server {
         super(app);
 
         this.app = app;
-        this.gateway = new Gateway(this, { noServer: true });
+        this.gateway = new Gateway(this, { server: this });
 
         this.on('upgrade', this.handleUpgrade.bind(this));
     }
@@ -43,23 +43,23 @@ class Server extends http.Server {
     };
 
     get get() {
-        return this.app.get;
+        return this.app.get.bind(this.app);
     }
 
     get post() {
-        return this.app.post;
+        return this.app.post.bind(this.app);
     }
 
     get put() {
-        return this.app.put;
+        return this.app.put.bind(this.app);
     }
 
     get delete() {
-        return this.app.delete;
+        return this.app.delete.bind(this.app);
     }
 
     get use() {
-        return this.app.use;
+        return this.app.use.bind(this.app);
     }
 
     ws(path: string, callback: (req: Request, ws: WebSocket) => void) {

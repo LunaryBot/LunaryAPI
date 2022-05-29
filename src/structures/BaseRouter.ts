@@ -24,6 +24,8 @@ class BaseRouter {
         this.gateway = data.server.gateway;
 
         this.dbs = data.dbs;
+
+        this.app.use(`${this.path}`, this.router);
     }
 
     public get get() {
