@@ -1,4 +1,4 @@
-import { WebSocketServer, ServerOptions, RawData } from 'ws';
+import { WebSocketServer, ServerOptions, RawData, WebSocket } from 'ws';
 import Server from './Server';
  
 class Gateway extends WebSocketServer {
@@ -14,8 +14,14 @@ class Gateway extends WebSocketServer {
             });
         });
     }
+    
+    public broadcast(data: Object, filter?: (client: WebSocket) => any) {
+        return (filter ? [...this.clients.values()].filter(filter) : this.clients).forEach(client => {
+            client.send(JSON.stringify(data));
+        });
+    }
 
-    formatMessage(data: RawData) {
+    public formatMessage(data: RawData) {
         if (Array.isArray(data)) data = Buffer.concat(data);
         else if (data instanceof ArrayBuffer) data = Buffer.from(data);
         
