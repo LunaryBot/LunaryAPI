@@ -14,6 +14,7 @@ import Server from '../structures/Server';
 
 class GuildsRouter extends BaseRouter {
     public botApi: AxiosInstance;
+    public usersIdCache: Map<string, string>;
 
     constructor(data: { dbs: Databases; server: Server, wss: Gateway, client: Client }) {
         super({
@@ -31,15 +32,24 @@ class GuildsRouter extends BaseRouter {
             },
         });
 
+        this.usersIdCache = new Map();
+
         this.use(async (req, res, next) => {
-            if(!req.headers.authorization) {
+            const token = req.headers.authorization;
+            
+            if(!token) {
                 return res.status(401).send({
                     message: 'No token provided'
                 });
             }
 
-            const token = req.headers.authorization;
+            if(this.usersIdCache.has(token)) {
+                req.userId = this.usersIdCache.get(token) as string;
+                return next();
+            }
 
+            console.log('Fetching user...');
+            
             const d = await Utils.login(token);
 
             const { status, ...data } = d;
@@ -48,7 +58,9 @@ class GuildsRouter extends BaseRouter {
                 return res.status(status).send(data);
             }
 
-            req.user = data;
+            this.usersIdCache.set(token, data.id);
+
+            req.userId = data.id;
 
             next();
         });
@@ -81,15 +93,15 @@ class GuildsRouter extends BaseRouter {
 
             const response = await this.botApi.get(`/guilds/${guildID}`, {
                 headers: {
-                    RequesterId: req.user?.id,
+                    RequesterId: req.userId,
                 }
             }).catch(e => e.response);
 
             const { status = 500, data } = response || {};
 
             if(data?.guild && status == 200) {
+                data.user = { ...data.member.user };
                 delete data?.member?.user;
-                data.user = req.user;
 
                 data.guild.settings = await this.dbs.getGuild(guildID);
             }
@@ -144,14 +156,6 @@ class GuildsRouter extends BaseRouter {
                 data: newdbData
             });
         });
-    }
-
-    private async filterGuilds(guilds: string[]) {
-        const botGuilds = await this.botApi.post('/guilds', {
-            guilds,
-        }).catch(e => e.response);
-
-        return botGuilds.data || [];
     }
 }
 
