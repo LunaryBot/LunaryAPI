@@ -53,7 +53,7 @@ class Utils {
                 }
             }).catch(e => {}))?.data || [];
 
-            return { status: 200, guilds: data as Guild };
+            return { status: 200, guilds: data as Guild[] };
         } catch(e) {
             return { status: 401, message: 'Invalid token' }
         }

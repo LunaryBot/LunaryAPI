@@ -73,7 +73,6 @@ class GuildsRouter extends BaseRouter {
             if(Array.isArray(data?.guilds)) {
                 const filteredGuilds = await (data.guilds as Guild[]).filter(guild => guild.owner === true || (guild.permissions & 8) === 8).map(guild => guild.id);
 
-                // @ts-ignore
                 data.guilds = data.guilds.map(guild => {
                     if(filteredGuilds.includes(guild.id)) {
                         guild.access = true;
