@@ -13,8 +13,12 @@ class MainRouter extends BaseRouter {
             server: data.server,
             router: Router(),
             dbs: data.dbs,
-            path: '*',
+            path: '/',
             client: data.client
+        });
+
+        this.get('/', (req, res) => {
+            res.status(200).send('Hello World!');
         });
     }
 }
