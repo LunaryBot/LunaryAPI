@@ -1,5 +1,4 @@
-import { Router, Express, query } from 'express';
-import { WebSocketServer } from 'ws';
+import { Router } from 'express';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
@@ -9,7 +8,6 @@ import Databases from '../structures/Databases';
 import Utils from '../utils/Utils';
 import { URLS } from '../utils/Constants';
 import { Client } from 'eris';
-import Gateway from '../structures/Gateway';
 import Server from '../structures/Server';
 
 class AuthRouter extends BaseRouter {

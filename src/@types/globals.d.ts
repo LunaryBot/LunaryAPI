@@ -1,4 +1,4 @@
-import type { User } from './index';
+import type { IUser } from './index';
 
 declare global {
     namespace NodeJS {

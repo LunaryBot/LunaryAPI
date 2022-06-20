@@ -2,7 +2,7 @@ import Databases from '../structures/Databases';
 import axios from 'axios';
 import { URLS } from './Constants';
 import jwt from 'jsonwebtoken';
-import { Guild } from '../@types';
+import { IGuild } from '../@types';
 
 class Utils {
     static generateToken() {
@@ -53,7 +53,7 @@ class Utils {
                 }
             }).catch(e => {}))?.data || [];
 
-            return { status: 200, guilds: data as Guild[] };
+            return { status: 200, guilds: data as IGuild[] };
         } catch(e) {
             return { status: 401, message: 'Invalid token' }
         }

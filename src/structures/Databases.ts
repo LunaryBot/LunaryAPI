@@ -1,4 +1,4 @@
-import { VoteData } from '../@types/index';
+import { IVoteData, IPunishmentLog } from '../@types/index';
 import firebase from 'firebase';
 
 const keys = ['apiKey', 'appId', 'authDomain', 'databaseURL', 'measurementId', 'messagingSenderId', 'projectId', 'storageBucket']
@@ -28,7 +28,7 @@ class Databases {
 
     async addVote(user: string, platform: string) {
         const db = (await this.users.ref(`Users/${user}`).once('value')).val();
-        let votes: Array<VoteData> = [];
+        let votes: Array<IVoteData> = [];
         if (db && db.votes) votes = db.votes;
         votes.push({
             platform,
@@ -38,12 +38,12 @@ class Databases {
     }
 
     async getUser(userId: string) {
-        const db = await this.users.ref(`Users/${userId}`).once("value");
+        const db = await this.users.ref(`Users/${userId}`).once('value');
         return db.val() || {};
     }
     
     async getGuild(guildId: string) {
-        const db = await this.guilds.ref(`Servers/${guildId}`).once("value");
+        const db = await this.guilds.ref(`Servers/${guildId}`).once('value');
         return db.val() || {};
     }
 
@@ -51,9 +51,12 @@ class Databases {
         await this.guilds.ref(`Servers/${guildId}`).set(data);
     }
 
-    async getLogs() {
-        const db = await this.logs.ref().once("value");
-        return db.val() || {};
+    async getPunishmentLogs(): Promise<{ [id: string ]: IPunishmentLog }> {
+        const data: { [id: string ]: IPunishmentLog } = (await this.logs.ref().once('value')).val() || {};
+
+        delete data.cases;
+
+        return data;
     }
 
     static getData(key: string) {

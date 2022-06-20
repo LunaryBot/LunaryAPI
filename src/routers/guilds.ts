@@ -1,5 +1,4 @@
-import { Router, Express } from 'express';
-import { WebSocketServer } from 'ws';
+import { Router } from 'express';
 import axios, { AxiosInstance } from 'axios';
 import { Client } from 'eris';
 
@@ -9,7 +8,7 @@ import Gateway from '../structures/Gateway';
 
 import Utils from '../utils/Utils';
 import * as GuildSettings from '../utils/GuildSettings';
-import { Guild } from '../@types';
+import { IGuild } from '../@types';
 import Server from '../structures/Server';
 
 class GuildsRouter extends BaseRouter {
@@ -71,15 +70,15 @@ class GuildsRouter extends BaseRouter {
             const { status, ...data } = d;
 
             if(Array.isArray(data?.guilds)) {
-                const filteredGuilds = await (data.guilds as Guild[]).filter(guild => guild.owner === true || (guild.permissions & 8) === 8).map(guild => guild.id);
+                const filteredGuilds = await (data.guilds as IGuild[]).filter(guild => guild.owner === true || (guild.permissions & 8) === 8).map(guild => guild.id);
 
                 data.guilds = data.guilds.map(guild => {
                     if(filteredGuilds.includes(guild.id)) {
                         guild.access = true;
                     }
 
-                    return guild as Guild;
-                }) as Guild[];
+                    return guild as IGuild;
+                }) as IGuild[];
             }
 
             res.status(status).json( Array.isArray(data?.guilds) ? data.guilds : data );

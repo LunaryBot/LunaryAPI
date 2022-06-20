@@ -1,4 +1,4 @@
-export interface User {
+export interface IUser {
 	username: string;
 	id: string;
 	discriminator: string;
@@ -14,7 +14,7 @@ export interface User {
 	verified?: boolean;
 }
 
-export interface Guild {
+export interface IGuild {
 	icon: string;
 	id: string;
 	name: string;
@@ -25,7 +25,9 @@ export interface Guild {
 	access?: boolean;
 }
 
-export interface VoteData {
+export interface IVoteData {
 	platform: string,
 	date: number
 }
+
+export interface IPunishmentLog {}
