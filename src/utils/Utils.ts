@@ -2,7 +2,26 @@ import Databases from '../structures/Databases';
 import axios from 'axios';
 import { URLS } from './Constants';
 import jwt from 'jsonwebtoken';
-import { IGuild } from '../@types';
+import { IGuild, IPunishmentLog, IPunishmentLogResolved, IUser, IPunishmentLogsFilter } from '../@types';
+
+const punishmentsTypes: any = {
+    ban: 1,
+    b: 1,
+    kick: 2,
+    k: 2,
+    mute: 3,
+    m: 3,
+    adv: 4,
+    a: 4,
+    warn: 4,
+    w: 4,
+}
+
+interface IPunishmentLogPreResolved extends IPunishmentLog {
+    id: string;
+}
+
+const defaultLimit = 20;
 
 class Utils {
     static generateToken() {
@@ -58,6 +77,89 @@ class Utils {
             return { status: 401, message: 'Invalid token' }
         }
     }
+
+    static async resolvePunishmentLogs(logs: { [id: string ]: IPunishmentLog }, filters?: IPunishmentLogsFilter) {
+        const botApi = axios.create({
+            baseURL: process.env.BOT_API_URL,
+            headers: {
+                Authorization: `${process.env.BOT_API_TOKEN}`,
+            },
+        });
+
+        const users: Array<string> = [];
+        const guilds: Array<string> = [];
+
+        let punishmentsLogs = (Object.entries(logs).map(([id, log]) => {
+            if(filters && !testPunishmentLog(log, filters)) {
+                return;
+            }
+
+            const data = {
+                ...log,
+                id
+            };
+
+            return data;
+        }).filter(Boolean) as Array<IPunishmentLogPreResolved>).sort((a, b) => b.timestamp - a.timestamp).slice(0, (filters?.limit ? (filters.limit > 75 ? 75 : filters.limit) : defaultLimit));
+
+        if(filters) {
+            punishmentsLogs = punishmentsLogs.filter(log => testPunishmentLog(log, filters));
+        }
+
+        punishmentsLogs.forEach(log => {
+            ([log.user, log.author]).forEach(user => !users.includes(user) && users.push(user));
+            !guilds.includes(log.guild) && guilds.push(log.guild);
+        });
+
+        const resolvedUsers: Array<IUser> = await botApi.get('/users/cache', {
+            data: { users }
+        }).then(res => res.data);
+
+        const resolvedGuilds: Array<IGuild> = await botApi.get('/guilds/cache', {
+            data: { guilds }
+        }).then(res => res.data);
+        
+        const resolvedPunishmentsLogs: Array<IPunishmentLogResolved> = punishmentsLogs.map(log => ({
+            ...log,
+            user: resolvedUsers.find(user => user.id === log.user) as IUser,
+            author: resolvedUsers.find(user => user.id === log.author) as IUser,
+            guild: resolvedGuilds.find(guild => guild.id === log.guild) as IGuild,
+        }));
+
+        return resolvedPunishmentsLogs;
+    }
+}
+
+function testPunishmentLog(log: IPunishmentLog, filters: IPunishmentLogsFilter): boolean {
+    if(filters.type) {
+        if(typeof filters.type == 'string' && filters.type in punishmentsTypes) {
+            filters.type = punishmentsTypes[filters.type];
+        };
+
+        if(filters.type && filters.type !== log.type) return false;
+    }
+
+    if(filters.userId && log.user !== filters.userId) {
+        return false;
+    }
+
+    if(filters.authorId && log.author !== filters.authorId) {
+        return false;
+    }
+
+    if(filters.guildId && log.guild !== filters.guildId) {
+        return false;
+    }
+
+    if(filters.afterTimestamp && log.timestamp > filters.afterTimestamp) {
+        return false;
+    }
+
+    if(filters.beforeTimestamp && log.timestamp < filters.beforeTimestamp) {
+        return false;
+    }
+
+    return true;
 }
 
 export default Utils;

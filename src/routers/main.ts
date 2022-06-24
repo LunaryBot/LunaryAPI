@@ -1,11 +1,13 @@
-import { Client, User } from 'eris';
-import { Router, Express, Request } from 'express';
-import { WebSocket, WebSocketServer } from 'ws';
-import Gateway from '../structures/Gateway';
+import { Client } from 'eris';
+import { Router } from 'express';
 
 import BaseRouter from '../structures/BaseRouter';
 import Databases from '../structures/Databases';
 import Server from '../structures/Server';
+
+import Utils from '../utils/Utils';
+
+import { IPunishmentLogsFilter } from '../@types';
 
 class MainRouter extends BaseRouter {
     constructor(data: { dbs: Databases; server: Server, client: Client }) {
@@ -19,6 +21,28 @@ class MainRouter extends BaseRouter {
 
         this.get('/', (req, res) => {
             res.status(200).send('Hello World!');
+        });
+
+        this.get('/punishments', async(req, res) => {
+            const logs = await this.dbs.getPunishmentLogs();
+
+            const filters = (req.query as any || {}) as IPunishmentLogsFilter;
+
+            if(filters.limit) {
+                filters.limit = Number(filters.limit);
+            }
+
+            if(filters.type) {
+                filters.type = Number(filters.type) ?? filters.type;
+            }
+
+            try {
+                const resolvedPunishmentLogs = await Utils.resolvePunishmentLogs(logs, filters);
+
+                res.status(200).json(resolvedPunishmentLogs);
+            } catch (err: any) {
+                console.log(err.message);
+            }
         });
     }
 }

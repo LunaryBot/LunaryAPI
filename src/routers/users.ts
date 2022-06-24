@@ -1,5 +1,4 @@
-import { Router, Express } from 'express';
-import { WebSocketServer } from 'ws';
+import { Router } from 'express';
 import { Client } from 'eris';
 import axios, { AxiosInstance } from 'axios';
 
