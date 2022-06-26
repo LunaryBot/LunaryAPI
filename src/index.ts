@@ -1,6 +1,14 @@
+import 'reflect-metadata';
+import 'dotenv/config';
+
+import { ApolloServer } from 'apollo-server-express';
+import { buildSchema } from 'type-graphql';
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+
 import express from 'express';
 import Databases from './structures/Databases';
 import { Client, User } from 'eris';
+import path from 'path';
 import Server from './structures/Server';
 
 import AuthRouter from './routers/auth';
@@ -9,7 +17,8 @@ import WebhooksRouter from './routers/webhooks';
 import UsersRouter from './routers/users';
 import MainRouter from './routers/main';
 
-import 'dotenv/config';
+import AuthResolver from './resolvers/AuthResolver';
+
 import { vCodesWrapper } from './votes/vCodes';
 
 const app = express();
@@ -57,3 +66,32 @@ server.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT} (http://localhost:${process.env.PORT})`);
     return client.connect().then(() => console.log('Discord bot running.'));
 });
+
+const httpServer = server;
+
+async function main() {
+    const schema = await buildSchema({
+        resolvers: [
+            AuthResolver,
+        ],
+        emitSchemaFile: path.resolve(process.cwd(), 'schema.graphql'),
+    });
+
+    const server = new ApolloServer({
+        schema,
+        csrfPrevention: true,
+        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+        formatError: ({ message = 'Internal Server Error'}) => ({ message }),
+    });
+
+    await server.start();
+
+    server.applyMiddleware({
+        app,
+        path: '/api',
+    });
+
+    console.log(`🚀 GarphQL Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`);
+}
+
+main();
