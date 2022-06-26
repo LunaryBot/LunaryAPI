@@ -3,8 +3,21 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type Guild {
+  access: Boolean
+  features: [String!]!
+  icon: String!
+  id: ID!
+  name: String!
+  owner: Boolean!
+  permissions: Float!
+  permissions_new: String!
+}
+
 type Query {
   Auth(token: String!): User!
+  CurrentUser(token: String!): User!
+  CurrentUserGuilds(token: String!): [Guild!]!
 }
 
 type User {

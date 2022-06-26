@@ -2,6 +2,8 @@ import { Field, ID, ObjectType } from 'type-graphql';
 
 import { IUser } from '../@types';
 
+const nullable = { nullable: true };
+
 @ObjectType()
 class User implements IUser {
     @Field(_type => ID)
@@ -10,37 +12,37 @@ class User implements IUser {
     @Field()
     username: string;
 
-    @Field()
+    @Field(nullable)
     accent_color?: number;
 
     @Field()
     avatar: string;
 
-    @Field()
+    @Field(nullable)
     banner?: string;
     
-    @Field()
+    @Field(nullable)
     banner_color?: string;
 
     @Field()
     discriminator: string;
 
-    @Field()
+    @Field(nullable)
     email?: string;
 
-    @Field()
+    @Field(nullable)
     flags?: number;
 
-    @Field()
+    @Field(nullable)
     locale?: string;
 
-    @Field()
+    @Field(nullable)
     mfa_enabled?: boolean;
 
     @Field()
     public_flags: number;
 
-    @Field()
+    @Field(nullable)
     verified?: boolean;
 }
 

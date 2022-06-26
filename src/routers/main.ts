@@ -19,10 +19,6 @@ class MainRouter extends BaseRouter {
             client: data.client
         });
 
-        this.get('/', (req, res) => {
-            res.status(200).send('Hello World!');
-        });
-
         this.get('/punishments', async(req, res) => {
             const logs = await this.dbs.getPunishmentLogs();
 

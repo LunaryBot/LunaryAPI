@@ -18,6 +18,7 @@ import UsersRouter from './routers/users';
 import MainRouter from './routers/main';
 
 import AuthResolver from './resolvers/AuthResolver';
+import UsersResolver from './resolvers/UsersResolver';
 
 import { vCodesWrapper } from './votes/vCodes';
 
@@ -73,6 +74,7 @@ async function main() {
     const schema = await buildSchema({
         resolvers: [
             AuthResolver,
+            UsersResolver,
         ],
         emitSchemaFile: path.resolve(process.cwd(), 'schema.graphql'),
     });
@@ -88,10 +90,10 @@ async function main() {
 
     server.applyMiddleware({
         app,
-        path: '/api',
+        path: '/',
     });
 
-    console.log(`🚀 GarphQL Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`);
+    console.log(`🚀 Apollo GraphQL Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`);
 }
 
 main();

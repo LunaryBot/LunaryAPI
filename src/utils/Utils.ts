@@ -3,6 +3,7 @@ import axios from 'axios';
 import { URLS } from './Constants';
 import jwt from 'jsonwebtoken';
 import { IGuild, IPunishmentLog, IPunishmentLogResolved, IUser, IPunishmentLogsFilter } from '../@types';
+import Guild from '../models/Guild';
 
 const punishmentsTypes: any = {
     ban: 1,
@@ -72,7 +73,7 @@ class Utils {
                 }
             }).catch(e => {}))?.data || [];
 
-            return { status: 200, guilds: data as IGuild[] };
+            return { status: 200, guilds: data as IGuild[]|Array<Guild> };
         } catch(e) {
             return { status: 401, message: 'Invalid token' }
         }
