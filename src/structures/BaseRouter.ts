@@ -3,10 +3,10 @@ import { Router, Express, Request } from 'express';
 import { WebSocket } from 'ws';
 import Databases from './Databases';
 import Gateway from './Gateway';
-import Server from './Server';
+import Apollo from './Apollo';
 
 class BaseRouter {
-    public server: Server;
+    public server: Apollo;
     public app: Express;
     public router: Router;
     public path: string;
@@ -15,7 +15,7 @@ class BaseRouter {
 
     public dbs: Databases;
     
-    constructor(data: { server: Server; router: Router; path: string; dbs: Databases; client: Client }) {
+    constructor(data: { server: Apollo; router: Router; path: string; dbs: Databases; client: Client }) {
         this.server = data.server;
         this.app = data.server.app;
         this.router = data.router;

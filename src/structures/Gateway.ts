@@ -1,9 +1,9 @@
 import { WebSocketServer, ServerOptions, RawData, WebSocket } from 'ws';
-import Server from './Server';
+import Apollo from './Apollo';
  
 class Gateway extends WebSocketServer {
-    public server: Server;
-    constructor(Server: Server, options: ServerOptions = {}) {
+    public server: Apollo;
+    constructor(Server: Apollo, options: ServerOptions = { server: Server.httpServer }) {
         super({ ...options });
 
         this.server = Server;

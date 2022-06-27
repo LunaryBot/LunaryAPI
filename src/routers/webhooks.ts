@@ -5,10 +5,10 @@ import Gateway from '../structures/Gateway';
 
 import BaseRouter from '../structures/BaseRouter';
 import Databases from '../structures/Databases';
-import Server from '../structures/Server';
+import Apollo from '../structures/Apollo';
 
 class WebhooksRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; server: Server, client: Client }) {
+    constructor(data: { dbs: Databases; server: Apollo, client: Client }) {
         super({
             server: data.server,
             router: Router(),

@@ -9,13 +9,13 @@ import Gateway from '../structures/Gateway';
 import Utils from '../utils/Utils';
 import * as GuildSettings from '../utils/GuildSettings';
 import { IGuild } from '../@types';
-import Server from '../structures/Server';
+import Apollo from '../structures/Apollo';
 
 class GuildsRouter extends BaseRouter {
     public botApi: AxiosInstance;
     public usersIdCache: Map<string, string>;
 
-    constructor(data: { dbs: Databases; server: Server, wss: Gateway, client: Client }) {
+    constructor(data: { dbs: Databases; server: Apollo, wss: Gateway, client: Client }) {
         super({
             server: data.server,
             router: Router(),

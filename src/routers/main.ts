@@ -3,14 +3,14 @@ import { Router } from 'express';
 
 import BaseRouter from '../structures/BaseRouter';
 import Databases from '../structures/Databases';
-import Server from '../structures/Server';
+import Apollo from '../structures/Apollo';
 
 import Utils from '../utils/Utils';
 
 import { IPunishmentLogsFilter } from '../@types';
 
 class MainRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; server: Server, client: Client }) {
+    constructor(data: { dbs: Databases; server: Apollo, client: Client }) {
         super({
             server: data.server,
             router: Router(),

@@ -8,11 +8,11 @@ import Databases from '../structures/Databases';
 import Utils from '../utils/Utils';
 import { IGuild } from '../@types';
 import Gateway from '../structures/Gateway';
-import Server from '../structures/Server';
+import Apollo from '../structures/Apollo';
 
 class UsersRouter extends BaseRouter {
     public botApi: AxiosInstance;
-    constructor(data: { dbs: Databases; server: Server, wss: Gateway, client: Client }) {
+    constructor(data: { dbs: Databases; server: Apollo, wss: Gateway, client: Client }) {
         super({
             server: data.server,
             router: Router(),

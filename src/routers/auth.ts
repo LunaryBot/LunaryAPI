@@ -8,10 +8,10 @@ import Databases from '../structures/Databases';
 import Utils from '../utils/Utils';
 import { URLS } from '../utils/Constants';
 import { Client } from 'eris';
-import Server from '../structures/Server';
+import Apollo from '../structures/Apollo';
 
 class AuthRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; server: Server, client: Client }) {
+    constructor(data: { dbs: Databases; server: Apollo, client: Client }) {
         super({
             server: data.server,
             router: Router(),
