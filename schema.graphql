@@ -33,10 +33,27 @@ type Guild {
   roles: [Role!]
 }
 
+type GuildResponse {
+  guild: Guild!
+  member: Member!
+  user: User!
+}
+
+type Member {
+  communicationDisabledUntil: Float
+  createdAt: Float!
+  id: ID!
+  nick: String
+  permissions: Float!
+  premiumSince: Float
+  roles: [String!]!
+}
+
 type Query {
   Auth(token: String!): User!
   CurrentUser(token: String!): User!
   CurrentUserGuilds(token: String!): [Guild!]!
+  Guild(id: String!, token: String!): GuildResponse!
 }
 
 type Role {

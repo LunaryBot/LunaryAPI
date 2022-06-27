@@ -55,11 +55,12 @@ class GuildsResolver {
         const { status = 500, data, statusText = 'Internal Server Error' } = (response || {}) as AxiosResponse;
 
         if(status != 200) {
-            throw new Error(`Error ${status} (${statusText})`);
+            throw new Error(`Error ${status} (${data?.message || statusText})`);
         }
 
         if(data?.guild && status == 200) {
             data.user = { ...data.member.user };
+            data.guild.access = true;
             delete data?.member?.user;
         }
 

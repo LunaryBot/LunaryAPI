@@ -19,6 +19,7 @@ import MainRouter from './routers/main';
 
 import AuthResolver from './resolvers/AuthResolver';
 import UsersResolver from './resolvers/UsersResolver';
+import GuildsResolver from './resolvers/GuildsResolver';
 
 import { vCodesWrapper } from './votes/vCodes';
 
@@ -75,6 +76,7 @@ async function main() {
         resolvers: [
             AuthResolver,
             UsersResolver,
+            GuildsResolver,
         ],
         emitSchemaFile: path.resolve(process.cwd(), 'schema.graphql'),
     });
