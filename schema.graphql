@@ -3,8 +3,26 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type Channel {
+  bitrate: Float
+  createdAt: Float!
+  id: ID!
+  lastMessageID: String!
+  lastPinTimestamp: Float
+  name: String!
+  nsfw: Boolean!
+  parentID: String!
+  position: Float!
+  rateLimitPerUser: Float!
+  rtcRegion: String
+  topic: String
+  type: Float!
+  userLimit: Float
+}
+
 type Guild {
   access: Boolean
+  channels: [Channel!]
   features: [String!]!
   icon: String!
   id: ID!
@@ -12,6 +30,7 @@ type Guild {
   owner: Boolean!
   permissions: Float!
   permissions_new: String!
+  roles: [Role!]
 }
 
 type Query {
@@ -20,18 +39,37 @@ type Query {
   CurrentUserGuilds(token: String!): [Guild!]!
 }
 
-type User {
-  accent_color: Float!
-  avatar: String!
-  banner: String!
-  banner_color: String!
-  discriminator: String!
-  email: String!
-  flags: Float!
+type Role {
+  color: Float!
+  createdAt: Float!
+  hoist: Boolean!
+  icon: String
   id: ID!
-  locale: String!
-  mfa_enabled: Boolean!
+  managed: Boolean!
+  mentionable: Boolean!
+  name: String!
+  permissions: RolePermissions!
+  position: Float!
+  unicodeEmoji: String
+}
+
+type RolePermissions {
+  allow: String!
+  deny: String!
+}
+
+type User {
+  accent_color: Float
+  avatar: String!
+  banner: String
+  banner_color: String
+  discriminator: String!
+  email: String
+  flags: Float
+  id: ID!
+  locale: String
+  mfa_enabled: Boolean
   public_flags: Float!
   username: String!
-  verified: Boolean!
+  verified: Boolean
 }

@@ -1,11 +1,17 @@
-interface IPunishmentLogsFilter {
-	authorId: string;
-	userId?: string;
-	guildId?: string;
-	afterTimestamp?: number;
-	beforeTimestamp?: number;
-	type?: string | number;
-	limit?: number;
+export interface IChannel {
+	id: string;
+	name: string;
+	type: number;
+	parentID: string;
+	nsfw: boolean;
+	position: number;
+	topic: string;
+	lastMessageID: string;
+	rateLimitPerUser: number;
+	createdAt: number;
+	userLimit: number;
+	rtcRegion: string;
+	bitrate: number;
 }
 
 export interface IGuild {
@@ -17,6 +23,18 @@ export interface IGuild {
 	features: string[];
 	permissions_new: string;
 	access?: boolean;
+	channels?: Array<IChannel>;
+	roles?: Array<IRole>;
+}
+
+export interface IMember {
+	id: string;
+	createdAt: number;
+	communicationDisabledUntil: number;
+	premiumSince: number;
+	nick: string;
+	roles: string[];
+	permissions: number;
 }
 
 export interface IPunishmentLog {
@@ -36,11 +54,35 @@ export interface IPunishmentLogResolved extends IPunishmentLog {
 	id: string;
 }
 
+export interface IPunishmentLogsFilter {
+	authorId: string;
+	userId?: string;
+	guildId?: string;
+	afterTimestamp?: number;
+	beforeTimestamp?: number;
+	type?: string | number;
+	limit?: number;
+}
+
+export interface IRole {
+	id: string;
+	name: string;
+	color: number;
+	hoist: boolean;
+	position: number;
+	permissions: object;
+	managed: boolean;
+	mentionable: boolean;
+	createdAt: number;
+	icon: string|null;
+	unicodeEmoji: string;
+}
+
 export interface IUser {
 	username: string;
 	id: string;
 	discriminator: string;
-	avatar: string|null;
+	avatar: string;
 	public_flags: number;
 	banner?: string;
 	banner_color?: string;
