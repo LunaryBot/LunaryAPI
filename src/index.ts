@@ -9,11 +9,11 @@ import { Client, User } from 'eris';
 import path from 'path';
 import Apollo from './structures/Apollo';
 
-import AuthRouter from './routers/auth';
-import GuildsRouter from './routers/guilds';
-import WebhooksRouter from './routers/webhooks';
-import UsersRouter from './routers/users';
-import MainRouter from './routers/main';
+import AuthRouter from './routers/AuthRouter';
+import GuildsRouter from './routers/GuildsRouter';
+import WebhooksRouter from './routers/WebhooksRouter';
+import UsersRouter from './routers/UsersRouter';
+import MainRouter from './routers/MainRouter';
 
 import AuthResolver from './resolvers/AuthResolver';
 import UsersResolver from './resolvers/UsersResolver';
