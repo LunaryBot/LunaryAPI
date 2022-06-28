@@ -49,11 +49,23 @@ type Member {
   roles: [String!]!
 }
 
+type Punishment {
+  author: User!
+  duration: Float
+  guild: Guild!
+  id: String!
+  reason: String
+  timestamp: Float!
+  type: Float!
+  user: User!
+}
+
 type Query {
   Auth(token: String!): User!
   CurrentUser(token: String!): User!
   CurrentUserGuilds(token: String!): [Guild!]!
   Guild(id: String!, token: String!): GuildResponse!
+  Punishments(afterTimestamp: Float, author: String, beforeTimestamp: Float, type: Float, user: String): [Punishment!]!
 }
 
 type Role {

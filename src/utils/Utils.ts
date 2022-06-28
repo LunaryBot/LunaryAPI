@@ -1,9 +1,14 @@
-import Databases from '../structures/Databases';
+import { gql } from 'graphql-request';
 import axios from 'axios';
-import { URLS } from './Constants';
 import jwt from 'jsonwebtoken';
-import { IGuild, IPunishmentLog, IPunishmentLogResolved, IUser, IPunishmentLogsFilter } from '../@types';
+
 import Guild from '../models/Guild';
+
+import { URLS } from './Constants';
+import client from './BotAPIClient';
+
+import { IGuild, IPunishmentLog, IPunishmentLogResolved, IUser, IPunishmentLogsFilter } from '../@types';
+import User from '../models/User';
 
 const punishmentsTypes: any = {
     ban: 1,
@@ -17,6 +22,23 @@ const punishmentsTypes: any = {
     warn: 4,
     w: 4,
 }
+
+const query = gql`
+    query UsersCache($users: [String!]!, $guilds: [String!]!) {
+        UsersCache(users: $users) {
+            username
+            id
+            avatar
+            discriminator
+        }
+        GuildsCache(guilds: $guilds) {
+            name
+            icon
+            features
+            id
+        }
+    }
+`
 
 interface IPunishmentLogPreResolved extends IPunishmentLog {
     id: string;
@@ -112,19 +134,16 @@ class Utils {
             !guilds.includes(log.guild) && guilds.push(log.guild);
         });
 
-        const resolvedUsers: Array<IUser> = await botApi.get('/users/cache', {
-            data: { users }
-        }).then(res => res.data);
-
-        const resolvedGuilds: Array<IGuild> = await botApi.get('/guilds/cache', {
-            data: { guilds }
-        }).then(res => res.data);
+        const resolved: { UsersCache: Array<User>; GuildsCache: Array<Guild> } = await client.request(query, { 
+            users,
+            guilds
+        });
         
         const resolvedPunishmentsLogs: Array<IPunishmentLogResolved> = punishmentsLogs.map(log => ({
             ...log,
-            user: resolvedUsers.find(user => user.id === log.user) as IUser,
-            author: resolvedUsers.find(user => user.id === log.author) as IUser,
-            guild: resolvedGuilds.find(guild => guild.id === log.guild) as IGuild,
+            user: resolved.UsersCache.find(user => user.id === log.user) as IUser,
+            author: resolved.UsersCache.find(user => user.id === log.author) as IUser,
+            guild: resolved.GuildsCache.find(guild => guild.id === log.guild) as IGuild,
         }));
 
         return resolvedPunishmentsLogs;

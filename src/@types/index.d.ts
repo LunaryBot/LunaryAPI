@@ -55,7 +55,7 @@ export interface IPunishmentLogResolved extends IPunishmentLog {
 }
 
 export interface IPunishmentLogsFilter {
-	authorId: string;
+	authorId?: string;
 	userId?: string;
 	guildId?: string;
 	afterTimestamp?: number;
