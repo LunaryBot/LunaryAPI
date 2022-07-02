@@ -21,6 +21,10 @@ class UsersResolver {
 
         const { status, ...data } = d;
 
+        if(status == 200) {
+            apollo.idsCache.set(token, data.id);
+        }
+
         return data;
     }
 

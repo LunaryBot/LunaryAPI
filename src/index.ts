@@ -2,11 +2,11 @@ import 'reflect-metadata';
 import 'dotenv/config';
 import './utils/Logger';
 
-import { buildSchema } from 'type-graphql';
+import { buildSchema, ResolverData } from 'type-graphql';
+import { gql } from 'graphql-request';
+import path from 'path';
 
 import Databases from './structures/Databases';
-import { Client, User } from 'eris';
-import path from 'path';
 import Apollo from './structures/Apollo';
 
 import AuthRouter from './routers/AuthRouter';
@@ -19,37 +19,20 @@ import AuthResolver from './resolvers/AuthResolver';
 import UsersResolver from './resolvers/UsersResolver';
 import GuildsResolver from './resolvers/GuildsResolver';
 import PunishmentsResolver from './resolvers/PunishmentsResolver';
+import { ExpressContext } from 'apollo-server-express';
 
-const client = new Client(process.env.DISCORD_BOT_TOKEN, {
-    messageLimit: 0,
-    autoreconnect: true,
-    intents: ['guilds', 'guildMessages', 'guildMembers', 'guildPresences' /**Caching only */],
-    getAllUsers: true,
-    ws: { skipUTF8Validations: true },
-    defaultImageFormat: 'png',
-    defaultImageSize: 2048,
-    disableEvents: { CHANNEL_PINS_UPDATE: true }
-});
+import { MyContext } from './@types/Server'
 
-client.presence = {
-    since: Date.now(),
-    afk: true,
-    status: 'dnd',
-    activities: [{ type: 3, name: 'Lunary API', created_at: Date.now() }]
-}
+import Utils from './utils/Utils';
+import client from './utils/BotAPIClient';
+import authChecker from './utils/AuthChecker';
+import ApiError from './utils/ApiError';
+
+import bot from './bot';
 
 const dbs = new Databases();
 
-client.on('messageCreate', async(message) => {
-    switch(message.webhookID) {
-        case '964351453667921971': {
-            const userId: any = message.embeds[0].footer?.text.split(' • ')[0];
-            await dbs.addVote(userId, 'bestlist');
-            const user: User = await (client.users.get(userId) || client.getRESTUser(userId));
-            return client.createMessage(process.env.VOTES_CHANNEL, `❤ **| Muito obrigada pelo seu voto** \`${user.username}#${user.discriminator}\`**!**`);
-        }
-    }
-});
+const errorRegex = /^(.*)\:\s?(\d*)(\:\s?.*)?$/;
 
 async function main() {
     const schema = await buildSchema({
@@ -60,19 +43,54 @@ async function main() {
             PunishmentsResolver,
         ],
         emitSchemaFile: path.resolve(process.cwd(), 'schema.graphql'),
+        authChecker,
     });
+
+    const usersIdCache = new Map<string, string>([['test', '588032504796282893']]);
 
     const server = new Apollo({
         schema,
         csrfPrevention: true,
-        formatError: ({ message = 'Internal Server Error'}) => ({ message }),
-    });
+        formatError: ({ message = 'Internal Server Error' }: ApiError) => {
+            const status = message.startsWith('Access denied') ? 403 : Number(message.replace(errorRegex, '$2'));
+            message = message.startsWith('Access denied') ? 'Missing Permissions' : message.replace(errorRegex, '$1');
+            
+            return ({ message, status });
+        },
+        context: async(context) => {
+            const myContext: MyContext = {
+                ...context,
+            };
+
+            const token = context.req.headers?.authorization;
+
+            if(token) {
+                if(usersIdCache.has(token)) {
+                    myContext.userId = usersIdCache.get(token) as string;
+                }
+                
+                const d = await Utils.login(token);
+        
+                const { status, ...data } = d;
+        
+                if(status == 200 && data?.id) {
+                    usersIdCache.set(token, data.id);
+    
+                    myContext.userId = data.id;
+                }
+            }
+
+            myContext.guildId = context.req.body?.variables?.guildId || undefined;
+            
+            return myContext;
+        },
+    }, usersIdCache);
 
     global.apollo = server;
     global.dbs = dbs;
     global.gateway = server.gateway;
 
-    ([AuthRouter, GuildsRouter, WebhooksRouter, UsersRouter, MainRouter]).map(router => new router({ server, dbs, client }));
+    ([AuthRouter, GuildsRouter, WebhooksRouter, UsersRouter, MainRouter]).map(router => new router({ server, dbs, client: bot }));
 
     server.init(Number(process.env.PORT));
 }

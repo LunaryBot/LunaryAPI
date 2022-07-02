@@ -6,6 +6,4 @@ const client = new GraphQLClient(process.env.BOT_API_URL, {
     },
 });
 
-console.dir(client, { depth: 0 });
-
 export default client;

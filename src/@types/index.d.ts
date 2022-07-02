@@ -1,3 +1,5 @@
+import { Constants } from 'eris';
+
 export interface IChannel {
 	id: string;
 	name: string;
@@ -36,6 +38,8 @@ export interface IMember {
 	roles: string[];
 	permissions: number;
 }
+
+export type TPermissions = keyof typeof Constants.Permissions;
 
 export interface IPunishmentLog {
 	timestamp: number;

@@ -9,22 +9,26 @@ class Apollo extends ApolloServer {
     public app: Express;
     public httpServer: http.Server;
     public gateway: Gateway;
+    public idsCache: Map<string, string>;
 
-    constructor(config: Config<ExpressContext>) {
+    
+    constructor(config: Config<ExpressContext>, idsCache = new Map<string, string>()) {
         super(config);
-
+        
         this.app = express();
         this.httpServer = http.createServer(this.app);
-
+        
         this.gateway = new Gateway(this);
-
+        
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(require('cors')());
-
+        
         this.httpServer.on('upgrade', this.handleUpgrade.bind(this));
-
+        
         this.plugins = [ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer })];
+        
+        this.idsCache = idsCache;
     }
 
     public async init(port?: number | undefined) {

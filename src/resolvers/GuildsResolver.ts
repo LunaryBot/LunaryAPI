@@ -1,11 +1,19 @@
-import { Resolver, Query, Arg } from 'type-graphql';
+import { Constants } from 'eris';
+import { Resolver, Query, Arg, Authorized, Ctx,  } from 'type-graphql';
+import { gql } from 'graphql-request';
 import axios, { AxiosResponse } from 'axios';
 
 import User from '../models/User';
 import Guild from '../models/Guild'
 
+import { MyContext } from '../@types/Server';
+
 import Utils from '../utils/Utils';
 import { GuildResponse } from '../models/Responses';
+import client from '../utils/BotAPIClient';
+import { IMember } from '../@types';
+
+const { Permissions } = Constants;
 
 const botApi = axios.create({
     baseURL: process.env.BOT_API_URL,
@@ -14,41 +22,24 @@ const botApi = axios.create({
     },
 });
 
+const memberQuery = gql`
+    query GuildMember($user: String!, $guild: String!) {
+        GuildMember(user: $user, guild: $guild) {
+            permissions
+            roles
+        }
+    }
+`
+
 @Resolver()
 class GuildsResolver {
-    private usersIdCache = new Map<string, string>();
-
-    private async userID(token: string) {
-        if(!token) {
-            throw new Error('No token provided');
-        }
-
-        if(this.usersIdCache.has(token)) {
-            return this.usersIdCache.get(token);
-        }
-
-        console.log('Fetching user...');
-        
-        const d = await Utils.login(token);
-
-        const { status, ...data } = d;
-
-        if(status !== 200) {
-            throw new Error(data.message);
-        }
-
-        this.usersIdCache.set(token, data.id);
-
-        return data.id;
-    }
-
+    
+    @Authorized(Permissions.administrator)
     @Query(() => GuildResponse)
-    async Guild( @Arg('id') id: string, @Arg('token') token: string ) {
-        const userID = await this.userID(token);
-
+    async Guild( @Arg('id') id: string, @Arg('token') token: string, @Ctx() context: MyContext ) {
         const response = await botApi.get(`/guilds/${id}`, {
             headers: {
-                RequesterId: userID,
+                RequesterId: context.userId as string,
             }
         }).catch(e => e.response as AxiosResponse);
 
@@ -67,6 +58,15 @@ class GuildsResolver {
         const { user, guild, member } = data;
 
         return { user, guild, member };
+    }
+
+    static async getMember(guildID: string, userID: string): Promise<IMember> {
+        const response = await client.request(memberQuery, {
+            guild: guildID,
+            user: userID,
+        });
+
+        return response?.GuildMember;
     }
 }
 
