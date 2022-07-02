@@ -39,6 +39,18 @@ type GuildResponse {
   user: User!
 }
 
+type GuildSettings {
+  configs: Float
+  permissions: [Permissions!]
+  punishment_channel: String
+}
+
+input GuildSettingsInput {
+  configs: Float
+  permissions: [PermissionsInput!]
+  punishment_channel: String
+}
+
 type Member {
   communicationDisabledUntil: Float
   createdAt: Float!
@@ -47,6 +59,20 @@ type Member {
   permissions: Float!
   premiumSince: Float
   roles: [String!]!
+}
+
+type Mutation {
+  ModifyGuild(data: GuildSettingsInput!, id: String!): GuildSettings!
+}
+
+type Permissions {
+  permissions: Float!
+  roleID: String!
+}
+
+input PermissionsInput {
+  permissions: Float!
+  roleID: String!
 }
 
 type Punishment {

@@ -1,17 +1,20 @@
 import { Constants } from 'eris';
-import { Resolver, Query, Arg, Authorized, Ctx,  } from 'type-graphql';
+import { Resolver, Query, Arg, Authorized, Ctx, Mutation, Args,  } from 'type-graphql';
 import { gql } from 'graphql-request';
 import axios, { AxiosResponse } from 'axios';
 
 import User from '../models/User';
 import Guild from '../models/Guild'
+import { GuildResponse } from '../models/Responses';
 
 import { MyContext } from '../@types/Server';
+import { IMember } from '../@types';
 
 import Utils from '../utils/Utils';
-import { GuildResponse } from '../models/Responses';
 import client from '../utils/BotAPIClient';
-import { IMember } from '../@types';
+import { Schema } from '../utils/GuildSettings';
+import ApiError from '../utils/ApiError';
+import GuildSettings, { GuildSettingsInput } from '../models/GuildSettings';
 
 const { Permissions } = Constants;
 
@@ -33,7 +36,7 @@ const memberQuery = gql`
 
 @Resolver()
 class GuildsResolver {
-    
+
     @Authorized(Permissions.administrator)
     @Query(() => GuildResponse)
     async Guild( @Arg('id') id: string, @Arg('token') token: string, @Ctx() context: MyContext ) {
@@ -58,6 +61,35 @@ class GuildsResolver {
         const { user, guild, member } = data;
 
         return { user, guild, member };
+    }
+
+    @Authorized(Permissions.administrator)
+    @Mutation(() => GuildSettings)
+    async ModifyGuild( @Arg('id') id: string, @Arg('data') data: GuildSettingsInput, @Ctx() context: MyContext ) {
+        const dbData = await dbs.getGuild(context.guildId as string);
+
+        let newdbData: any = {};
+
+        Object.entries(data || {}).forEach(([key, value]: [string, any]) => {
+            const fn = Schema[key as keyof typeof Schema];
+
+            if(fn) {
+                // @ts-ignore
+                const _value = fn(value, dbData);
+
+                if(_value) newdbData[key] = _value;
+            }
+        });
+
+        if(!Object.keys(newdbData).length) {
+            throw new ApiError('No valid settings data.', 403)
+        }
+
+        newdbData = Object.assign(dbData, newdbData);
+
+        await dbs.setGuild(context.guildId as string, newdbData);
+
+        return newdbData;
     }
 
     static async getMember(guildID: string, userID: string): Promise<IMember> {

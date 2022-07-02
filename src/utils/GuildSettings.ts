@@ -7,29 +7,27 @@ type TGuildConfigsFLAGS =
 type TGuildConfigsBit = number | TGuildConfigsFLAGS | Array<TGuildConfigsFLAGS|number|BitField> | BitField;
 
 export const Schema = {
-    moderation: {
-        punishment_channel: (value: string) => {
-            if(!value || typeof value !== 'string' || !Number(value)) return false;
-            return value;
-        },
-        configs: (value: number|Configs) => {
-            if(value instanceof Configs) return value.bitfield;
-            if(typeof value !== 'number' && isNaN(value)) return false;
-            return Number(value);
-        },
+    punishment_channel: (value: string) => {
+        if(!value || typeof value !== 'string' || !Number(value)) return false;
+        return value;
     },
-    permissions: (data: { [id: string]: number }, db: any) => {
+    configs: (value: number|Configs) => {
+        if(value instanceof Configs) return value.bitfield;
+        if(typeof value !== 'number' && isNaN(value)) return false;
+        return Number(value);
+    },
+    permissions: (data: Array<{ roleID: string, permissions: number }>, db: any) => {
         if(!data || typeof data !== 'object') return false;
 
         const permissions: { [id: string]: number } = db?.permissions || {};
 
-        for(const id in data) {
-            if(Number(id) && typeof data[id] == 'number' && !isNaN(data[id])) {
-                permissions[id] = Number(data[id]);
-            };
-        };
+        for(const role of data) {
+            if(Number(role.permissions) && typeof role.permissions == 'number' && !isNaN(role.permissions)) {
+                permissions[role.roleID] = Number(role.permissions);
+            }
+        }
 
-        return { permissions };
+        return { ...permissions };
     },
 }
 

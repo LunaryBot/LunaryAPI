@@ -34,7 +34,7 @@ class GuildsRouter extends BaseRouter {
         this.usersIdCache = new Map();
 
         this.use(async (req, res, next) => {
-            const token = req.headers.authorization;
+            const token = req.headers.authorization as string;
             
             if(!token) {
                 return res.status(401).send({
@@ -120,24 +120,6 @@ class GuildsRouter extends BaseRouter {
             const dbData = await this.dbs.getGuild(req.params.guildID);
 
             let newdbData: any = {};
-
-            const SubSchema: any = GuildSettings.Schema[type as 'moderation' | 'permissions'];
-
-            if(typeof SubSchema == 'object') {
-                Object.entries(data || {}).forEach(([key, value]: [string, any]) => {
-                    const fn = SubSchema[key];
-
-                    if(fn) {
-                        const _value = fn(value);
-
-                        if(_value) newdbData[key] = _value;
-                    }
-                });
-            } else if(typeof SubSchema == 'function') {
-                const _value = SubSchema(data, dbData);
-
-                if(_value) newdbData = _value;
-            }
 
             if(!Object.keys(newdbData).length) {
                 return res.status(304).json({
