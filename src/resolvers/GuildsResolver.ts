@@ -49,7 +49,7 @@ class GuildsResolver {
         const { status = 500, data, statusText = 'Internal Server Error' } = (response || {}) as AxiosResponse;
 
         if(status != 200) {
-            throw new Error(`Error ${status} (${data?.message || statusText})`);
+            throw new ApiError(data?.message || statusText, status);
         }
 
         if(data?.guild && status == 200) {

@@ -102,13 +102,6 @@ class Utils {
     }
 
     static async resolvePunishmentLogs(logs: { [id: string ]: IPunishmentLog }, filters?: IPunishmentLogsFilter) {
-        const botApi = axios.create({
-            baseURL: process.env.BOT_API_URL,
-            headers: {
-                Authorization: `${process.env.BOT_API_TOKEN}`,
-            },
-        });
-
         const users: Array<string> = [];
         const guilds: Array<string> = [];
 

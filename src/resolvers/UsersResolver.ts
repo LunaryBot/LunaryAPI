@@ -5,6 +5,7 @@ import User from '../models/User';
 import Guild from '../models/Guild'
 
 import Utils from '../utils/Utils';
+import ApiError from '../utils/ApiError';
 
 const botApi = axios.create({
     baseURL: process.env.BOT_API_URL,
@@ -23,6 +24,8 @@ class UsersResolver {
 
         if(status == 200) {
             apollo.idsCache.set(token, data.id);
+        } else {
+            throw new ApiError(data?.message as string, status);
         }
 
         return data;
@@ -33,6 +36,10 @@ class UsersResolver {
         const d = await Utils.getUserGuilds(token);
 
         const { status, ...data } = d;
+
+        if(status != 200) {
+            throw new ApiError(data?.message as string, status);
+        }
 
         if(Array.isArray(data?.guilds)) {
             const filteredGuilds = await filterGuilds((data.guilds as Array<Guild>).filter(guild => guild.owner === true || (guild.permissions & 8) === 8).map(guild => guild.id));
