@@ -2,54 +2,13 @@ import { Field, ID, ObjectType, UseMiddleware } from 'type-graphql';
 
 import DefaultValue from '../utils/DefaultValue';
 
-import { IChannel, IGuild, IMember, IRole } from '../@types';
+import Role from './Role';
+import Member from './Member';
+import Channel from './Channel';
+
+import { IGuild } from '../@types';
 
 const nullable = { nullable: true };
-
-@ObjectType()
-class Channel implements IChannel {
-    @Field(_type => ID,)
-    id: string;
-   
-    @Field()
-    type: number;
-
-    @Field()
-    createdAt: number;
-   
-    @Field()
-    name: string;
-   
-    @Field()
-    nsfw: boolean;
-   
-    @Field()
-    parentID: string;
-   
-    @Field()
-    position: number;
-   
-    @Field()
-    lastMessageID: string;
-   
-    @Field(nullable)
-    lastPinTimestamp: number;
-   
-    @Field()
-    rateLimitPerUser: number;
-   
-    @Field(nullable)
-    topic: string;
-
-    @Field(nullable)
-    bitrate: number;
-
-    @Field(nullable)
-    rtcRegion: string;
-
-    @Field(nullable)
-    userLimit: number;
-}
 
 @ObjectType()
 class Guild implements IGuild {
@@ -88,74 +47,26 @@ class Guild implements IGuild {
 }
 
 @ObjectType()
-class Member implements IMember {
-    @Field(_type => ID)
-    id: string;
+class GuildSettings {
+    @Field(nullable)
+    punishment_channel: string;
 
     @Field(nullable)
-    nick: string;
+    configs: number;
 
-    @Field(nullable)
-    communicationDisabledUntil: number;
-    
+    @Field(_type => [GuildRolePermissions], nullable)
+    permissions: Array<GuildRolePermissions>;
+}
+
+@ObjectType()
+class GuildRolePermissions {
     @Field()
-    createdAt: number;
-
-    @Field(nullable)
-    premiumSince: number;
+    roleID: string;
 
     @Field()
     permissions: number;
-
-    @Field(() => [String])
-    roles: Array<string>;
-}
-
-@ObjectType()
-class RolePermissions {
-    @Field()
-    allow: string;
-
-    @Field()
-    deny: string;
-}
-
-@ObjectType()
-class Role implements IRole {
-    @Field(_type => ID,)
-    id: string;
-
-    @Field()
-    createdAt: number;
-   
-    @Field()
-    name: string;
-
-    @Field()
-    color: number;
-
-    @Field()
-    hoist: boolean;
-
-    @Field(nullable)
-    icon: string;
-
-    @Field()
-    managed: boolean;
-
-    @Field()
-    mentionable: boolean;
-
-    @Field(() => RolePermissions)
-    permissions: RolePermissions;
-
-    @Field()
-    position: number;
-
-    @Field(nullable)
-    unicodeEmoji: string;
 }
 
 export default Guild;
 
-export { Channel, Member, Role }
+export { GuildSettings }

@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 
-import Guild, { Member } from './Guild';
+import Guild from './Guild';
+import Member from './Member';
 import User from './User';
 
 @ObjectType()

@@ -4,8 +4,9 @@ import { gql } from 'graphql-request';
 import axios, { AxiosResponse } from 'axios';
 
 import User from '../models/User';
-import Guild from '../models/Guild'
+import { GuildSettings } from '../models/Guild'
 import { GuildResponse } from '../models/Responses';
+import { GuildSettingsInput } from '../models/Inputs';
 
 import { MyContext } from '../@types/Server';
 import { IMember } from '../@types';
@@ -14,7 +15,6 @@ import Utils from '../utils/Utils';
 import client from '../utils/BotAPIClient';
 import { Schema } from '../utils/GuildSettings';
 import ApiError from '../utils/ApiError';
-import GuildSettings, { GuildSettingsInput } from '../models/GuildSettings';
 
 const { Permissions } = Constants;
 
