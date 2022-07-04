@@ -39,7 +39,7 @@ class GuildsResolver {
 
     @Authorized(Permissions.administrator)
     @Query(() => GuildResponse)
-    async Guild( @Arg('id') id: string, @Arg('token') token: string, @Ctx() context: MyContext ) {
+    async Guild( @Arg('id') id: string, @Ctx() context: MyContext ) {
         const response = await botApi.get(`/guilds/${id}`, {
             headers: {
                 RequesterId: context.userId as string,
