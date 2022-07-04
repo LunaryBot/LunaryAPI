@@ -20,6 +20,7 @@ module 'http' {
 }
 
 export interface MyContext extends ExpressContext {
+    token?: string;
     userId?: string;
     guildId?: string;
 }

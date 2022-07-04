@@ -65,6 +65,7 @@ async function main() {
             const token = context.req.headers?.authorization;
 
             if(token) {
+                myContext.token = token;
                 if(usersIdCache.has(token)) {
                     myContext.userId = usersIdCache.get(token) as string;
                 }

@@ -10,17 +10,21 @@ export default async function authChecker({ context }: ResolverData<MyContext>, 
 
     if(!userId) throw new ApiError('No token provided', 401);
 
-    if(userId && guildId) {
-        const member = await GuildsResolver.getMember(guildId, userId);
-        
-        if(!member) {
-            return false;
-        }
+    if(permissions) {
+        if(permissions.length > 0) {
+            if(!guildId) return false;
 
-        const permissionsResolved = permissions.reduce((a, b) => a | b, BigInt(0));
-
-        return (BigInt(member.permissions) & permissionsResolved) === permissionsResolved;
-    };
+            const member = await GuildsResolver.getMember(guildId, userId);
+            
+            if(!member) {
+                return false;
+            }
+    
+            const permissionsResolved = permissions.reduce((a, b) => a | b, BigInt(0));
+    
+            return (BigInt(member.permissions) & permissionsResolved) === permissionsResolved;
+        } else return true;
+    }
 
     return true;
 }
