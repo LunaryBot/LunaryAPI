@@ -1,4 +1,4 @@
-import { Resolver, Query, Arg } from 'type-graphql';
+import { Resolver, Query, Arg, Ctx, Authorized } from 'type-graphql';
 import axios from 'axios';
 
 import User from '../models/User';
@@ -6,6 +6,8 @@ import Guild from '../models/Guild'
 
 import Utils from '../utils/Utils';
 import ApiError from '../utils/ApiError';
+
+import { MyContext } from '../@types/Server';
 
 const botApi = axios.create({
     baseURL: process.env.BOT_API_URL,
@@ -16,8 +18,12 @@ const botApi = axios.create({
 
 @Resolver()
 class UsersResolver {
+
+    @Authorized()
     @Query(() => User)
-    async CurrentUser( @Arg('token') token: string ) {
+    async CurrentUser( @Ctx() context: MyContext ) {
+        const token = context.token as string;
+
         const d = await Utils.login(token);
 
         const { status, ...data } = d;
@@ -31,8 +37,11 @@ class UsersResolver {
         return data;
     }
 
+    @Authorized()
     @Query(() => [Guild])
-    async CurrentUserGuilds( @Arg('token') token: string ) {
+    async CurrentUserGuilds( @Ctx() context: MyContext ) {
+        const token = context.token as string;
+
         const d = await Utils.getUserGuilds(token);
 
         const { status, ...data } = d;
