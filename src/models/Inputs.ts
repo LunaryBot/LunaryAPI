@@ -1,4 +1,5 @@
-import { Field, ObjectType, InputType } from 'type-graphql';
+import { Field, InputType } from 'type-graphql';
+import { MaxLength } from 'class-validator';
 
 const nullable = { nullable: true };
 
@@ -23,4 +24,11 @@ class GuildRolePermissionsInput {
     permissions: number;
 }
 
-export { GuildSettingsInput, GuildRolePermissionsInput }
+@InputType()
+class PunishmentModifyInput {
+    @Field()
+    @MaxLength(512)
+    reason: string;
+}
+
+export { GuildSettingsInput, GuildRolePermissionsInput, PunishmentModifyInput }

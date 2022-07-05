@@ -73,6 +73,7 @@ type Member {
 
 type Mutation {
   ModifyGuild(data: GuildSettingsInput!, id: String!): GuildSettings!
+  Punishment(data: PunishmentModifyInput!, id: String!): Punishment!
 }
 
 type Punishment {
@@ -86,11 +87,16 @@ type Punishment {
   user: User!
 }
 
+input PunishmentModifyInput {
+  reason: String!
+}
+
 type Query {
   Auth(token: String!): User!
-  CurrentUser(token: String!): User!
-  CurrentUserGuilds(token: String!): [Guild!]!
-  Guild(id: String!, token: String!): GuildResponse!
+  CurrentUser: User!
+  CurrentUserGuilds: [Guild!]!
+  Guild(id: String!): GuildResponse!
+  Punishment(id: String!): Punishment!
   Punishments(afterTimestamp: Float, author: String, beforeTimestamp: Float, type: Float, user: String): [Punishment!]!
 }
 

@@ -3,7 +3,7 @@ import { Field, ID, ObjectType } from 'type-graphql';
 import User from './User';
 import Guild from './Guild';
 
-import { IPunishmentLogResolved, IPunishmentLogsFilter } from '../@types';
+import { IPunishmentLog, IPunishmentLogResolved, IPunishmentLogsFilter } from '../@types';
 
 const nullable = { nullable: true };
 
@@ -35,6 +35,33 @@ class Punishment implements IPunishmentLogResolved {
 }
 
 @ObjectType()
+class PunishmentData implements IPunishmentLog {
+    @Field()
+    type: 1 | 2 | 3 | 4;
+
+    @Field(nullable)
+    duration?: number;
+
+    @Field()
+    id: string;
+
+    @Field(nullable)
+    reason?: string;
+
+    @Field()
+    timestamp: number;
+
+    @Field()
+    user: string;
+
+    @Field()
+    author: string;
+
+    @Field()
+    guild: string;
+}
+
+@ObjectType()
 class PunishmentsFilter implements IPunishmentLogsFilter {
     @Field(nullable)
     type: 1 | 2 | 3 | 4;
@@ -60,4 +87,4 @@ class PunishmentsFilter implements IPunishmentLogsFilter {
 
 export default Punishment;
 
-export { PunishmentsFilter };
+export { PunishmentsFilter, PunishmentData };

@@ -59,6 +59,26 @@ class Databases {
         return data;
     }
 
+    async getPunishmentLog(id: string): Promise<IPunishmentLog> {
+        // @ts-ignore
+        if(!id || id == 'cases') return null;
+
+        id = id.replace(/#?([A-Z](\d{6}))/i, '$1').toUpperCase();
+        
+        const data = (await this.logs.ref(id).once('value')).val() as IPunishmentLog;
+
+        return data || null;
+    }
+
+    async setPunishmentLog(id: string, data: IPunishmentLog) {
+        // @ts-ignore
+        if(!id || id == 'cases') return null;
+
+        id = id.replace(/#?([A-Z](\d{6}))/i, '$1').toUpperCase();
+
+        await this.logs.ref(id).update(data);
+    }
+
     static getData(key: string) {
         return Object.fromEntries(
             Object.entries(process.env)
