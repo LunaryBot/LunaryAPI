@@ -1,18 +1,19 @@
-import { Resolver, Query, Arg, FieldResolver, Mutation } from 'type-graphql';
-import axios, { AxiosResponse } from 'axios';
+import { Constants } from 'eris';
+import { Resolver, Query, Arg, Mutation, ResolverData, Ctx } from 'type-graphql';
 
-import User from '../models/User';
-import Guild from '../models/Guild'
-import { GuildResponse } from '../models/Responses';
-import Punishment, { PunishmentData } from '../models/Punishment';
+import Punishment from '../models/Punishment';
 import { PunishmentModifyInput } from '../models/Inputs'
 
 import Utils from '../utils/Utils';
 import ApiError from '../utils/ApiError';
 
 import { IPunishmentLog, IPunishmentLogsFilter } from '../@types';
+import authChecker from '../utils/AuthChecker';
+import { MyContext } from '../@types/Server';
 
 const nullable = { nullable: true };
+
+const { Permissions } = Constants;
 
 @Resolver()
 class PunishmentsResolver {
@@ -24,7 +25,7 @@ class PunishmentsResolver {
         @Arg('afterTimestamp', nullable) afterTimestamp: number,
         @Arg('beforeTimestamp', nullable) beforeTimestamp: number,
     ) {
-        const logs = await dbs.getPunishmentLogs();
+        const logs = await global.dbs.getPunishmentLogs()
 
         const filters: IPunishmentLogsFilter = { userId, authorId, type, afterTimestamp, beforeTimestamp };
 
@@ -65,12 +66,12 @@ class PunishmentsResolver {
     }
     
     @Mutation(() => Punishment)
-    async PunishmentModify( @Arg('id') punishmentId: string, @Arg('data') data: PunishmentModifyInput ) {
+    async PunishmentModify( @Arg('id') punishmentId: string, @Arg('data') data: PunishmentModifyInput, @Ctx() context: MyContext ) {
         punishmentId = punishmentId.replace(/#?([A-Z](\d{6}))/i, '$1').toUpperCase();
         
         const log = await dbs.getPunishmentLog(punishmentId);
 
-        if(!log) throw new ApiError('Unknown Punishment', 404);
+        await PunishmentsResolver.verifyGuildPermissions(log, context);
 
         if(log.type !== 4) throw new ApiError(`Editing for this type (${log.type}) of punishment is not supported`, 415);
         
@@ -89,12 +90,12 @@ class PunishmentsResolver {
     }
 
     @Mutation(() => Punishment)
-    async PunishmentDelete( @Arg('id') punishmentId: string ) {
+    async PunishmentDelete( @Arg('id') punishmentId: string, @Ctx() context: MyContext ) {
         punishmentId = punishmentId.replace(/#?([A-Z](\d{6}))/i, '$1').toUpperCase();
         
         const log = await dbs.getPunishmentLog(punishmentId);
 
-        if(!log) throw new ApiError('Unknown Punishment', 404);
+        await PunishmentsResolver.verifyGuildPermissions(log, context);
 
         try {
             dbs.deletePunishmentLog(punishmentId);
@@ -106,6 +107,14 @@ class PunishmentsResolver {
             console.log(err.message);
             throw new ApiError('Internal Server Error', 500);
         }
+    }
+
+    static async verifyGuildPermissions(log: IPunishmentLog, context: MyContext): Promise<boolean> {
+        if(log) {
+            const { guild: guildId } = log || {};
+
+            return authChecker({ context: { ...context, guildId } } as any, [Permissions.administrator])
+        } else throw new ApiError('Unknown Punishment', 404);
     }
 }
 
