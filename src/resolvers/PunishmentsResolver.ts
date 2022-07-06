@@ -48,11 +48,11 @@ class PunishmentsResolver {
 
     @Query(() => Punishment)
     async Punishment( @Arg('id') punishmentId: string ) {
+        punishmentId = punishmentId.replace(/#?([A-Z](\d{6}))/i, '$1').toUpperCase();
+
         const log = await dbs.getPunishmentLog(punishmentId);
 
         if(!log) throw new ApiError('Unknown Punishment', 404);
-
-        punishmentId = punishmentId.replace(/#?([A-Z](\d{6}))/i, '$1').toUpperCase();
 
         try {
             const resolvedPunishmentLogs = await Utils.resolvePunishmentLogs({ [punishmentId]: log });
@@ -64,7 +64,7 @@ class PunishmentsResolver {
         }
     }
     
-    @Mutation(() => Punishment, { name: 'Punishment' })
+    @Mutation(() => Punishment)
     async PunishmentModify( @Arg('id') punishmentId: string, @Arg('data') data: PunishmentModifyInput ) {
         punishmentId = punishmentId.replace(/#?([A-Z](\d{6}))/i, '$1').toUpperCase();
         
@@ -78,6 +78,26 @@ class PunishmentsResolver {
 
         try {
             dbs.setPunishmentLog(punishmentId, { reason: data.reason } as IPunishmentLog);
+
+            const resolvedPunishmentLogs = await Utils.resolvePunishmentLogs({ [punishmentId]: log });
+
+            return resolvedPunishmentLogs[0];
+        } catch (err: any) {
+            console.log(err.message);
+            throw new ApiError('Internal Server Error', 500);
+        }
+    }
+
+    @Mutation(() => Punishment)
+    async PunishmentDelete( @Arg('id') punishmentId: string ) {
+        punishmentId = punishmentId.replace(/#?([A-Z](\d{6}))/i, '$1').toUpperCase();
+        
+        const log = await dbs.getPunishmentLog(punishmentId);
+
+        if(!log) throw new ApiError('Unknown Punishment', 404);
+
+        try {
+            dbs.deletePunishmentLog(punishmentId);
 
             const resolvedPunishmentLogs = await Utils.resolvePunishmentLogs({ [punishmentId]: log });
 

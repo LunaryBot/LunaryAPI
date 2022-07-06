@@ -73,7 +73,8 @@ type Member {
 
 type Mutation {
   ModifyGuild(data: GuildSettingsInput!, id: String!): GuildSettings!
-  Punishment(data: PunishmentModifyInput!, id: String!): Punishment!
+  PunishmentDelete(id: String!): Punishment!
+  PunishmentModify(data: PunishmentModifyInput!, id: String!): Punishment!
 }
 
 type Punishment {

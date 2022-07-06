@@ -79,6 +79,15 @@ class Databases {
         await this.logs.ref(id).update(data);
     }
 
+    async deletePunishmentLog(id: string) {
+        // @ts-ignore
+        if(!id || id == 'cases') return null;
+
+        id = id.replace(/#?([A-Z](\d{6}))/i, '$1').toUpperCase();
+
+        await this.logs.ref(id).remove();
+    }
+
     static getData(key: string) {
         return Object.fromEntries(
             Object.entries(process.env)
