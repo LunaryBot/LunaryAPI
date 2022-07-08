@@ -10,37 +10,37 @@ import Utils from '../utils/Utils';
 import { IPunishmentLogsFilter } from '../@types';
 
 class MainRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; server: Apollo, client: Client }) {
-        super({
-            server: data.server,
-            router: Router(),
-            dbs: data.dbs,
-            path: '/',
-            client: data.client
-        });
+	constructor(data: { dbs: Databases; server: Apollo, client: Client }) {
+		super({
+			server: data.server,
+			router: Router(),
+			dbs: data.dbs,
+			path: '/',
+			client: data.client
+		});
 
-        this.get('/punishments', async(req, res) => {
-            const logs = await this.dbs.getPunishmentLogs();
+		this.get('/punishments', async(req, res) => {
+			const logs = await this.dbs.getPunishmentLogs();
 
-            const filters = (req.query as any || {}) as IPunishmentLogsFilter;
+			const filters = (req.query as any || {}) as IPunishmentLogsFilter;
 
-            if(filters.limit) {
-                filters.limit = Number(filters.limit);
-            }
+			if(filters.limit) {
+				filters.limit = Number(filters.limit);
+			}
 
-            if(filters.type) {
-                filters.type = Number(filters.type) ?? filters.type;
-            }
+			if(filters.type) {
+				filters.type = Number(filters.type) ?? filters.type;
+			}
 
-            try {
-                const resolvedPunishmentLogs = await Utils.resolvePunishmentLogs(logs, filters);
+			try {
+				const resolvedPunishmentLogs = await Utils.resolvePunishmentLogs(logs, filters);
 
-                res.status(200).json(resolvedPunishmentLogs);
-            } catch (err: any) {
-                console.log(err.message);
-            }
-        });
-    }
+				res.status(200).json(resolvedPunishmentLogs);
+			} catch (err: any) {
+				console.log(err.message);
+			}
+		});
+	}
 }
 
 export default MainRouter;

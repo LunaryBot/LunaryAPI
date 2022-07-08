@@ -11,64 +11,64 @@ import { Client } from 'eris';
 import Apollo from '../structures/Apollo';
 
 class AuthRouter extends BaseRouter {
-    constructor(data: { dbs: Databases; server: Apollo, client: Client }) {
-        super({
-            server: data.server,
-            router: Router(),
-            dbs: data.dbs,
-            path: '/auth',
-            client: data.client
-        });
+	constructor(data: { dbs: Databases; server: Apollo, client: Client }) {
+		super({
+			server: data.server,
+			router: Router(),
+			dbs: data.dbs,
+			path: '/auth',
+			client: data.client
+		});
 
-        this.get('/callback', async(req, res) => {
-            const { code, error } = req.query;
+		this.get('/callback', async(req, res) => {
+			const { code, error } = req.query;
 
-            if(!code) {
-                if(error) {
-                    if(error === 'access_denied') return res.redirect(process.env.WEBSITE_URL);
-                }
+			if(!code) {
+				if(error) {
+					if(error === 'access_denied') return res.redirect(process.env.WEBSITE_URL);
+				}
 
-                return res.status(401).json({ message: 'No code provided' });
-            }
+				return res.status(401).json({ message: 'No code provided' });
+			}
 
-            const body = new URLSearchParams();
+			const body = new URLSearchParams();
             
-            body.append('client_id', process.env.DISCORD_CLIENT_ID);
-            body.append('client_secret', process.env.DISCORD_CLIENT_SECRET);
-            body.append('grant_type', 'authorization_code');
-            body.append('redirect_uri', `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}`);
-            body.append('scope', 'identify guilds');
-            body.append('code', code as string);
+			body.append('client_id', process.env.DISCORD_CLIENT_ID);
+			body.append('client_secret', process.env.DISCORD_CLIENT_SECRET);
+			body.append('grant_type', 'authorization_code');
+			body.append('redirect_uri', `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}`);
+			body.append('scope', 'identify guilds');
+			body.append('code', code as string);
 
-            const data = (await axios.post(URLS.TOKEN, body.toString(), {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            }).catch(e => {}))?.data || {};
+			const data = (await axios.post(URLS.TOKEN, body.toString(), {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			}).catch(e => {}))?.data || {};
 
-            if(!data.access_token) return res.status(498).json({ message: 'No access token provided' });
+			if(!data.access_token) return res.status(498).json({ message: 'No access token provided' });
 
-            const token = await jwt.sign({ 
-                access_token: data.access_token, 
-                refresh_token: data.refresh_token,
-                expires_in: Date.now() + (data.expires_in * 1000)
-            }, process.env.JWT_SECRET);
+			const token = await jwt.sign({ 
+				access_token: data.access_token, 
+				refresh_token: data.refresh_token,
+				expires_in: Date.now() + (data.expires_in * 1000)
+			}, process.env.JWT_SECRET);
 
-            res.redirect(`${process.env.WEBSITE_URL}/auth/callback?token=${token}${(req.query.state ? `&state=${req.query.state}` : '')}`);
-        });
+			res.redirect(`${process.env.WEBSITE_URL}/auth/callback?token=${token}${(req.query.state ? `&state=${req.query.state}` : '')}`);
+		});
 
-        this.get('/', async(req, res) => {
-            const { token } = req.query as { token: string };
+		this.get('/', async(req, res) => {
+			const { token } = req.query as { token: string };
             
-            if(!token) return res.status(401).json({ message: 'No token provided' });
+			if(!token) return res.status(401).json({ message: 'No token provided' });
 
-            const d = await Utils.login(token);
+			const d = await Utils.login(token);
 
-            const { status, ...data } = d;
+			const { status, ...data } = d;
 
-            res.status(status).json(data);
-        });
-    }
+			res.status(status).json(data);
+		});
+	}
 }
 
 export default AuthRouter;

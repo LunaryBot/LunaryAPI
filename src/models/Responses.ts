@@ -7,13 +7,13 @@ import User from './User';
 @ObjectType()
 class GuildResponse {
     @Field(() => Guild)
-    guild: Guild;
+    	guild: Guild;
 
     @Field(() => Member)
-    member: Member;
+    	member: Member;
 
     @Field(() => User)
-    user: User;
+    	user: User;
 }
 
 export { GuildResponse };

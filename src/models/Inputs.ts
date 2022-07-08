@@ -6,29 +6,29 @@ const nullable = { nullable: true };
 @InputType()
 class GuildSettingsInput {
     @Field(nullable)
-    punishment_channel: string;
+    	punishment_channel: string;
 
     @Field(nullable)
-    configs: number;
+    	configs: number;
 
     @Field(_type => [GuildRolePermissionsInput], nullable)
-    permissions: Array<GuildRolePermissionsInput>;
+    	permissions: Array<GuildRolePermissionsInput>;
 }
 
 @InputType()
 class GuildRolePermissionsInput {
     @Field()
-    roleID: string;
+    	roleID: string;
 
     @Field()
-    permissions: number;
+    	permissions: number;
 }
 
 @InputType()
 class PunishmentModifyInput {
     @Field()
     @MaxLength(512)
-    reason: string;
+    	reason: string;
 }
 
-export { GuildSettingsInput, GuildRolePermissionsInput, PunishmentModifyInput }
+export { GuildSettingsInput, GuildRolePermissionsInput, PunishmentModifyInput };

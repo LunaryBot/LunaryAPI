@@ -6,57 +6,57 @@ import Gateway from './Gateway';
 import Apollo from './Apollo';
 
 class BaseRouter {
-    public server: Apollo;
-    public app: Express;
-    public router: Router;
-    public path: string;
-    public client: Client;
-    public gateway: Gateway;
+	public server: Apollo;
+	public app: Express;
+	public router: Router;
+	public path: string;
+	public client: Client;
+	public gateway: Gateway;
 
-    public dbs: Databases;
+	public dbs: Databases;
     
-    constructor(data: { server: Apollo; router: Router; path: string; dbs: Databases; client: Client }) {
-        this.server = data.server;
-        this.app = data.server.app;
-        this.router = data.router;
-        this.path = data.path;
-        this.client = data.client;
-        this.gateway = data.server.gateway;
+	constructor(data: { server: Apollo; router: Router; path: string; dbs: Databases; client: Client }) {
+		this.server = data.server;
+		this.app = data.server.app;
+		this.router = data.router;
+		this.path = data.path;
+		this.client = data.client;
+		this.gateway = data.server.gateway;
 
-        this.dbs = data.dbs;
+		this.dbs = data.dbs;
 
-        this.app.use(`${this.path}`, this.router);
-    }
+		this.app.use(`${this.path}`, this.router);
+	}
 
-    public get get() {
-        return this.router.get.bind(this.router);
-    }
+	public get get() {
+		return this.router.get.bind(this.router);
+	}
 
-    public get post() {
-        return this.router.post.bind(this.router);
-    }
+	public get post() {
+		return this.router.post.bind(this.router);
+	}
 
-    public get patch() {
-        return this.router.patch.bind(this.router);
-    }
+	public get patch() {
+		return this.router.patch.bind(this.router);
+	}
 
-    public get put() {
-        return this.router.put.bind(this.router);
-    }
+	public get put() {
+		return this.router.put.bind(this.router);
+	}
 
-    public get delete() {
-        return this.router.delete.bind(this.router);
-    }
+	public get delete() {
+		return this.router.delete.bind(this.router);
+	}
 
-    public get use() {
-        return this.router.use.bind(this.router);
-    }
+	public get use() {
+		return this.router.use.bind(this.router);
+	}
 
-    public ws(path: string, callback: (req: Request, ws: WebSocket) => void) {
-        this.app.use(`${this.path}${path}`, (req, res) => {
-            res.sendWs(callback);
-        });
-    }
+	public ws(path: string, callback: (req: Request, ws: WebSocket) => void) {
+		this.app.use(`${this.path}${path}`, (req, res) => {
+			res.sendWs(callback);
+		});
+	}
 }
 
 export default BaseRouter;

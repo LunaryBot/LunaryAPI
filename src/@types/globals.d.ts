@@ -2,7 +2,7 @@ import type { IUser } from './index';
 import { Logger } from 'winston';
 
 import Apollo from '../structures/Apollo';
-import Databases from '../structures/Databases'
+import Databases from '../structures/Databases';
 import Gateway from '../structures/Gateway';
 
 interface MyLogger extends Logger {
@@ -34,6 +34,6 @@ declare global {
     var dbs: Databases;
     var gateway: Gateway;
     var logger: MyLogger;
-};
+}
 
 export {};

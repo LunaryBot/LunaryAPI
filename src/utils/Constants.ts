@@ -4,4 +4,4 @@ export const URLS = {
 	REVOKE:'https://discord.com/api/oauth2/token/revoke',
 	USER:'https://discord.com/api/users/@me',
 	GUILDS:'https://discord.com/api/users/@me/guilds',
-}
+};

@@ -13,7 +13,7 @@ declare global {
 }
 
 module 'http' {
-    interface 
+    interface; 
     interface ServerResponse {
         sendWs: (cb: (req: Request, ws: WebSocket, next?: NextFunction) => void) => void;
     }

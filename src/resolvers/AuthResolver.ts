@@ -8,19 +8,19 @@ import ApiError from '../utils/ApiError';
 @Resolver()
 class AuthResolver {
     @Query(() => User)
-    async Auth( @Arg('token') token: string ) {
-        const d = await Utils.login(token);
+	async Auth( @Arg('token') token: string ) {
+		const d = await Utils.login(token);
 
-        const { status, ...data } = d;
+		const { status, ...data } = d;
 
-        if(status == 200) {
-            apollo.idsCache.set(token, data.id);
-        } else {
-            throw new ApiError(data?.message as string, status);
-        }
+		if(status == 200) {
+			apollo.idsCache.set(token, data.id);
+		} else {
+			throw new ApiError(data?.message as string, status);
+		}
 
-        return data;
-    }
+		return data;
+	}
 }
 
 export default AuthResolver;

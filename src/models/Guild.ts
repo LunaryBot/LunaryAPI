@@ -13,60 +13,60 @@ const nullable = { nullable: true };
 @ObjectType()
 class Guild implements IGuild {
     @Field(_type => ID)
-    id: string;
+    	id: string;
 
     @Field()
-    name: string;
+    	name: string;
 
     @Field()
-    icon: string;
+    	icon: string;
 
     @Field({ defaultValue: false })
     @UseMiddleware(DefaultValue(false))
-    access?: boolean;
+    	access?: boolean;
 
     @Field(_type => [String])
-    features: string[];
+    	features: string[];
 
     @Field()
-    owner: boolean;
+    	owner: boolean;
 
     @Field()
-    permissions: number;
+    	permissions: number;
 
     @Field()
-    permissions_new: string;
+    	permissions_new: string;
 
     @Field(() => [Channel], { defaultValue: [] })
     @UseMiddleware(DefaultValue([]))
-    channels?: Array<Channel>;
+    	channels?: Array<Channel>;
 
     @Field(() => [Role], { defaultValue: [] })
     @UseMiddleware(DefaultValue([]))
-    roles?: Array<Role>;
+    	roles?: Array<Role>;
 }
 
 @ObjectType()
 class GuildSettings {
     @Field(nullable)
-    punishment_channel: string;
+    	punishment_channel: string;
 
     @Field(nullable)
-    configs: number;
+    	configs: number;
 
     @Field(_type => [GuildRolePermissions], nullable)
-    permissions: Array<GuildRolePermissions>;
+    	permissions: Array<GuildRolePermissions>;
 }
 
 @ObjectType()
 class GuildRolePermissions {
     @Field()
-    roleID: string;
+    	roleID: string;
 
     @Field()
-    permissions: number;
+    	permissions: number;
 }
 
 export default Guild;
 
-export { GuildSettings }
+export { GuildSettings };

@@ -7,25 +7,25 @@ const nullable = { nullable: true };
 @ObjectType()
 class Member implements IMember {
     @Field(_type => ID)
-    id: string;
+    	id: string;
 
     @Field(nullable)
-    nick: string;
+    	nick: string;
 
     @Field(nullable)
-    communicationDisabledUntil: number;
+    	communicationDisabledUntil: number;
     
     @Field()
-    createdAt: number;
+    	createdAt: number;
 
     @Field(nullable)
-    premiumSince: number;
+    	premiumSince: number;
 
     @Field()
-    permissions: number;
+    	permissions: number;
 
     @Field(() => [String])
-    roles: Array<string>;
+    	roles: Array<string>;
 }
 
 export default Member;

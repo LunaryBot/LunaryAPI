@@ -7,46 +7,46 @@ const nullable = { nullable: true };
 @ObjectType()
 class Channel implements IChannel {
     @Field(_type => ID,)
-    id: string;
+    	id: string;
    
     @Field()
-    type: number;
+    	type: number;
 
     @Field()
-    createdAt: number;
+    	createdAt: number;
    
     @Field()
-    name: string;
+    	name: string;
    
     @Field()
-    nsfw: boolean;
+    	nsfw: boolean;
    
     @Field()
-    parentID: string;
+    	parentID: string;
    
     @Field()
-    position: number;
+    	position: number;
    
     @Field()
-    lastMessageID: string;
+    	lastMessageID: string;
    
     @Field(nullable)
-    lastPinTimestamp: number;
+    	lastPinTimestamp: number;
    
     @Field()
-    rateLimitPerUser: number;
+    	rateLimitPerUser: number;
    
     @Field(nullable)
-    topic: string;
+    	topic: string;
 
     @Field(nullable)
-    bitrate: number;
+    	bitrate: number;
 
     @Field(nullable)
-    rtcRegion: string;
+    	rtcRegion: string;
 
     @Field(nullable)
-    userLimit: number;
+    	userLimit: number;
 }
 
 export default Channel;

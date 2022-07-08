@@ -7,43 +7,43 @@ const nullable = { nullable: true };
 @ObjectType()
 class User implements IUser {
     @Field(_type => ID)
-    id: string;
+    	id: string;
 
     @Field()
-    username: string;
+    	username: string;
 
     @Field(nullable)
-    accent_color?: number;
+    	accent_color?: number;
 
     @Field()
-    avatar: string;
+    	avatar: string;
 
     @Field(nullable)
-    banner?: string;
+    	banner?: string;
     
     @Field(nullable)
-    banner_color?: string;
+    	banner_color?: string;
 
     @Field()
-    discriminator: string;
+    	discriminator: string;
 
     @Field(nullable)
-    email?: string;
+    	email?: string;
 
     @Field(nullable)
-    flags?: number;
+    	flags?: number;
 
     @Field(nullable)
-    locale?: string;
+    	locale?: string;
 
     @Field(nullable)
-    mfa_enabled?: boolean;
+    	mfa_enabled?: boolean;
 
     @Field()
-    public_flags: number;
+    	public_flags: number;
 
     @Field(nullable)
-    verified?: boolean;
+    	verified?: boolean;
 }
 
 export default User;

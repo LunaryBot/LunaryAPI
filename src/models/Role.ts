@@ -7,46 +7,46 @@ const nullable = { nullable: true };
 @ObjectType()
 class RolePermissions {
     @Field()
-    allow: string;
+    	allow: string;
 
     @Field()
-    deny: string;
+    	deny: string;
 }
 
 @ObjectType()
 class Role implements IRole {
     @Field(_type => ID,)
-    id: string;
+    	id: string;
 
     @Field()
-    createdAt: number;
+    	createdAt: number;
    
     @Field()
-    name: string;
+    	name: string;
 
     @Field()
-    color: number;
+    	color: number;
 
     @Field()
-    hoist: boolean;
+    	hoist: boolean;
 
     @Field(nullable)
-    icon: string;
+    	icon: string;
 
     @Field()
-    managed: boolean;
+    	managed: boolean;
 
     @Field()
-    mentionable: boolean;
+    	mentionable: boolean;
 
     @Field(() => RolePermissions)
-    permissions: RolePermissions;
+    	permissions: RolePermissions;
 
     @Field()
-    position: number;
+    	position: number;
 
     @Field(nullable)
-    unicodeEmoji: string;
+    	unicodeEmoji: string;
 }
 
 export default Role;

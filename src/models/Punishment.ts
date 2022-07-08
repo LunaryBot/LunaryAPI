@@ -10,79 +10,79 @@ const nullable = { nullable: true };
 @ObjectType()
 class Punishment implements IPunishmentLogResolved {
     @Field()
-    type: 1 | 2 | 3 | 4;
+    	type: 1 | 2 | 3 | 4;
 
     @Field(nullable)
-    duration?: number;
+    	duration?: number;
 
     @Field()
-    id: string;
+    	id: string;
 
     @Field(nullable)
-    reason?: string;
+    	reason?: string;
 
     @Field()
-    timestamp: number;
+    	timestamp: number;
 
     @Field()
-    user: User;
+    	user: User;
 
     @Field()
-    author: User;
+    	author: User;
 
     @Field()
-    guild: Guild;
+    	guild: Guild;
 }
 
 @ObjectType()
 class PunishmentData implements IPunishmentLog {
     @Field()
-    type: 1 | 2 | 3 | 4;
+    	type: 1 | 2 | 3 | 4;
 
     @Field(nullable)
-    duration?: number;
+    	duration?: number;
 
     @Field()
-    id: string;
+    	id: string;
 
     @Field(nullable)
-    reason?: string;
+    	reason?: string;
 
     @Field()
-    timestamp: number;
+    	timestamp: number;
 
     @Field()
-    user: string;
+    	user: string;
 
     @Field()
-    author: string;
+    	author: string;
 
     @Field()
-    guild: string;
+    	guild: string;
 }
 
 @ObjectType()
 class PunishmentsFilter implements IPunishmentLogsFilter {
     @Field(nullable)
-    type: 1 | 2 | 3 | 4;
+    	type: 1 | 2 | 3 | 4;
 
     @Field(nullable)
-    afterTimestamp?: number;
+    	afterTimestamp?: number;
 
     @Field(nullable)
-    authorId?: string;
+    	authorId?: string;
 
     @Field(nullable)
-    beforeTimestamp?: number;
+    	beforeTimestamp?: number;
 
     @Field(nullable)
-    guildId?: string;
+    	guildId?: string;
 
     @Field(nullable)
-    limit?: number;
+    	limit?: number;
 
     @Field(nullable)
-    userId?: string;
+    	userId?: string;
 }
 
 export default Punishment;

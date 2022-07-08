@@ -4,10 +4,10 @@ type IData = { FLAGS: TFLAGS, defaultBit: number };
 
 class BitField {
 	public declare data: IData;
-    public bitfield: number;
-    public declare FLAGS: TFLAGS;
-    public static FLAGS: TFLAGS;
-    public static defaultBit: number;
+	public bitfield: number;
+	public declare FLAGS: TFLAGS;
+	public static FLAGS: TFLAGS;
+	public static defaultBit: number;
 
 	constructor(bits: TBit = BitField.defaultBit, data: IData) {
 		Object.defineProperty(this, 'data', { value: data, enumerable: false });
@@ -49,9 +49,9 @@ class BitField {
 		const serialized: { [key: string]: number } = {};
 
 		for (const [flag, bit] of Object.entries(BitField.FLAGS)) {
-            // @ts-ignore
-            serialized[flag] = this.has(bit);
-        }
+			// @ts-ignore
+			serialized[flag] = this.has(bit);
+		}
 
 		return serialized;
 	}
