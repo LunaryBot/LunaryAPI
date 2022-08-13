@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model GUILDS {
+  id                  String              @id @unique
+  modlogs_channel     String?
+  punishments_channel String?
+  features            BigInt?
+  premium_type        GuildPremiumType?
+  premium_until       DateTime?
+  GUILD_PERMISSIONS   GUILD_PERMISSIONS[]
+  REASONS             REASONS[]
+}
+
+model GUILD_PERMISSIONS {
+  id          String              @id @unique
+  type        GuildPermissionType
+  guild_id    String
+  permissions BigInt
+  GUILDS      GUILDS              @relation(fields: [guild_id], references: [id])
+}
+
+model PUNISHMENTS {
+  id         String         @id @unique
+  guild_id   String
+  user_id    String
+  author_id  String
+  type       PunishmentType
+  created_at DateTime
+  reason     String?
+  reason_id  String?
+  deleted    Boolean?       @default(false)
+  revoker_id String?
+  duration   Int?
+}
+
+model REASONS {
+  id       String   @id @unique
+  text     String
+  guild_id String
+  type     BigInt
+  keys     String[] @default([])
+  duration Int?
+  days     Int?
+  GUILDS   GUILDS   @relation(fields: [guild_id], references: [id])
+}
+
+model USERS {
+  id                         String           @id @unique
+  aboutme                    String?
+  features                   BigInt?
+  luas                       Int?
+  xp                         Int?
+  last_punishment_applied_id String?
+  last_daily_at              DateTime?
+  premium_type               UserPremiumType?
+  premium_until              DateTime?
+}
+
+enum GuildPermissionType {
+  MEMBER
+  ROLE
+}
+
+enum GuildPremiumType {
+  BASIC
+  PLUS
+}
+
+enum PunishmentType {
+  BAN
+  MUTE
+  KICK
+  ADV
+}
+
+enum UserPremiumType {
+  PLUS
+}

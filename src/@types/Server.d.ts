@@ -1,4 +1,3 @@
-import type { IUser } from './index';
 import type { WebSocket } from 'ws';
 import type { NextFunction, Request } from 'express';
 import { ExpressContext } from 'apollo-server-express';
@@ -6,7 +5,6 @@ import { ExpressContext } from 'apollo-server-express';
 declare global {
     namespace Express {
         interface Request {
-            user: IUser;
             userId: string;
         }
     }

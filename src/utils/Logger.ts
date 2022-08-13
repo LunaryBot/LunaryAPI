@@ -13,11 +13,6 @@ const config = {
 		graphql: 6,
 	},
 	colors: {
-		error: 'red',
-		warn: 'yellowBG',
-		info: 'green',
-		http: 'blue',
-		debug: 'yellow',
 		graphql: 'magenta',
 	}
 };
@@ -26,27 +21,37 @@ interface MyLogger extends Logger {
     readonly graphql: LeveledLogMethod;
 }
 
-const myFormat = printf(({ level, message, label, timestamp = new Date().toISOString() }) => {
-	return `${timestamp} ${level} --- ${label ? `[${chalk.cyan(label)}]:` : ''} ${message}`;
-});
-
 winston.addColors(config.colors);
 
 // @ts-ignore
 const logger: MyLogger = winston.createLogger({
 	format: combine(
-		colorize({ level: true }),
 		winston.format.simple(),
 		timestamp(),
-		myFormat,
 	),
 	levels: config.levels,
-	level: 'graphql',
+	level: 'info',
 	transports: [
-		new winston.transports.Console(),
-		new winston.transports.File({ filename: 'logs/combined.log' }),
+		new winston.transports.Console({
+			format: combine(
+				colorize({ level: true }),
+				printf(({ level, message, label, timestamp = new Date().toISOString(), details }) => {
+					return `${timestamp} ${level}  ${process.pid} --- ${label ? `[${chalk.cyan(label)}]:` : ''} ${message}${details ? `\n${details}` : ''}`;
+				}),
+			)
+		}),
+		new winston.transports.File({ 
+			filename: `logs/combined_${new Date().toISOString()}-${process.pid}.log`,
+			format: combine(
+				printf(({ level, message, label, timestamp = new Date().toISOString(), details }) => {
+					return `${timestamp} ${level}  ${process.pid} --- ${label ? `[${label}]:` : ''} ${message}${details ? `\n${details}` : ''}`;
+				}),
+			)
+		}),
 	],
 	exitOnError: false,
 });
 
-global.logger = logger;
+Object.defineProperty(global, 'logger', {
+	value: logger,
+});
