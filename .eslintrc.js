@@ -97,10 +97,9 @@ module.exports = {
 				newlinesBetween: 'always',
 				groups: [
 					'module',
-					'/^@(Command|Contexts|Database|EventListener)/',
+					'/^@(BaseRouter|Apollo)/',
 					'/^@structures/',
-					'/^@discord/',
-					'/^@(utils|decorators|ModUtils)/',
+					'/^@(utils)/',
 					'/^.*(types)/',
 				],
 				alphabetize: { order: 'asc', ignoreCase: true },

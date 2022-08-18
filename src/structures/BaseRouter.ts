@@ -39,3 +39,5 @@ class BaseRouter {
 		return this.router.patch.bind(this.router);
 	}
 }
+
+export default BaseRouter;
