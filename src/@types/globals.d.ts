@@ -1,7 +1,6 @@
 import { Logger } from 'winston';
 
-import Apollo from '../structures/Apollo';
-import Gateway from '../structures/Gateway';
+import type _Apollo from '../structures/Apollo';
 
 interface MyLogger extends Logger {
     readonly graphql: LeveledLogMethod;
@@ -27,8 +26,7 @@ declare global {
         }
     }
 
-    var apollo: Apollo;
-    var gateway: Gateway;
+    declare type Apollo = _Apollo;
     const logger: MyLogger;
 }
 

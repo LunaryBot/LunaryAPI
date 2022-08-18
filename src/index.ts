@@ -2,12 +2,12 @@ import 'dotenv/config';
 import 'reflect-metadata';
 import './tools/Logger.js';
 
-import { buildSchema, Maybe } from 'type-graphql';
 import path from 'path';
+import { buildSchema, Maybe } from 'type-graphql';
 
 import Apollo from './structures/Apollo.js';
-import { authChecker } from './utils/AuthChecker.js';
 import ApiError from './utils/ApiError.js';
+import { authChecker } from './utils/AuthChecker.js';
 
 async function main() {
 	const schema = await buildSchema({
@@ -31,7 +31,7 @@ async function main() {
 			}
 
 			return error;
-		}
+		},
 	});
 	await apollo.init(Number(process.env.PORT));
 }

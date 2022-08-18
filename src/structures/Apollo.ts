@@ -1,9 +1,10 @@
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import { ApolloServer, Config, ExpressContext } from 'apollo-server-express';
 import express, { Express, Request } from 'express';
 import http from 'http';
-import Gateway from './Gateway';
 import { WebSocket } from 'ws';
-import { ApolloServer, Config, ExpressContext } from 'apollo-server-express';
-import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+
+import Gateway from './Gateway';
 
 class Apollo extends ApolloServer {
 	public app: Express;
@@ -68,6 +69,30 @@ class Apollo extends ApolloServer {
 		};
     
 		return this.app(req, res);
+	}
+
+	get use() {
+		return this.app.use.bind(this.app);
+	}
+
+	get get() {
+		return this.app.get.bind(this.app);
+	}
+
+	get post() {
+		return this.app.post.bind(this.app);
+	}
+
+	get put() {
+		return this.app.put.bind(this.app);
+	}
+
+	get delete() {
+		return this.app.delete.bind(this.app);
+	}
+
+	get patch() {
+		return this.app.patch.bind(this.app);
 	}
 }
 

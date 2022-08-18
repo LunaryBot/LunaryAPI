@@ -22,7 +22,14 @@
 		"moduleResolution": "node",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "strictPropertyInitialization": false
+        "strictPropertyInitialization": false,
+        "baseUrl": "./src",
+        "paths": {
+            "@Apollo": ["./structures/Apollo"],
+            "@BaseRouter": ["./structures/BaseRouter"],
+            "@structures/*": ["./structures/*"],
+            "@utils/*": ["./utils/*"]
+        }
     },
     "exclude": [
         "build",
