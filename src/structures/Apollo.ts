@@ -38,7 +38,7 @@ class Apollo extends ApolloServer {
 
 		await this.start();
 
-		this.applyMiddleware({ app: this.app, path: '/' });
+		this.applyMiddleware({ app: this.app, path: '/graphql' });
         
 		logger.graphql(`Apollo GraphQL Server ready at http://localhost:${process.env.PORT}${this.graphqlPath}`, { label: 'Apollo Server' });
         

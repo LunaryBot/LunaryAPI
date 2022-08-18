@@ -1,10 +1,14 @@
 class ApiError extends Error {
-	public status?: number;
+	public name: string;
+	public status: number;
 
-	constructor(message: string, status: number) {
+	constructor(message: string, status: number = 500) {
 		super(message);
 
-		this.message = `${message}: ${status}`;
+		this.name = this.constructor.name;
+
+		Error.captureStackTrace(this, this.constructor);
+
 		this.status = status;
 
 		delete this.stack;

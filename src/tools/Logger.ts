@@ -1,4 +1,4 @@
-import winston, { Logger, LeveledLogMethod } from 'winston';
+import winston, { Logger, LeveledLogMethod,  } from 'winston';
 import chalk from 'chalk';
 
 const { printf, combine, timestamp, colorize } = winston.format; 
@@ -11,20 +11,25 @@ const config = {
 		http: 3,
 		debug: 5,
 		graphql: 6,
+		rest: 7,
+		gateway: 8,
 	},
 	colors: {
 		graphql: 'magenta',
+		rest: 'cyan',
+		gateway: 'grey',
 	}
 };
 
 interface MyLogger extends Logger {
     readonly graphql: LeveledLogMethod;
+	readonly rest: LeveledLogMethod;
+	readonly gateway: LeveledLogMethod;
 }
 
 winston.addColors(config.colors);
 
-// @ts-ignore
-const logger: MyLogger = winston.createLogger({
+winston.loggers.add('default', {
 	format: combine(
 		winston.format.simple(),
 		timestamp(),
@@ -36,6 +41,8 @@ const logger: MyLogger = winston.createLogger({
 			format: combine(
 				colorize({ level: true }),
 				printf(({ level, message, label, timestamp = new Date().toISOString(), details }) => {
+					if(details && typeof details === 'object') details = JSON.stringify(details);
+
 					return `${timestamp} ${level}  ${process.pid} --- ${label ? `[${chalk.cyan(label)}]:` : ''} ${message}${details ? `\n${details}` : ''}`;
 				}),
 			)
@@ -44,6 +51,8 @@ const logger: MyLogger = winston.createLogger({
 			filename: `logs/combined_${new Date().toISOString()}-${process.pid}.log`,
 			format: combine(
 				printf(({ level, message, label, timestamp = new Date().toISOString(), details }) => {
+					if(details && typeof details === 'object') details = JSON.stringify(details);
+					
 					return `${timestamp} ${level}  ${process.pid} --- ${label ? `[${label}]:` : ''} ${message}${details ? `\n${details}` : ''}`;
 				}),
 			)
@@ -51,6 +60,10 @@ const logger: MyLogger = winston.createLogger({
 	],
 	exitOnError: false,
 });
+
+const logger = winston.loggers.get('default') as MyLogger;
+
+logger.child = function () { return winston.loggers.get('default') as MyLogger; };
 
 Object.defineProperty(global, 'logger', {
 	value: logger,

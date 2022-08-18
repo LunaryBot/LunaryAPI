@@ -5,6 +5,10 @@ import Gateway from '../structures/Gateway';
 
 interface MyLogger extends Logger {
     readonly graphql: LeveledLogMethod;
+	readonly rest: LeveledLogMethod;
+	readonly gateway: LeveledLogMethod;
+
+    readonly child: () => MyLogger;
 }
 
 declare global {

@@ -1,6 +1,6 @@
 node_modules
 package-lock.json
-yarn.lock
+yarn*
 
 .env
 
@@ -8,3 +8,5 @@ build/
 test/
 
 logs/
+
+apollo.config.js
