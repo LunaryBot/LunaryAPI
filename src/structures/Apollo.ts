@@ -4,6 +4,8 @@ import express, { Express, Request } from 'express';
 import http from 'http';
 import { WebSocket } from 'ws';
 
+import BaseRouter from '@BaseRouter';
+
 import Gateway from './Gateway';
 
 class Apollo extends ApolloServer {
@@ -32,20 +34,6 @@ class Apollo extends ApolloServer {
 		this.idsCache = idsCache;
 	}
 
-	public async init(port?: number | undefined) {
-		this.httpServer.listen(port, () => {
-			logger.info(`Http Server is running on port ${process.env.PORT} (http://localhost:${process.env.PORT})`, { label: 'Http Server' });
-		});
-
-		await this.start();
-
-		this.applyMiddleware({ app: this.app, path: '/graphql' });
-        
-		logger.graphql(`Apollo GraphQL Server ready at http://localhost:${process.env.PORT}${this.graphqlPath}`, { label: 'Apollo Server' });
-        
-		return this;
-	}
-
 	private handleUpgrade(req: Request, socket: WebSocket, upgradeHead: Buffer) {
 		const wss = this.gateway;
 		const res = new http.ServerResponse(req);
@@ -71,12 +59,16 @@ class Apollo extends ApolloServer {
 		return this.app(req, res);
 	}
 
-	get use() {
-		return this.app.use.bind(this.app);
+	get delete() {
+		return this.app.delete.bind(this.app);
 	}
 
 	get get() {
 		return this.app.get.bind(this.app);
+	}
+
+	get patch() {
+		return this.app.patch.bind(this.app);
 	}
 
 	get post() {
@@ -87,12 +79,29 @@ class Apollo extends ApolloServer {
 		return this.app.put.bind(this.app);
 	}
 
-	get delete() {
-		return this.app.delete.bind(this.app);
+	get use() {
+		return this.app.use.bind(this.app);
 	}
 
-	get patch() {
-		return this.app.patch.bind(this.app);
+	public addRouter(Router: BaseRouter['constructor']) {
+		// @ts-ignore
+		const routerInstance = new Router(this) as BaseRouter;
+
+		this.app.use(routerInstance.path, routerInstance.router);
+	}
+
+	public async init(port?: number | undefined) {
+		this.httpServer.listen(port, () => {
+			logger.info(`Http Server is running on port ${process.env.PORT} (http://localhost:${process.env.PORT})`, { label: 'Http Server' });
+		});
+
+		await this.start();
+
+		this.applyMiddleware({ app: this.app, path: '/graphql' });
+        
+		logger.graphql(`Apollo GraphQL Server ready at http://localhost:${process.env.PORT}${this.graphqlPath}`, { label: 'Apollo Server' });
+        
+		return this;
 	}
 }
 

@@ -20,6 +20,7 @@ declare global {
             readonly DISCORD_CLIENT_TOKEN: string;
             readonly DISCORD_CLIENT_SECRET: string;
             readonly DISCORD_CLIENT_ID: string;
+            readonly DISCORD_OAUTH2_REDIRECT_URL: string;
 
             readonly TOPGG_TOKEN: string;
             readonly VCODES_TOKEN: string;

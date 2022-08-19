@@ -7,7 +7,7 @@ class BaseRouter {
 
 	public path: string;
 
-	constructor({ path = '/', apollo }: { path: string, apollo: Apollo }) {
+	public constructor({ path = '/', apollo }: { path: string, apollo: Apollo }) {
 		this.path = path;
 
 		Object.defineProperty(this, 'apollo', { value: apollo, enumerable: false, writable: false });
