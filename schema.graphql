@@ -4,5 +4,22 @@
 # -----------------------------------------------
 
 type Query {
+  CurrentUser: User!
   ping(message: String!): String!
+}
+
+type User {
+  accent_color: Float
+  avatar: String!
+  banner: String
+  banner_color: String
+  discriminator: String!
+  email: String
+  flags: Float
+  id: ID!
+  locale: String
+  mfa_enabled: Boolean
+  public_flags: Float!
+  username: String!
+  verified: Boolean
 }

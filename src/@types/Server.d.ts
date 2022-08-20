@@ -1,6 +1,6 @@
-import type { WebSocket } from 'ws';
-import type { NextFunction, Request } from 'express';
 import { ExpressContext } from 'apollo-server-express';
+import type { NextFunction, Request } from 'express';
+import type { WebSocket } from 'ws';
 
 declare global {
     namespace Express {
@@ -21,4 +21,6 @@ export interface MyContext extends ExpressContext {
     token?: string;
     userId?: string;
     guildId?: string;
+
+    apollo: Apollo;
 }

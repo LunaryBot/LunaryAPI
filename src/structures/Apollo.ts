@@ -1,19 +1,36 @@
+import { REST } from '@discordjs/rest';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { ApolloServer, Config, ExpressContext } from 'apollo-server-express';
+import UserController from 'controllers/UserController';
 import express, { Express, Request } from 'express';
 import http from 'http';
 import { WebSocket } from 'ws';
 
 import BaseRouter from '@BaseRouter';
 
+import AuthUtils from '@utils/AuthUtils';
+
+import { MyContext } from '../@types/Server';
+
 import Gateway from './Gateway';
+import Redis from './Redis';
 
 class Apollo extends ApolloServer {
 	public app: Express;
 	public httpServer: http.Server;
 	public gateway: Gateway;
-	public idsCache: Map<string, string>;
 
+	public redis = new Redis(this);
+
+	public apis = {
+		discord: new REST({ version: '10' }).setToken(process.env.DISCORD_CLIENT_TOKEN),
+	};
+
+	public controllers = {
+		users: new UserController(this),
+	};
+
+	public idsCache: Map<string, string>;
     
 	constructor(config: Config<ExpressContext>, idsCache = new Map<string, string>()) {
 		super(config);
@@ -32,31 +49,35 @@ class Apollo extends ApolloServer {
 		this.plugins = [ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer })];
         
 		this.idsCache = idsCache;
-	}
 
-	private handleUpgrade(req: Request, socket: WebSocket, upgradeHead: Buffer) {
-		const wss = this.gateway;
-		const res = new http.ServerResponse(req);
-		res.assignSocket(socket as any);
-    
-		const head = Buffer.alloc(upgradeHead.length);
+		// @ts-ignore
+		this.context = async(context: ExpressContext) => {
+			const myContext: MyContext = {
+				...context,
+				apollo: this,
+			};
 
-		upgradeHead.copy(head);
-    
-		res.on('finish', function () {
-			res.socket && res.socket.destroy();
-		});
-    
-		res.sendWs = function (callback) {
-			wss.handleUpgrade(req, socket as any, head, function (client) {
-				wss.emit('connection'+req.url, client);
-				wss.emit('connection', client);
+			const token = context.req.headers?.authorization;
 
-				callback?.(req, client);
-			});
+			if(token) {
+				myContext.token = token;
+				if(idsCache.has(token)) {
+					myContext.userId = idsCache.get(token) as string;
+				}
+                
+				const data = await AuthUtils.login.bind({ apollo: this })(token);
+        
+				if(data?.id) {
+					idsCache.set(token, data.id);
+    
+					myContext.userId = data.id;
+				}
+			}
+
+			myContext.guildId = context.req.body?.variables?.guildId || undefined;
+            
+			return myContext;
 		};
-    
-		return this.app(req, res);
 	}
 
 	get delete() {
@@ -102,6 +123,31 @@ class Apollo extends ApolloServer {
 		logger.graphql(`Apollo GraphQL Server ready at http://localhost:${process.env.PORT}${this.graphqlPath}`, { label: 'Apollo Server' });
         
 		return this;
+	}
+
+	private handleUpgrade(req: Request, socket: WebSocket, upgradeHead: Buffer) {
+		const wss = this.gateway;
+		const res = new http.ServerResponse(req);
+		res.assignSocket(socket as any);
+    
+		const head = Buffer.alloc(upgradeHead.length);
+
+		upgradeHead.copy(head);
+    
+		res.on('finish', function () {
+			res.socket && res.socket.destroy();
+		});
+    
+		res.sendWs = function (callback) {
+			wss.handleUpgrade(req, socket as any, head, function (client) {
+				wss.emit('connection'+req.url, client);
+				wss.emit('connection', client);
+
+				callback?.(req, client);
+			});
+		};
+    
+		return this.app(req, res);
 	}
 }
 

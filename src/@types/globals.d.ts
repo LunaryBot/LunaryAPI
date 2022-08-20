@@ -22,6 +22,8 @@ declare global {
             readonly DISCORD_CLIENT_ID: string;
             readonly DISCORD_OAUTH2_REDIRECT_URL: string;
 
+            readonly REDIS_URL: string;
+
             readonly TOPGG_TOKEN: string;
             readonly VCODES_TOKEN: string;
         }

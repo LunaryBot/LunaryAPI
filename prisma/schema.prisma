@@ -14,6 +14,7 @@ model GUILDS {
   features            BigInt?
   premium_type        GuildPremiumType?
   premium_until       DateTime?
+  embeds              Json[]              @default([])
   GUILD_PERMISSIONS   GUILD_PERMISSIONS[]
   REASONS             REASONS[]
 }
@@ -27,7 +28,6 @@ model GUILD_PERMISSIONS {
 }
 
 model PUNISHMENTS {
-  id         String         @id @unique
   guild_id   String
   user_id    String
   author_id  String
@@ -36,8 +36,8 @@ model PUNISHMENTS {
   reason     String?
   reason_id  String?
   deleted    Boolean?       @default(false)
-  revoker_id String?
   duration   Int?
+  id         Int            @id @unique @default(autoincrement())
 }
 
 model REASONS {

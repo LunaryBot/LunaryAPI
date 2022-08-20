@@ -1,5 +1,5 @@
-import { Router } from 'express';
-
+import { Request, Router } from 'express';
+import WebSocket from 'ws';
 
 class BaseRouter {
 	public readonly apollo: Apollo;
@@ -37,6 +37,12 @@ class BaseRouter {
 
 	get patch() {
 		return this.router.patch.bind(this.router);
+	}
+	
+	public ws(path: string, callback: (req: Request, ws: WebSocket) => void) {
+		this.apollo.use(`${this.path}${path}`, (req, res) => {
+			res.sendWs(callback);
+		});
 	}
 }
 

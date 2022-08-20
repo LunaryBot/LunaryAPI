@@ -1,4 +1,5 @@
 import { WebSocketServer, ServerOptions, RawData, WebSocket } from 'ws';
+
 import Apollo from './Apollo';
 
 class Gateway extends WebSocketServer {
@@ -22,8 +23,8 @@ class Gateway extends WebSocketServer {
 	}
 
 	public formatMessage(data: RawData) {
-		if (Array.isArray(data)) data = Buffer.concat(data);
-		else if (data instanceof ArrayBuffer) data = Buffer.from(data);
+		if(Array.isArray(data)) data = Buffer.concat(data);
+		else if(data instanceof ArrayBuffer) data = Buffer.from(data);
         
 		const msg = JSON.parse(data.toString());
 
