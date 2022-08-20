@@ -22,5 +22,5 @@ export interface MyContext extends ExpressContext {
     userId?: string;
     guildId?: string;
 
-    apollo: Apollo;
+    readonly apollo: Apollo;
 }

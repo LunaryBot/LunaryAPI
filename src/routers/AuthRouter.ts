@@ -5,6 +5,8 @@ import BaseRouter from '@BaseRouter';
 
 import { URLS } from '@utils/Constants';
 
+import { Routes } from 'discord-api-types/v10';
+
 class AuthRouter extends BaseRouter {
 	constructor(apollo: Apollo) {
 		super({ path: '/auth', apollo });
@@ -29,7 +31,13 @@ class AuthRouter extends BaseRouter {
 			body.append('scope', 'identify guilds');
 			body.append('code', code as string);
 
-			const data = (await axios.post(URLS.TOKEN, body.toString(), {
+			const tokenD = await this.apollo.apis.discord.post(Routes.oauth2TokenExchange(), {
+				body: body.toString(),
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+			}) as { access_token: string, refresh_token: string, expires_in: number };
+			const data = (await axios.post(Routes.oauth2TokenExchange(), body.toString(), {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 				},

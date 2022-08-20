@@ -21,6 +21,10 @@ class UserController {
         
 		return user;
 	}
+
+	async fetchGuilds(token: string) {
+		
+	}
 }
 
 export default UserController;

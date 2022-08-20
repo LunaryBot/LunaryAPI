@@ -16,17 +16,17 @@ import Gateway from './Gateway';
 import Redis from './Redis';
 
 class Apollo extends ApolloServer {
-	public app: Express;
-	public httpServer: http.Server;
-	public gateway: Gateway;
+	public readonly app: Express;
+	public readonly httpServer: http.Server;
+	public readonly gateway: Gateway;
 
-	public redis = new Redis(this);
+	public readonly redis = new Redis(this);
 
-	public apis = {
+	public readonly apis = {
 		discord: new REST({ version: '10' }).setToken(process.env.DISCORD_CLIENT_TOKEN),
 	};
 
-	public controllers = {
+	public readonly controllers = {
 		users: new UserController(this),
 	};
 
