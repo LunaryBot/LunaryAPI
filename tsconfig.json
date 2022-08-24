@@ -28,6 +28,7 @@
             "@Apollo": ["./structures/Apollo"],
             "@BaseRouter": ["./structures/BaseRouter"],
             "@structures/*": ["./structures/*"],
+            "@routers/*": ["./routers/*"],
             "@models": ["./models"],
             "@utils/*": ["./utils/*"]
         }

@@ -4,8 +4,9 @@ import './tools/Logger';
 
 import { GraphQLError } from 'graphql';
 import path from 'path';
-import AuthRouter from 'routers/AuthRouter';
 import { buildSchema } from 'type-graphql';
+
+import AuthRouter from '@routers/AuthRouter';
 
 import Apollo from './structures/Apollo';
 import ApiError from './utils/ApiError';

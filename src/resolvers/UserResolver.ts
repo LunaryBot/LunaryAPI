@@ -1,5 +1,6 @@
-import { Guild, User } from '@models';
 import { Resolver, Query, Ctx, Authorized } from 'type-graphql';
+
+import { Guild, User } from '@models';
 
 import { MyContext } from '../@types/Server';
 
