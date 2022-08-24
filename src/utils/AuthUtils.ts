@@ -1,10 +1,8 @@
-import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
-import { APIUser } from 'discord-api-types/v10';
+import { APIUser, Routes } from 'discord-api-types/v10';
 
 import ApiError from './ApiError';
-import { URLS } from './Constants';
 
 class AuthUtils {
 	static declare apollo: Apollo;
@@ -21,11 +19,12 @@ class AuthUtils {
 				throw new ApiError('Expired token', 498);
 			}
 
-			const data = (await axios.get(URLS.USER, {
+			const data = await this.apollo.apis.discord.get(Routes.user(), {
+				auth: false,
 				headers: {
 					Authorization: `Bearer ${tokenData.access_token}`,
 				},
-			}).catch(e => {}))?.data || {};
+			}) as APIUser;
 
 			if(!data?.id) throw new ApiError('Invalid/Expired token', 498);
 
