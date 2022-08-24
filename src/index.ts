@@ -31,7 +31,7 @@ async function main() {
 			
 			if(!(originalError instanceof ApiError) && !(error instanceof GraphQLError)) {
 				console.log();
-				logger.error((originalError as Error).message, { label: 'Process', details: originalError?.stack });
+				logger.error((error as Error).message, { label: 'Process', details: (error as Error)?.stack || undefined });
 			}
 
 			return errorFormated;
