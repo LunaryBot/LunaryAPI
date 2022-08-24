@@ -12,9 +12,9 @@ class UserResolver {
 	}
 
 	@Authorized()
-	@Query(() => Guild)
-    async CurrentGuilds(@Ctx() context: MyContext) {
-		
+	@Query(() => [Guild])
+    async CurrentUserGuilds(@Ctx() context: MyContext) {
+    	return await context.apollo.controllers.users.fetchGuilds(context.token as string);
     }
 }
 
