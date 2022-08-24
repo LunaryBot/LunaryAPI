@@ -99,6 +99,7 @@ module.exports = {
 					'module',
 					'/^@(BaseRouter|Apollo)/',
 					'/^@structures/',
+					'/^@models/',
 					'/^@(utils)/',
 					'/^.*(types)/',
 				],

@@ -13,7 +13,7 @@ class AuthUtils {
 		if(!token) throw new ApiError('No token provided', 401);
         
 		try {
-			const tokenData = await jwt.verify(token as string, process.env.JWT_SECRET) as { access_token: string, refresh_token: string, expires_in: number };
+			const tokenData = AuthUtils.parseToken(token);
         
 			if(!tokenData || !tokenData?.access_token) throw new ApiError('Invalid token', 498);
 
@@ -33,8 +33,13 @@ class AuthUtils {
 
 			return data as APIUser;
 		} catch (e) {
+			console.log(e);
 			throw new ApiError('Invalid token', 401);
 		}
+	}
+
+	static parseToken(token: string) {
+		return jwt.verify(token as string, process.env.JWT_SECRET) as { access_token: string, refresh_token: string, expires_in: number };
 	}
 }
 

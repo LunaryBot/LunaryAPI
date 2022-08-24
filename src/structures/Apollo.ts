@@ -64,8 +64,8 @@ class Apollo extends ApolloServer {
 				if(idsCache.has(token)) {
 					myContext.userId = idsCache.get(token) as string;
 				}
-                
-				const data = await AuthUtils.login.bind({ apollo: this })(token);
+
+				const data = await AuthUtils.login.bind({ ...AuthUtils, apollo: this })(token);
         
 				if(data?.id) {
 					idsCache.set(token, data.id);
