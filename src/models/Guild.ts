@@ -13,17 +13,14 @@ const nullable = { nullable: true };
 
 @ObjectType()
 class Guild implements PartialGuild {
-    @Field(nullable)
-    	banner?: string | null | undefined;
-
-    @Field(nullable)
+    @Field(type => String, nullable)
     	description?: string | null | undefined;
 
-    @Field({ defaultValue: [] })
+    @Field(type => [String], { defaultValue: [] })
     @UseMiddleware(DefaultValue([] as GuildFeature[]))
     	features?: GuildFeature[] | undefined;
 
-    @Field(nullable)
+    @Field(type => String, nullable)
     	icon: string | null;
 
     @Field(type => ID)
@@ -39,7 +36,7 @@ class Guild implements PartialGuild {
     @UseMiddleware(DefaultValue(0))
     	permissions: number;
 
-    @Field(nullable)
+    @Field(type => String, nullable)
     	splash: string | null;
 }
 
