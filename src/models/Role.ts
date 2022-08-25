@@ -18,9 +18,6 @@ class Role implements APIRole {
     @Field()
     	hoist: boolean;
 
-    @Field(nullable)
-    	icon: string | null;
-
     @Field()
     	managed: boolean;
 
@@ -32,9 +29,6 @@ class Role implements APIRole {
 
     @Field()
     	position: number;
-
-    @Field(nullable)
-    	unicodeEmoji?: string;
 }
 
 export default Role;
