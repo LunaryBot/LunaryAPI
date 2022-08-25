@@ -22,31 +22,10 @@ class Channel implements APIGuildChannel<ChannelType.GuildText> {
     	nsfw: boolean;
    
     @Field()
-    	parentID: string;
+    	parent_id: string;
    
     @Field()
     	position: number;
-   
-    @Field()
-    	lastMessageID: string;
-   
-    @Field(nullable)
-    	lastPinTimestamp: number;
-   
-    @Field()
-    	rateLimitPerUser: number;
-   
-    @Field(nullable)
-    	topic: string;
-
-    @Field(nullable)
-    	bitrate: number;
-
-    @Field(nullable)
-    	rtcRegion: string;
-
-    @Field(nullable)
-    	userLimit: number;
 }
 
 export default Channel;
