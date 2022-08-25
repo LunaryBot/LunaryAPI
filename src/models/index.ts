@@ -1,2 +1,2 @@
-export * from './Guild';
+export * from './guild';
 export * from './User';

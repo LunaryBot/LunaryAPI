@@ -1,4 +1,4 @@
-import { Guild } from '@models';
+import { AbstractGuild } from '@models';
 
 import AuthUtils from '@utils/AuthUtils';
 
@@ -37,14 +37,14 @@ class UserController {
 			},
 		}).then(async(guilds) => {
 			if(options.filterPermission !== undefined) {
-				guilds = (guilds as Guild[]).filter(guild => (BigInt(guild.permissions) & PermissionFlagsBits.Administrator) === PermissionFlagsBits.Administrator);
+				guilds = (guilds as AbstractGuild[]).filter(guild => (BigInt(guild.permissions) & PermissionFlagsBits.Administrator) === PermissionFlagsBits.Administrator);
 			}
 			
 			if(!options.filterHasBot) return guilds;
 			
 			const guildsInCache = await this.apollo.redis.keys('guilds:*').then(keys => keys.filter(guildKeyRegex.test.bind(guildKeyRegex)).map(key => key.replace(guildKeyRegex, '$1')));
 
-			return (guilds as Guild[]).filter(guild => guildsInCache.includes(guild.id));
+			return (guilds as AbstractGuild[]).filter(guild => guildsInCache.includes(guild.id));
 		});
 
 

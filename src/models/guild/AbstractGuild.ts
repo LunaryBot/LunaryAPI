@@ -12,7 +12,7 @@ interface PartialGuild extends APIPartialGuild {
 const nullable = { nullable: true };
 
 @ObjectType()
-class Guild implements PartialGuild {
+class AbstractGuild implements PartialGuild {
     @Field(type => String, nullable)
     	description?: string | null | undefined;
 
@@ -40,4 +40,4 @@ class Guild implements PartialGuild {
     	splash: string | null;
 }
 
-export { Guild };
+export { AbstractGuild };
