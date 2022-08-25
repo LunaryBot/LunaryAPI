@@ -12,10 +12,7 @@ interface PartialGuild extends APIPartialGuild {
 const nullable = { nullable: true };
 
 @ObjectType()
-class AbstractGuild implements PartialGuild {
-    @Field(type => String, nullable)
-    	description?: string | null | undefined;
-
+class AbstractGuild implements Omit<PartialGuild, 'splash'> {
     @Field(type => [String], { defaultValue: [] })
     @UseMiddleware(DefaultValue([] as GuildFeature[]))
     	features?: GuildFeature[] | undefined;
@@ -35,9 +32,6 @@ class AbstractGuild implements PartialGuild {
     @Field({ defaultValue: 0 })
     @UseMiddleware(DefaultValue(0))
     	permissions: number;
-
-    @Field(type => String, nullable)
-    	splash: string | null;
 }
 
 export { AbstractGuild };
