@@ -36,7 +36,7 @@ type Guild {
 type Query {
   CurrentUser: User!
   CurrentUserGuilds: [AbstractGuild!]!
-  Guild(id: String!): User!
+  Guild(id: String!): Guild!
   ping(message: String!): String!
 }
 
