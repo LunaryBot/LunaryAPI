@@ -13,18 +13,18 @@ const nullable = { nullable: true };
 
 @ObjectType()
 class AbstractGuild implements Omit<PartialGuild, 'splash'> {
+    @Field(type => ID)
+    	id: string;
+
+        @Field()
+        	name: string;
+            
     @Field(type => [String], { defaultValue: [] })
     @UseMiddleware(DefaultValue([] as GuildFeature[]))
     	features?: GuildFeature[] | undefined;
 
     @Field(type => String, nullable)
     	icon: string | null;
-
-    @Field(type => ID)
-    	id: string;
-    
-    @Field()
-    	name: string;
 
     @Field()
     	owner: boolean;

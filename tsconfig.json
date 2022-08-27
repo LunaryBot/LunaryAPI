@@ -27,9 +27,10 @@
         "paths": {
             "@Apollo": ["./structures/Apollo"],
             "@BaseRouter": ["./structures/BaseRouter"],
-            "@structures/*": ["./structures/*"],
-            "@routers/*": ["./routers/*"],
+            "@controllers/*": ["./controllers/*"],
             "@models": ["./models"],
+            "@routers/*": ["./routers/*"],
+            "@structures/*": ["./structures/*"],
             "@utils/*": ["./utils/*"]
         }
     },

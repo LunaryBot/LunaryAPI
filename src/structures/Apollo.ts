@@ -1,12 +1,14 @@
 import { REST } from '@discordjs/rest';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { ApolloServer, Config, ExpressContext } from 'apollo-server-express';
-import UserController from 'controllers/UserController';
 import express, { Express, Request } from 'express';
 import http from 'http';
 import { WebSocket } from 'ws';
 
 import BaseRouter from '@BaseRouter';
+
+import GuildController from '@controllers/GuildController';
+import UserController from '@controllers/UserController';
 
 import AuthUtils from '@utils/AuthUtils';
 
@@ -28,6 +30,7 @@ class Apollo extends ApolloServer {
 
 	public readonly controllers = {
 		users: new UserController(this),
+		guilds: new GuildController(this),
 	};
 
 	public idsCache: Map<string, string>;

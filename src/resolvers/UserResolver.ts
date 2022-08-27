@@ -1,6 +1,6 @@
 import { Resolver, Query, Ctx, Authorized } from 'type-graphql';
 
-import { Guild, User } from '@models';
+import { AbstractGuild, Guild, User } from '@models';
 
 import { MyContext } from '../@types/Server';
 
@@ -13,7 +13,7 @@ class UserResolver {
 	}
 
 	@Authorized()
-	@Query(() => [Guild])
+	@Query(() => [AbstractGuild])
     async CurrentUserGuilds(@Ctx() context: MyContext) {
     	return await context.apollo.controllers.users.fetchGuilds(context.token as string);
     }

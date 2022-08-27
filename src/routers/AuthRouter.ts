@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import jwt from 'jsonwebtoken';
 
 import BaseRouter from '@BaseRouter';
@@ -31,19 +31,17 @@ class AuthRouter extends BaseRouter {
 			body.append('scope', 'identify guilds');
 			body.append('code', code as string);
 
-			const tokenD = await this.apollo.apis.discord.post(Routes.oauth2TokenExchange(), {
-				body: body.toString(),
+			const response = await axios.post(URLS.TOKEN, body.toString(), {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 				},
-			}) as { access_token: string, refresh_token: string, expires_in: number };
-			const data = (await axios.post(Routes.oauth2TokenExchange(), body.toString(), {
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-				},
-			}).catch(e => {}))?.data || {};
+			}).catch((error: AxiosError) => error.response || {}) as AxiosResponse;
 
-			if(!data.access_token) return res.status(498).json({ message: 'No access token provided' });
+			const data = response.data as { access_token: string, refresh_token: string, expires_in: number };
+
+			if(!data) return res.status(500).json({ message: 'Request OAuth2 infos falied' });
+
+			if(!data.access_token) return res.status(498).json({ message: 'No access token provided in OAuth2 request infos' });
 
 			const token = await jwt.sign({ 
 				access_token: data.access_token, 
@@ -51,7 +49,7 @@ class AuthRouter extends BaseRouter {
 				expires_in: Date.now() + (data.expires_in * 1000),
 			}, process.env.JWT_SECRET);
 
-			console.log(token);
+			console.log(token); // Remover quando for para produção
 
 			res.redirect(`${process.env.WEBSITE_URL}/auth/callback?token=${token}${(req.query.state ? `&state=${req.query.state}` : '')}`);
 		});

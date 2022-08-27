@@ -3,21 +3,52 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-type Guild {
-  description: String
+type AbstractGuild {
   features: [String!]
   icon: String
   id: ID!
   name: String!
   owner: Boolean!
   permissions: Float
-  splash: String
+}
+
+type Channel {
+  createdAt: Float!
+  id: ID!
+  name: String!
+  nsfw: Boolean!
+  parent_id: String!
+  position: Float!
+  type: Float!
+}
+
+type Guild {
+  banner: String
+  channels: [Channel!]!
+  features: [String!]
+  icon: String
+  id: ID!
+  name: String!
+  owner_id: String!
+  roles: [Role!]!
 }
 
 type Query {
   CurrentUser: User!
-  CurrentUserGuilds: [Guild!]!
+  CurrentUserGuilds: [AbstractGuild!]!
+  Guild(id: String!): User!
   ping(message: String!): String!
+}
+
+type Role {
+  color: Float!
+  hoist: Boolean!
+  id: ID!
+  managed: Boolean!
+  mentionable: Boolean!
+  name: String!
+  permissions: String!
+  position: Float!
 }
 
 type User {
