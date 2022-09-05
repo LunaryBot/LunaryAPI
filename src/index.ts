@@ -14,7 +14,7 @@ import { authChecker } from './utils/AuthChecker';
 
 async function main() {
 	const schema = await buildSchema({
-		resolvers: [path.join(__dirname, './resolvers/**/*')],
+		resolvers: [path.join(__dirname, './resolvers/**/*Resolver*')],
 		emitSchemaFile: path.resolve(process.cwd(), 'schema.graphql'),
 		authChecker,
 	});
