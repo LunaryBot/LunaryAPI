@@ -1,4 +1,5 @@
 import { REST } from '@discordjs/rest';
+import { PrismaClient } from '@prisma/client';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { ApolloServer, Config, ExpressContext } from 'apollo-server-express';
 import express, { Express, Request } from 'express';
@@ -8,6 +9,7 @@ import { WebSocket } from 'ws';
 import BaseRouter from '@BaseRouter';
 
 import GuildController from '@controllers/GuildController';
+import PunishmentController from '@controllers/PunishmentController';
 import UserController from '@controllers/UserController';
 
 import AuthUtils from '@utils/AuthUtils';
@@ -23,6 +25,13 @@ class Apollo extends ApolloServer {
 	public readonly gateway: Gateway;
 
 	public readonly redis = new Redis(this);
+	public readonly prisma = new PrismaClient({
+		datasources: {
+			db: {
+				url: process.env.DATABASE_URL,
+			},
+		},
+	});
 
 	public readonly apis = {
 		discord: new REST({ version: '10' }).setToken(process.env.DISCORD_CLIENT_TOKEN),
@@ -31,6 +40,7 @@ class Apollo extends ApolloServer {
 	public readonly controllers = {
 		users: new UserController(this),
 		guilds: new GuildController(this),
+		punishments: new PunishmentController(this),
 	};
 
 	public idsCache: Map<string, string>;
