@@ -38,17 +38,18 @@ model PUNISHMENTS {
   deleted    Boolean?       @default(false)
   duration   Int?
   id         Int            @id @unique @default(autoincrement())
+  flags      BigInt         @default(0)
 }
 
 model REASONS {
-  id       String   @id @unique
+  id       String           @id @unique
   text     String
   guild_id String
-  type     BigInt
-  keys     String[] @default([])
+  keys     String[]         @default([])
   duration Int?
   days     Int?
-  GUILDS   GUILDS   @relation(fields: [guild_id], references: [id])
+  type     PunishmentType[]
+  GUILDS   GUILDS           @relation(fields: [guild_id], references: [id])
 }
 
 model USERS {
