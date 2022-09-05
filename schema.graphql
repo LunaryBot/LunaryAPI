@@ -8,7 +8,7 @@ type AbstractGuild {
   icon: String
   id: ID!
   name: String!
-  owner: Boolean!
+  owner: Boolean
   permissions: Float
 }
 
@@ -22,6 +22,11 @@ type Channel {
   type: Float!
 }
 
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
 type Guild {
   banner: String
   channels: [Channel!]!
@@ -33,11 +38,26 @@ type Guild {
   roles: [Role!]!
 }
 
+type Punishment {
+  author: User!
+  created_at: DateTime!
+  deleted: Boolean!
+  duration: Float
+  flags: Float!
+  guild: AbstractGuild!
+  id: ID!
+  reason: String
+  reason_id: String
+  type: String!
+  user: User!
+}
+
 type Query {
   CurrentUser: User!
   CurrentUserGuilds: [AbstractGuild!]!
   Guild(id: String!): Guild!
   ping(message: String!): String!
+  Punishments(after: DateTime, author_id: String, before: DateTime, type: String, user_id: String): [Punishment!]!
 }
 
 type Role {
