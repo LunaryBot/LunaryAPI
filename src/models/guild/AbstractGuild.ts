@@ -16,8 +16,8 @@ class AbstractGuild implements Omit<PartialGuild, 'splash'> {
     @Field(type => ID)
     	id: string;
 
-        @Field()
-        	name: string;
+    @Field()
+    	name: string;
             
     @Field(type => [String], { defaultValue: [] })
     @UseMiddleware(DefaultValue([] as GuildFeature[]))
@@ -26,10 +26,10 @@ class AbstractGuild implements Omit<PartialGuild, 'splash'> {
     @Field(type => String, nullable)
     	icon: string | null;
 
-    @Field()
+    @Field(nullable)
     	owner: boolean;
 
-    @Field({ defaultValue: 0 })
+    @Field({ defaultValue: 0, ...nullable })
     @UseMiddleware(DefaultValue(0))
     	permissions: number;
 }
