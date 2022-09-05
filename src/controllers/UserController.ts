@@ -27,7 +27,7 @@ class UserController {
 		return user;
 	}
 
-	async fetchGuilds(token: string, options: { filterHasBot?: boolean, filterPermission?: bigint } = { filterHasBot: true, filterPermission: PermissionFlagsBits.Administrator }) {
+	async fetchGuilds(token: string, options: { filterByHasBot?: boolean, filterPermission?: bigint } = { filterByHasBot: true, filterPermission: PermissionFlagsBits.Administrator }) {
 		token = AuthUtils.parseToken(token).access_token;
 
 		const guilds = await this.apollo.apis.discord.get(Routes.userGuilds(), {
@@ -40,7 +40,7 @@ class UserController {
 				guilds = (guilds as AbstractGuild[]).filter(guild => (BigInt(guild.permissions) & PermissionFlagsBits.Administrator) === PermissionFlagsBits.Administrator);
 			}
 			
-			if(!options.filterHasBot) return guilds;
+			if(!options.filterByHasBot) return guilds;
 			
 			const guildsInCache = await this.apollo.redis.keys('guilds:*').then(keys => keys.filter(guildKeyRegex.test.bind(guildKeyRegex)).map(key => key.replace(guildKeyRegex, '$1')));
 

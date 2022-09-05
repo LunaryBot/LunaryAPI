@@ -54,7 +54,7 @@ type Punishment {
 
 type Query {
   CurrentUser: User!
-  CurrentUserGuilds: [AbstractGuild!]!
+  CurrentUserGuilds(filter: Boolean): [AbstractGuild!]!
   Guild(id: String!): Guild!
   ping(message: String!): String!
   Punishments(after: DateTime, author_id: String, before: DateTime, type: String, user_id: String): [Punishment!]!
