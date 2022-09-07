@@ -1,6 +1,8 @@
-import { Prisma, PunishmentType } from '@prisma/client';
+import { Prisma, PunishmentType, REASONS } from '@prisma/client';
 
 import { AbstractGuild } from '@models';
+
+import { Utils } from '@utils/Utils';
 
 import { PunishmentFilter } from '../@types';
 import { APIGuild, APIUser } from 'discord-api-types/v10';
@@ -36,10 +38,12 @@ class PunishmentController {
 		}).then(async punishments => {
 			const users: string[] = [];
 		    const guilds: string[] = [];
+			const reasonsIds: string[] = [];
 
-			punishments.forEach(log => {
-				([log.user_id, log.author_id]).forEach(user => !users.includes(user) && users.push(user));
-				!guilds.includes(log.guild_id) && guilds.push(log.guild_id);
+			punishments.forEach(punishment => {
+				([punishment.user_id, punishment.author_id]).forEach(user => !users.includes(user) && users.push(user));
+				!guilds.includes(punishment.guild_id) && guilds.push(punishment.guild_id);
+				punishment.reason_id && !reasonsIds.includes(punishment.reason_id) && reasonsIds.push(punishment.reason_id);
 			});
             
 			const resolved = {
@@ -50,15 +54,35 @@ class PunishmentController {
 					id: guild.id as string,
 					features: guild.features || [],
 				} as AbstractGuild)),
+				reasons: reasonsIds.length
+					? await this.apollo.prisma.rEASONS.findMany({
+						where: {
+							id: {
+								in: reasonsIds,
+							},
+						},
+					})
+					: [],
 			};
 
 			return punishments.map(punishment => {
+				const reason = resolved.reasons.find(({ id }) => id == punishment.reason_id);
+				
 				const data = {
 					...punishment,
+					id: Utils.formatHumanPunishmentId(punishment.id),
 					user: resolved.users.find(user => user.id === punishment.user_id) as APIUser,
 					author: resolved.users.find(user => user.id === punishment.author_id) as APIUser,
 					guild: resolved.guilds.find(guild => guild.id === punishment.guild_id) as AbstractGuild,
-				};
+				} as any;
+
+				if(reason || punishment.reason) {
+					data.reason = {
+						text: reason?.text || punishment.reason,
+					};
+
+					if(reason?.id) data.reason.id = reason?.id;
+				}
 
                 // @ts-ignore
 				delete data.user_id;

@@ -46,8 +46,7 @@ type Punishment {
   flags: Float!
   guild: AbstractGuild!
   id: ID!
-  reason: String
-  reason_id: String
+  reason: ReasonFormated
   type: String!
   user: User!
 }
@@ -58,6 +57,16 @@ type Query {
   Guild(id: String!): Guild!
   ping(message: String!): String!
   Punishments(after: DateTime, author_id: String, before: DateTime, type: String, user_id: String): [Punishment!]!
+}
+
+type ReasonFormated {
+  days: Float
+  duration: Float
+  guild_id: String
+  id: String
+  keys: [String!]!
+  text: String!
+  type: [String!]
 }
 
 type Role {
