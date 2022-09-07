@@ -5,7 +5,7 @@ import { Guild } from '@models';
 import { MyContext } from '../@types/Server';
 
 @Resolver()
-class UserResolver {
+class GuildResolver {
     @Authorized()
     @Query(() => Guild)
 	async Guild(@Ctx() context: MyContext, @Arg('id') id: string) {
@@ -13,4 +13,4 @@ class UserResolver {
 	}
 }
 
-export default UserResolver;
+export default GuildResolver;
