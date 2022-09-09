@@ -26,7 +26,7 @@ class Punishment implements Omit<PUNISHMENTS, 'author_id' | 'user_id' | 'guild_i
     @Field(type => ReasonFormated, nullable)
     	reason: ReasonFormated | null;
 
-    @Field()
+    @Field(type => String)
     	type: PunishmentType;
 
     @Field(type => Number)
