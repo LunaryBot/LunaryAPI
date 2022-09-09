@@ -14,7 +14,7 @@ import UserController from '@controllers/UserController';
 
 import AuthUtils from '@utils/AuthUtils';
 
-import { MyContext } from '../@types/Server';
+import { MyContext } from '../@types/Server.d';
 
 import Gateway from './Gateway';
 import Redis from './Redis';

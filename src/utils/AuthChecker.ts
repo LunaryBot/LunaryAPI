@@ -1,6 +1,6 @@
 import { AuthChecker, ResolverData } from 'type-graphql';
 
-import { MyContext } from '../@types/Server';
+import { MyContext } from '../@types/Server.d';
 
 import ApiError from './ApiError';
 
