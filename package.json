@@ -5,6 +5,7 @@
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsc && TS_NODE_BASEURL=./build node -r tsconfig-paths/register .",
+		"dev:ts": "TS_NODE_BASEURL=./src ts-node-dev --transpile-only -r tsconfig-paths/register src/index.ts",
 		"lint": "eslint --fix .",
 		"start": "TS_NODE_BASEURL=./build node -r tsconfig-paths/register .",
 		"test": "jest",
@@ -49,6 +50,7 @@
 		"eslint-plugin-import-helpers": "^1.2.1",
 		"jest": "^27.5.1",
 		"prisma": "^4.2.1",
+		"ts-node-dev": "^2.0.0",
 		"tsconfig-paths": "^4.1.0",
 		"typescript": "^4.6.3"
 	}
