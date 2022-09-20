@@ -1,4 +1,4 @@
-import { PUNISHMENTS, PunishmentType, REASONS } from '@prisma/client';
+import { Punishment as _Punishment, PunishmentType, Reason } from '@prisma/client';
 import { Field, ID, ObjectType, UseMiddleware } from 'type-graphql';
 
 import DefaultValue from '@utils/DefaultValue';
@@ -9,7 +9,7 @@ import { User } from './User';
 const nullable = { nullable: true };
 
 @ObjectType()
-class Punishment implements Omit<PUNISHMENTS, 'author_id' | 'user_id' | 'guild_id' | 'id' | 'reason_id' | 'reason'> {
+class Punishment implements Omit<_Punishment, 'author_id' | 'user_id' | 'guild_id' | 'id' | 'reason_id' | 'reason'> {
     @Field(type => Date)
     	created_at: Date;
 
@@ -43,7 +43,7 @@ class Punishment implements Omit<PUNISHMENTS, 'author_id' | 'user_id' | 'guild_i
 }
 
 @ObjectType()
-class ReasonFormated implements REASONS {
+class ReasonFormated implements Reason {
     @Field(type => Number, nullable)
     	days: number | null;
         

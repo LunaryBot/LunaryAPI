@@ -1,4 +1,4 @@
-import { Prisma, PunishmentType, REASONS } from '@prisma/client';
+import { Prisma, PunishmentType, Reason } from '@prisma/client';
 
 import { AbstractGuild } from '@models';
 
@@ -26,7 +26,7 @@ class PunishmentController {
 	async fetch(filter: PunishmentFilter = {}) {
 		const take = filter.limit ? (filter.limit > maxTake ? maxTake : filter.limit) : defaultTake;
 
-		const punishments = await this.apollo.prisma.pUNISHMENTS.findMany({
+		const punishments = await this.apollo.prisma.punishment.findMany({
 			orderBy: {
 				created_at: 'desc',
 			},
@@ -55,7 +55,7 @@ class PunishmentController {
 					features: guild.features || [],
 				} as AbstractGuild)),
 				reasons: reasonsIds.length
-					? await this.apollo.prisma.rEASONS.findMany({
+					? await this.apollo.prisma.reason.findMany({
 						where: {
 							id: {
 								in: reasonsIds,
