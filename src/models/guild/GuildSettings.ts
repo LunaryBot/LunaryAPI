@@ -9,7 +9,7 @@ class GuildSettings {
     @Field(type => ID)
     	id: string;
 
-    @Field()
+    @Field(nullable)
     	modlogs_channel: string;
 
     @Field(nullable)
