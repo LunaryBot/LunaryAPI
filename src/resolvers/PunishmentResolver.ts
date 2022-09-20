@@ -3,7 +3,7 @@ import { Arg, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 
 import { Punishment } from '@models';
 
-import { MyContext } from '../@types/Server.d';
+import { MyContext } from '../@types';
 
 const nullable = { nullable: true };
 
