@@ -7,66 +7,93 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model GUILDS {
-  id                  String              @id @unique
+model Embed {
+  guild_id                    String
+  type                        EmbedType
+  content                     String?
+  embed_color                 String?
+  embed_description           String?
+  embed_fields                Json[]    @default([])
+  embed_footer_icon_url       String?
+  embed_footer_proxy_icon_url String?
+  embed_footer_text           String?
+  embed_image_height          Int?
+  embed_image_proxy_url       String?
+  embed_image_url             String?
+  embed_image_width           Int?
+  embed_thumbnail_height      Int?
+  embed_thumbnail_proxy_url   String?
+  embed_thumbnail_url         String?
+  embed_thumbnail_width       Int?
+  embed_timestamp             String?
+  embed_title                 String?
+  embed_url                   String?
+
+  @@id([guild_id, type])
+}
+
+model Guild {
+  id                  String             @id @unique
   modlogs_channel     String?
   punishments_channel String?
   features            BigInt?
   premium_type        GuildPremiumType?
   premium_until       DateTime?
-  embeds              Json[]              @default([])
-  GUILD_PERMISSIONS   GUILD_PERMISSIONS[]
-  REASONS             REASONS[]
+  GuildPermissions    GuildPermissions[]
+  Reason              Reason[]
 }
 
-model GUILD_PERMISSIONS {
-  id          String              @id @unique
+model GuildPermissions {
+  id          String              @id
   type        GuildPermissionType
   guild_id    String
   permissions BigInt
-  GUILDS      GUILDS              @relation(fields: [guild_id], references: [id])
+  Guild       Guild               @relation(fields: [guild_id], references: [id])
 }
 
-model PUNISHMENTS {
+model Punishment {
+  id         Int            @id @unique @default(autoincrement())
   guild_id   String
   user_id    String
   author_id  String
   type       PunishmentType
   created_at DateTime
+  flags      BigInt         @default(0)
+  duration   Int?
   reason     String?
   reason_id  String?
   deleted    Boolean?       @default(false)
-  duration   Int?
-  id         Int            @id @unique @default(autoincrement())
-  flags      BigInt         @default(0)
 }
 
-model REASONS {
+model Reason {
   id       String           @id @unique
   text     String
   guild_id String
+  type     PunishmentType[]
   keys     String[]         @default([])
   duration Int?
   days     Int?
-  type     PunishmentType[]
-  GUILDS   GUILDS           @relation(fields: [guild_id], references: [id])
+  Guild    Guild            @relation(fields: [guild_id], references: [id])
 }
 
-model USERS {
-  id                         String           @id @unique
-  aboutme                    String?
-  features                   BigInt?
-  luas                       Int?
-  xp                         Int?
-  last_punishment_applied_id String?
-  last_daily_at              DateTime?
-  premium_type               UserPremiumType?
-  premium_until              DateTime?
+model User {
+  id              String           @id @unique
+  features        BigInt?
+  luas            Int?
+  xp              Int?
+  last_daily_at   DateTime?
+  premium_type    UserPremiumType?
+  premium_until   DateTime?
+  bio             String?
+  flags           BigInt?
+  inventary_using BigInt?
+  inventory       BigInt?
 }
 
 enum GuildPermissionType {
   MEMBER
   ROLE
+  COMMAND
 }
 
 enum GuildPremiumType {
@@ -83,4 +110,12 @@ enum PunishmentType {
 
 enum UserPremiumType {
   PLUS
+}
+
+enum EmbedType {
+  BAN
+  KICK
+  MUTE
+  ADV
+  NOFITYDM
 }
