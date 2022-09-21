@@ -5,7 +5,7 @@
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsc && TS_NODE_BASEURL=./build node -r tsconfig-paths/register .",
-		"dev:ts": "TS_NODE_BASEURL=./src ts-node-dev --transpile-only -r tsconfig-paths/register src/index.ts",
+		"dev:ts": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules -r tsconfig-paths/register src/index.ts",
 		"lint": "eslint --fix .",
 		"start": "TS_NODE_BASEURL=./build node -r tsconfig-paths/register .",
 		"test": "jest",

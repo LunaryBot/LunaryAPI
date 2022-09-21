@@ -102,6 +102,7 @@ module.exports = {
 					'/^@controllers/',
 					'/^@models/',
 					'/^@routers/',
+					'/^@validation/',
 					'/^@(utils)/',
 					'/^.*(types)/',
 				],
