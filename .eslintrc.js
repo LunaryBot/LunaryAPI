@@ -98,6 +98,7 @@ module.exports = {
 				groups: [
 					'module',
 					'/^@(BaseRouter|Apollo)/',
+					'/^@Database/',
 					'/^@structures/',
 					'/^@controllers/',
 					'/^@models/',
