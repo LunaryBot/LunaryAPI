@@ -28,15 +28,15 @@ async function main() {
 			const errorFormated = {
 				message: originalError?.message ?? 'Internal server error',
 				status: (originalError as ApiError)?.status ?? 500,
+				stacks: (originalError as ApiError)?.stacks,
 			};
 			
 			if(!(originalError instanceof ApiError) && !(error instanceof GraphQLError)) {
-				console.log();
 				logger.error((error as Error).message, { label: 'Process', details: (error as Error)?.stack || undefined });
 			}
 
 			return errorFormated;
-		}, 
+		},
 	});
 
 	await apollo.init(Number(process.env.PORT));

@@ -5,7 +5,11 @@ import * as Constants from '@utils/Constants';
 
 type GuildPermission = keyof typeof Constants.GuildPermissions;
 
-class GuildPermissions extends BitField<GuildPermission> {
+class AbstractGuildPermissions extends BitField<GuildPermission> {
+	public static Flags = Constants.GuildPermissions;
+}
+
+class GuildPermissions extends AbstractGuildPermissions {
 	public type: Prisma.GuildPermissionType;
 	public id: string;
 	public guildId: string;
@@ -21,4 +25,4 @@ class GuildPermissions extends BitField<GuildPermission> {
 	public static Flags = Constants.GuildPermissions;
 }
 
-export { GuildPermissions };
+export { GuildPermissions, AbstractGuildPermissions };
