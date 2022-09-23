@@ -38,6 +38,18 @@ type Guild {
   roles: [Role!]!
 }
 
+type GuildPermissions {
+  id: ID!
+  permissions: Float!
+  type: String!
+}
+
+input GuildPermissionsInput {
+  id: ID!
+  permissions: Float!
+  type: String!
+}
+
 type GuildSettings {
   features: [String!]!
   id: ID!
@@ -52,7 +64,8 @@ input GuildSettingsInput {
 }
 
 type Mutation {
-  ModifyGuildModerationSettings(data: GuildSettingsInput!, id: String!): GuildSettings!
+  ModifyGuildModerationSettings(id: String!, raw: GuildSettingsInput!): GuildSettings!
+  ModifyGuildPermissions(id: String!, raw: [GuildPermissionsInput!]!): [GuildPermissions!]!
 }
 
 type Punishment {
