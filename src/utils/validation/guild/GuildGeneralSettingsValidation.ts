@@ -43,7 +43,7 @@ function GuildGeneralSettingsValidation(newData: GuildGeneralSettings, currentDa
 		}
 	});
 
-	if(errors.length) throw new ApiError(errors.join(' | '), 400);
+	if(errors.length) throw new ApiError('Invalid Raw', 400, errors);
 
 	const features = GuildFeatures.resolve((newData.features || []).filter(feature => GuildFeatures.Flags[feature] !== undefined));
 	

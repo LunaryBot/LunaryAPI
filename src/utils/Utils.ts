@@ -18,6 +18,10 @@ class Utils {
 
 		return Number(`${az.indexOf(letter.toLowerCase())}${number}`);
 	}
+
+	public static isPremium(premiumUntil?: Date | null) {
+		return premiumUntil && premiumUntil.getTime() >= Date.now();
+	}
 }
 
 export { Utils };

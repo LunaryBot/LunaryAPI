@@ -38,6 +38,23 @@ type Guild {
   roles: [Role!]!
 }
 
+type GuildSettings {
+  features: [String!]!
+  id: ID!
+  modlogs_channel: String
+  punishments_channel: String
+}
+
+input GuildSettingsInput {
+  features: [String!]
+  modlogs_channel: String
+  punishments_channel: String
+}
+
+type Mutation {
+  ModifyGuildModerationSettings(data: GuildSettingsInput!, id: String!): GuildSettings!
+}
+
 type Punishment {
   author: User!
   created_at: DateTime!
