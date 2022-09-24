@@ -11,7 +11,6 @@ model Embed {
   guild_id                    String
   type                        EmbedType
   content                     String?
-  embed_color                 String?
   embed_description           String?
   embed_fields                Json[]    @default([])
   embed_footer_icon_url       String?
@@ -25,13 +24,14 @@ model Embed {
   embed_thumbnail_proxy_url   String?
   embed_thumbnail_url         String?
   embed_thumbnail_width       Int?
-  embed_timestamp             String?
   embed_title                 String?
   embed_url                   String?
   embed_author_icon           String?
   embed_author_name           String?
   embed_author_proxy_url      String?
   embed_author_url            String?
+  embed_color                 Int?
+  embed_timestamp             Boolean?
 
   @@id([guild_id, type])
 }
