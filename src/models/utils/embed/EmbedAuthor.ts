@@ -3,7 +3,7 @@ import { InputType, Field } from 'type-graphql';
 const nullable = { nullable: true };
 
 @InputType()
-class EmbedAuthorInput {
+class EmbedAuthorBase {
     @Field()
     	name: string;
 
@@ -17,4 +17,4 @@ class EmbedAuthorInput {
     	proxy_icon_url?: string;
 }
 
-export { EmbedAuthorInput };
+export { EmbedAuthorBase };

@@ -1,9 +1,8 @@
-import { InputType, Field } from 'type-graphql';
+import { Field } from 'type-graphql';
 
 const nullable = { nullable: true };
 
-@InputType()
-class EmbedFooterInput {
+class EmbedFooterBase {
     @Field()
     	text: string;
 
@@ -14,4 +13,4 @@ class EmbedFooterInput {
     	proxy_icon_url?: string;
 }
 
-export { EmbedFooterInput };
+export { EmbedFooterBase };

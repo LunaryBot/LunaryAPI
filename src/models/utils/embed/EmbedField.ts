@@ -1,9 +1,8 @@
-import { InputType, Field } from 'type-graphql';
+import { Field } from 'type-graphql';
 
 const nullable = { nullable: true };
 
-@InputType()
-class EmbedFieldInput {
+class EmbedFieldBase {
     @Field()
     	name: string;
 
@@ -14,4 +13,4 @@ class EmbedFieldInput {
     	inline?: boolean;
 }
 
-export { EmbedFieldInput };
+export { EmbedFieldBase };

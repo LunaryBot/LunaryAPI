@@ -1,4 +1,4 @@
-import { InputType, Field } from 'type-graphql';
+import { Field } from 'type-graphql';
 
 const nullable = { nullable: true };
 
@@ -16,10 +16,8 @@ class Base {
     	width?: number;
 }
 
-@InputType()
-class EmbedImageInput extends Base {}
+class EmbedImageBase extends Base {}
 
-@InputType()
-class EmbedThumbnailInput extends Base {}
+class EmbedThumbnailBase extends Base {}
 
-export { EmbedImageInput, EmbedThumbnailInput };
+export { EmbedImageBase, EmbedThumbnailBase };
