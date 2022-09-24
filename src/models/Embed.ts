@@ -1,3 +1,4 @@
+import { EmbedType } from '@prisma/client';
 import { ObjectType, Field } from 'type-graphql';
 
 import { 
@@ -28,6 +29,12 @@ class EmbedThumbnail extends EmbedThumbnailBase {}
 
 @ObjectType()
 class Embed extends EmbedBase {
+    @Field()
+    	type: EmbedType;
+    
+    @Field()
+    	guild_id: string;
+        
     @Field(type => EmbedFooter, nullable)
     	footer?: EmbedFooter;
 
