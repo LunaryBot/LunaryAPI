@@ -29,6 +29,14 @@ class GuildController {
 
 				const data = GuildGeneralSettingsValidation(raw, currentData);
 
+				await this.apollo.prisma.guild.upsert({
+					where: {
+						id: guildId,
+					},
+					create: { ...data, id: guildId },
+					update: data,
+				});
+
 				return { ...data, features: new GuildFeatures(data.features as bigint || 0n).toArray(), id: guildId };
 			}
 
@@ -71,7 +79,7 @@ class GuildController {
 					}));
 				});
 
-				this.apollo.prisma.$transaction(args);
+				await this.apollo.prisma.$transaction(args);
 
 				return JSON.parse(JSON.stringify(data, (k, v) => typeof v == 'bigint' ? Number(v) : v));
 			}
