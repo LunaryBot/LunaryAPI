@@ -28,6 +28,10 @@ model Embed {
   embed_timestamp             String?
   embed_title                 String?
   embed_url                   String?
+  embed_author_icon           String?
+  embed_author_name           String?
+  embed_author_proxy_url      String?
+  embed_author_url            String?
 
   @@id([guild_id, type])
 }
