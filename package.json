@@ -10,11 +10,11 @@
 		"start": "TS_NODE_BASEURL=./build node -r tsconfig-paths/register .",
 		"test": "jest",
 		"prisma:dev": "prisma migrate dev && prisma generate",
-		"prisma:fetch": "prisma introspect && prisma generate",
+		"prisma:fetch": "prisma prisma db pull && prisma generate",
 		"prisma:format": "prisma format",
 		"prisma:generate": "prisma generate",
-		"prisma:introspect": "prisma introspect",
-		"prisma:migrate": "prisma migrate dev"
+		"prisma:migrate": "prisma migrate dev",
+		"prisma:pull": "prisma prisma db pull"
 	},
 	"repository": "https://github.com/lunarybot/lunaryapi",
 	"author": "JVOPINHO",
