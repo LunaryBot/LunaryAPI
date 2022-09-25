@@ -1,9 +1,9 @@
-import { InputType, Field } from 'type-graphql';
+import { ObjectType, Field } from 'type-graphql';
 
 const nullable = { nullable: true };
 
-@InputType()
-class EmbedAuthorBase {
+@ObjectType()
+class EmbedAuthor {
     @Field()
     	name: string;
 
@@ -17,4 +17,4 @@ class EmbedAuthorBase {
     	proxy_icon_url?: string;
 }
 
-export { EmbedAuthorBase };
+export { EmbedAuthor };

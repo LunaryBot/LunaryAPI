@@ -1,8 +1,9 @@
-import { Field } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 
 const nullable = { nullable: true };
 
-class Base {
+@ObjectType()
+class EmbedImage {
     @Field()
     	url: string;
 
@@ -16,8 +17,4 @@ class Base {
     	width?: number;
 }
 
-class EmbedImageBase extends Base {}
-
-class EmbedThumbnailBase extends Base {}
-
-export { EmbedImageBase, EmbedThumbnailBase };
+export { EmbedImage };

@@ -1,0 +1,52 @@
+import { Field, ObjectType } from 'type-graphql';
+
+import { EmbedAuthor } from './EmbedAuthor';
+import { EmbedField } from './EmbedField';
+import { EmbedFooter } from './EmbedFooter';
+import { EmbedImage } from './EmbedImage';
+
+const nullable = { nullable: true };
+
+@ObjectType()
+class Embed {
+    @Field(type => String, nullable)
+    	content?: string;
+
+    @Field(type => String, nullable)
+    	title?: string;
+
+    @Field(type => String, nullable)
+    	description?: string;
+
+    @Field(type => String, nullable)
+    	url?: string;
+
+    @Field(type => Boolean, nullable)
+    	timestamp?: boolean;
+
+    @Field(type => Number, nullable)
+    	color?: number;
+
+	@Field(type => EmbedFooter, nullable)
+    	footer?: EmbedFooter;
+
+    @Field(type => EmbedImage, nullable)
+    	image?: EmbedImage;
+
+    @Field(type => EmbedImage, nullable)
+    	thumbnail?: EmbedImage;
+
+    @Field(type => EmbedAuthor, nullable)
+    	author?: EmbedAuthor;
+
+    @Field(type => [EmbedField], nullable)
+    	fields?: EmbedField[];
+}
+
+export { 
+	Embed,
+	EmbedAuthor,
+	EmbedField,
+	EmbedFooter,
+	EmbedImage,
+};
