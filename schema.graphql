@@ -27,6 +27,88 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
+type Embed {
+  author: EmbedAuthor
+  color: Float
+  content: String
+  description: String
+  fields: [EmbedField!]
+  footer: EmbedFooter
+  guild_id: String!
+  image: EmbedImage
+  thumbnail: EmbedImage
+  timestamp: Boolean
+  title: String
+  type: String!
+  url: String
+}
+
+type EmbedAuthor {
+  icon_url: String
+  name: String!
+  proxy_icon_url: String
+  url: String
+}
+
+input EmbedAuthorInput {
+  icon_url: String
+  name: String!
+  proxy_icon_url: String
+  url: String
+}
+
+type EmbedField {
+  inline: Boolean
+  name: String!
+  value: String!
+}
+
+input EmbedFieldInput {
+  inline: Boolean
+  name: String!
+  value: String!
+}
+
+type EmbedFooter {
+  icon_url: String
+  proxy_icon_url: String
+  text: String!
+}
+
+input EmbedFooterInput {
+  icon_url: String
+  proxy_icon_url: String
+  text: String!
+}
+
+type EmbedImage {
+  height: Float
+  proxy_url: String
+  url: String!
+  width: Float
+}
+
+input EmbedImageInput {
+  height: Float
+  proxy_url: String
+  url: String!
+  width: Float
+}
+
+input EmbedInput {
+  author: EmbedAuthorInput
+  color: Float
+  content: String
+  description: String
+  fields: [EmbedFieldInput!]
+  footer: EmbedFooterInput
+  image: EmbedImageInput
+  thumbnail: EmbedImageInput
+  timestamp: Boolean
+  title: String
+  url: String
+}
+
 type Guild {
   banner: String
   channels: [Channel!]!
@@ -85,6 +167,7 @@ type Query {
   CurrentUser: User!
   CurrentUserGuilds(filter: Boolean): [AbstractGuild!]!
   Guild(id: String!): Guild!
+  GuildEmbeds(id: String!): Embed!
   ping(message: String!): String!
   Punishments(after: DateTime, author_id: String, before: DateTime, type: String, user_id: String): [Punishment!]!
 }

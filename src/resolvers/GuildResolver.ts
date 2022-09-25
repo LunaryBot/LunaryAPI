@@ -16,6 +16,8 @@ class GuildResolver {
 	@Query(type => Embed)
     async GuildEmbeds(@Ctx() context: MyContext, @Arg('id') id: string) {
     	return {
+    		type: EmbedType.BAN,
+    		guild_id: id,
     		content: 'a',
     	};
     }

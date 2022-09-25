@@ -1,3 +1,4 @@
+import { EmbedType } from '@prisma/client';
 import { Field, ObjectType } from 'type-graphql';
 
 import { EmbedAuthor } from './EmbedAuthor';
@@ -9,6 +10,12 @@ const nullable = { nullable: true };
 
 @ObjectType()
 class Embed {
+	@Field()
+		type: EmbedType;
+
+	@Field()
+		guild_id: string;
+
     @Field(type => String, nullable)
     	content?: string;
 
