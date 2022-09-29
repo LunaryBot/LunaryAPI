@@ -8,30 +8,10 @@ datasource db {
 }
 
 model Embed {
-  guild_id                    String
-  type                        EmbedType
-  content                     String?
-  embed_description           String?
-  embed_fields                Json[]    @default([])
-  embed_footer_icon_url       String?
-  embed_footer_proxy_icon_url String?
-  embed_footer_text           String?
-  embed_image_height          Int?
-  embed_image_proxy_url       String?
-  embed_image_url             String?
-  embed_image_width           Int?
-  embed_thumbnail_height      Int?
-  embed_thumbnail_proxy_url   String?
-  embed_thumbnail_url         String?
-  embed_thumbnail_width       Int?
-  embed_title                 String?
-  embed_url                   String?
-  embed_author_icon           String?
-  embed_author_name           String?
-  embed_author_proxy_url      String?
-  embed_author_url            String?
-  embed_color                 Int?
-  embed_timestamp             Boolean?
+  guild_id String
+  type     EmbedType
+  content  String?
+  embeds   Json[]    @default([])
 
   @@id([guild_id, type])
 }
