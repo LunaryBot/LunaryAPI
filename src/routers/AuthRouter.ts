@@ -5,8 +5,6 @@ import BaseRouter from '@BaseRouter';
 
 import { URLS } from '@utils/Constants';
 
-import { Routes } from 'discord-api-types/v10';
-
 class AuthRouter extends BaseRouter {
 	constructor(apollo: Apollo) {
 		super({ path: '/auth', apollo });

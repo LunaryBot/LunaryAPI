@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import './tools/Logger';
 
 import { GraphQLError } from 'graphql';
-import path from 'path';
+import path from 'node:path';
 import { buildSchema } from 'type-graphql';
 
 import AuthRouter from '@routers/AuthRouter';

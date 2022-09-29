@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { ApolloServer, Config, ExpressContext } from 'apollo-server-express';
 import express, { Express, Request } from 'express';
-import http from 'http';
+import http from 'node:http';
 import { WebSocket } from 'ws';
 
 import BaseRouter from '@BaseRouter';

@@ -1,5 +1,5 @@
-import winston, { Logger, LeveledLogMethod,  } from 'winston';
 import chalk from 'chalk';
+import winston, { Logger, LeveledLogMethod  } from 'winston';
 
 const { printf, combine, timestamp, colorize } = winston.format; 
 
@@ -18,7 +18,7 @@ const config = {
 		graphql: 'magenta',
 		rest: 'cyan',
 		gateway: 'grey',
-	}
+	},
 };
 
 interface MyLogger extends Logger {
@@ -32,7 +32,7 @@ winston.addColors(config.colors);
 winston.loggers.add('default', {
 	format: combine(
 		winston.format.simple(),
-		timestamp(),
+		timestamp()
 	),
 	levels: config.levels,
 	level: 'info',
@@ -44,8 +44,8 @@ winston.loggers.add('default', {
 					if(details && typeof details === 'object') details = JSON.stringify(details);
 
 					return `${timestamp} ${level}  ${process.pid} --- ${label ? `[${chalk.cyan(label)}]:` : ''} ${message}${details ? `\n${details}` : ''}`;
-				}),
-			)
+				})
+			),
 		}),
 		new winston.transports.File({ 
 			filename: `logs/combined_${new Date().toISOString()}-${process.pid}.log`,
@@ -54,8 +54,8 @@ winston.loggers.add('default', {
 					if(details && typeof details === 'object') details = JSON.stringify(details);
 					
 					return `${timestamp} ${level}  ${process.pid} --- ${label ? `[${label}]:` : ''} ${message}${details ? `\n${details}` : ''}`;
-				}),
-			)
+				})
+			),
 		}),
 	],
 	exitOnError: false,
