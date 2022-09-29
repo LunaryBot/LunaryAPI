@@ -8,11 +8,8 @@ import { EmbedImageInput } from './EmbedImage';
 const nullable = { nullable: true };
 
 @InputType()
-class EmbedInput {
-    @Field(type => String, nullable)
-    	content?: string;
-
-    @Field(type => String, nullable)
+class _EmbedInput {
+	@Field(type => String, nullable)
     	title?: string;
 
     @Field(type => String, nullable)
@@ -41,6 +38,18 @@ class EmbedInput {
 
     @Field(type => [EmbedFieldInput], nullable)
     	fields?: EmbedFieldInput[];
+}
+
+@InputType()
+class EmbedInput {
+	@Field()
+		type: string;
+
+    @Field(type => String, nullable)
+    	content?: string;
+
+	@Field(type => _EmbedInput, nullable)
+		embed?: _EmbedInput;
 }
 
 export { 

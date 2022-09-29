@@ -9,17 +9,8 @@ import { EmbedImage } from './EmbedImage';
 const nullable = { nullable: true };
 
 @ObjectType()
-class Embed {
-	@Field()
-		type: EmbedType;
-
-	@Field()
-		guild_id: string;
-
-    @Field(type => String, nullable)
-    	content?: string;
-
-    @Field(type => String, nullable)
+class _Embed {
+	@Field(type => String, nullable)
     	title?: string;
 
     @Field(type => String, nullable)
@@ -48,6 +39,21 @@ class Embed {
 
     @Field(type => [EmbedField], nullable)
     	fields?: EmbedField[];
+}
+
+@ObjectType()
+class Embed {
+	@Field()
+		type: EmbedType;
+
+	@Field()
+		guild_id: string;
+
+    @Field(type => String, nullable)
+    	content?: string;
+
+    @Field(type => _Embed, nullable)
+    	embed?: _Embed;
 }
 
 export { 

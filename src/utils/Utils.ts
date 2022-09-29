@@ -15,7 +15,7 @@ class Utils {
 		const dataFormated: any = {};
 		  
 		Object.entries(embed).map(([key, value]) => {
-			if(value == null) return;
+			if(value == null || key == 'guild_id') return;
 			
 			const inEmbed = key.startsWith('embed_');
 
@@ -43,7 +43,7 @@ class Utils {
 			}
 		});
 		  
-		return dataFormated as EmbedFormated;
+		return { ...dataFormated, guild_id: embed.guild_id } as EmbedFormated;
 	}
 
 	public static formatHumanPunishmentId(punishmentsCount: number): string {
