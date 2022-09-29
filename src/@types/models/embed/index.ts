@@ -52,8 +52,8 @@ class Embed {
     @Field(type => String, nullable)
     	content?: string;
 
-    @Field(type => _Embed, nullable)
-    	embed?: _Embed;
+    @Field(type => [_Embed], nullable)
+    	embeds?: _Embed[];
 }
 
 export { 

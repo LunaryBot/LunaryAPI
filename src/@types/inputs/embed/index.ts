@@ -48,8 +48,8 @@ class EmbedInput {
     @Field(type => String, nullable)
     	content?: string;
 
-	@Field(type => _EmbedInput, nullable)
-		embed?: _EmbedInput;
+	@Field(type => [_EmbedInput], nullable)
+		embed?: _EmbedInput[];
 }
 
 export { 
