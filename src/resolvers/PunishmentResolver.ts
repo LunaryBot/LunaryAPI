@@ -1,9 +1,8 @@
 import { PunishmentType } from '@prisma/client';
 import { Arg, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 
-import { Punishment } from '@models';
-
 import { MyContext } from '../@types';
+import { Punishment } from '@models';
 
 const nullable = { nullable: true };
 

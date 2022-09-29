@@ -1,51 +1,6 @@
-import { Embed, EmbedType } from '@prisma/client';
-
-import { APIEmbed } from 'discord-api-types/v10';
-
 const az = [ ...'abcdefghijklmnopqrstuvwxyz' ];
 
-interface EmbedFormated extends Omit<APIEmbed, 'type'> {
-	type: EmbedType;
-	guild_id: string;
-	content?: string;
-}
-
 class Utils {
-	public static formatDatabaseEmbed(embed: Embed) {
-		const dataFormated: any = {};
-		  
-		Object.entries(embed).map(([key, value]) => {
-			if(value == null || key == 'guild_id') return;
-			
-			const inEmbed = key.startsWith('embed_');
-
-			if(inEmbed && !dataFormated.embed) {
-				dataFormated.embed = {};
-			}
-	
-			key = key.replace('embed_', '');
-				
-			const [parent, ...keys] = key.split('_');
-	
-			const d = inEmbed ? dataFormated.embed : dataFormated;
-			
-			if(!keys.length) d[parent] = value;
-			else {
-				const refKey = keys.join('_');
-	
-				if(!d[parent]) {
-					d[parent] = {};
-				}
-	
-				const ref = d[parent];
-				  
-				ref[refKey] = value;
-			}
-		});
-		  
-		return { ...dataFormated, guild_id: embed.guild_id } as EmbedFormated;
-	}
-
 	public static formatHumanPunishmentId(punishmentsCount: number): string {
 		const a = (punishmentsCount + 1) % 1000000;
 

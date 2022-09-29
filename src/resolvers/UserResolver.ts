@@ -1,8 +1,7 @@
 import { Resolver, Query, Ctx, Authorized, Arg } from 'type-graphql';
 
-import { AbstractGuild, User } from '@models';
-
 import { MyContext } from '../@types';
+import { AbstractGuild, User } from '@models';
 import { PermissionFlagsBits } from 'discord-api-types/v10';
 
 @Resolver()

@@ -12,7 +12,7 @@
         "removeComments": true,
         "strict": true,
         "typeRoots": [
-            "./src/@types",
+            "./src/@types/*.d",
             "./node_modules/@types"
         ],
         "esModuleInterop": true,
@@ -29,11 +29,12 @@
             "@BaseRouter": ["./structures/BaseRouter"],
             "@Database": ["./structures/Database"],
             "@controllers/*": ["./controllers/*"],
-            "@models": ["./models"],
             "@routers/*": ["./routers/*"],
             "@structures/*": ["./structures/*"],
             "@validation": ["./utils/validation"],
-            "@utils/*": ["./utils/*"]
+            "@utils/*": ["./utils/*"],
+            "@models": ["./@types/models"],
+            "@inputs": ["./@types/inputs"]
         }
     },
     "exclude": [

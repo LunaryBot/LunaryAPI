@@ -1,4 +1,3 @@
-import Role from 'models/Role';
 import { Field, ID, ObjectType, UseMiddleware } from 'type-graphql';
 
 import DefaultValue from '@utils/DefaultValue';
@@ -6,6 +5,7 @@ import DefaultValue from '@utils/DefaultValue';
 import { GuildFeature } from 'discord-api-types/v10';
 
 import Channel from '../Channel';
+import Role from '../Role';
 
 const nullable = { nullable: true };
 
