@@ -16,6 +16,7 @@ class Schema {
 
 	private _test(target?: any, schema?: SchemaType) {
 		if(target == undefined) return false;
+		console.log(schema);
 		switch (this._type(schema)) {
 			case String:
 				if(typeof target != 'string') return false;
@@ -45,8 +46,10 @@ class Schema {
 			case Object:
 				if(typeof target != 'object') return false;
 				for(const key of Object.keys(schema as SchemaO)) {
-					if(!(key in target)) return false;
-					if(!this._test(target[key], (schema as SchemaO)[key])) return false;
+					if((!(key in target) || target[key] == null || target[key] == undefined)) {
+						if(((schema as SchemaO)[key] as SchemaOption).nullable !== true) return false;
+					}
+					else if(!this._test(target[key], (schema as SchemaO)[key])) return false;
 				}
 				break;
 		}
