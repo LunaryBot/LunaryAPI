@@ -1,4 +1,6 @@
-import { ObjectType, Field } from 'type-graphql';
+import { ObjectType, Field, UseMiddleware } from 'type-graphql';
+
+import DefaultValue from '@utils/DefaultValue';
 
 const nullable = { nullable: true };
 
@@ -10,7 +12,8 @@ class EmbedField {
     @Field()
     	value: string;
 
-    @Field(type => Boolean, nullable)
+    @Field(type => Boolean, { ...nullable, defaultValue: false })
+    @UseMiddleware(DefaultValue(false))
     	inline?: boolean;
 }
 
