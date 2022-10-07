@@ -16,7 +16,6 @@ class Schema {
 
 	private _test(target?: any, schema?: SchemaType) {
 		if(target == undefined) return false;
-		console.log(schema);
 		switch (this._type(schema)) {
 			case String:
 				if(typeof target != 'string') return false;
