@@ -29,11 +29,12 @@ const EmbedSchema = new Schema({
 				icon_url: make(String),
 				proxy_icon_url: make(String),
 			},
-			fields: make([{
-				name: make(String, false),
-				value: make(String, false),
-				inline: make(Boolean),
-			},
+			fields: make([
+				{
+					name: make(String, false),
+					value: make(String, false),
+					inline: make(Boolean),
+				},
 			]),
 		},
 	]),
