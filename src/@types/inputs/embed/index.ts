@@ -42,9 +42,6 @@ class _EmbedInput {
 
 @InputType()
 class EmbedInput {
-	@Field()
-		type: string;
-
     @Field(type => String, nullable)
     	content?: string;
 
