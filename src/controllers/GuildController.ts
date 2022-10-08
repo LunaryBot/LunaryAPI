@@ -1,8 +1,13 @@
-import { Guild, Prisma, PrismaPromise } from '@prisma/client';
+import { EmbedType, Guild, PrismaPromise, Embed as DatabaseEmbed } from '@prisma/client';
 
-import { GuildGeneralSettingsValidation, GuildPermissionsValidation } from '@validation';
+import { GuildEmbedValidation, GuildGeneralSettingsValidation, GuildPermissionsValidation } from '@validation';
 
+import ApiError from '@utils/ApiError';
 import GuildFeatures from '@utils/GuildFeatures';
+
+import { Embed } from '@types';
+
+const embedTypes = Object.keys(EmbedType);
 
 class GuildController {
 	public readonly apollo: Apollo;
@@ -18,7 +23,18 @@ class GuildController {
 		return await this.apollo.redis.get(`guilds:${guildId}`);
 	}
 
-	async update(guildId: string, { op, raw }: { op: 'moderation' | 'permissions', raw: any }) {
+	async fetchEmbed(guildId: string, type?: EmbedType) {
+		const data = await this.apollo.prisma.embed.findMany({
+			where: {
+				guild_id: guildId,
+				type,
+			},
+		});
+
+		return data as Embed[];
+	}
+
+	async update(guildId: string, { op, raw }: { op: 'moderation' | 'permissions' | 'embeds', raw: any }) {
 		switch (op) {
 			case 'moderation': {
 				const currentData = await this.apollo.prisma.guild.findUnique({
@@ -82,6 +98,48 @@ class GuildController {
 				await this.apollo.prisma.$transaction(args);
 
 				return JSON.parse(JSON.stringify(data, (k, v) => typeof v == 'bigint' ? Number(v) : v));
+			}
+
+			case 'embeds': {
+				const { type, ...embed } = raw as Omit<DatabaseEmbed, 'guild_id'>;
+
+				if(!embedTypes.includes(type)) {
+					throw new ApiError('Invalid embed type');
+				}
+
+				if(embed == null || embed == undefined) {
+					try {
+						await this.apollo.prisma.embed.delete({
+							where: {
+								guild_id_type: {
+									guild_id: guildId,
+									type,
+								},
+							},
+						});
+					} catch (_) {
+						throw new ApiError('Unknown Embed', 204);
+					} finally {
+						return true;
+					}
+				}
+
+				const data = GuildEmbedValidation(embed);
+
+				return await this.apollo.prisma.embed.upsert({
+					where: {
+						guild_id_type: {
+							guild_id: guildId,
+							type,
+						},
+					},
+					create: {
+						guild_id: guildId,
+						type,
+						...data,
+					},
+					update: data,
+				});
 			}
 		}
 	}
