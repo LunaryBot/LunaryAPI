@@ -3,6 +3,32 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type _Embed {
+  author: EmbedAuthor
+  color: Float
+  description: String
+  fields: [EmbedField!]
+  footer: EmbedFooter
+  image: EmbedImage
+  thumbnail: EmbedImage
+  timestamp: Boolean
+  title: String
+  url: String
+}
+
+input _EmbedInput {
+  author: EmbedAuthorInput
+  color: Float
+  description: String
+  fields: [EmbedFieldInput!]
+  footer: EmbedFooterInput
+  image: EmbedImageInput
+  thumbnail: EmbedImageInput
+  timestamp: Boolean
+  title: String
+  url: String
+}
+
 type AbstractGuild {
   features: [String!]
   icon: String
@@ -28,19 +54,10 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 scalar DateTime
 
 type Embed {
-  author: EmbedAuthor
-  color: Float
   content: String
-  description: String
-  fields: [EmbedField!]
-  footer: EmbedFooter
+  embeds: [_Embed!]
   guild_id: String!
-  image: EmbedImage
-  thumbnail: EmbedImage
-  timestamp: Boolean
-  title: String
   type: String!
-  url: String
 }
 
 type EmbedAuthor {
@@ -96,17 +113,8 @@ input EmbedImageInput {
 }
 
 input EmbedInput {
-  author: EmbedAuthorInput
-  color: Float
   content: String
-  description: String
-  fields: [EmbedFieldInput!]
-  footer: EmbedFooterInput
-  image: EmbedImageInput
-  thumbnail: EmbedImageInput
-  timestamp: Boolean
-  title: String
-  url: String
+  embeds: [_EmbedInput!]
 }
 
 type Guild {
@@ -146,8 +154,10 @@ input GuildSettingsInput {
 }
 
 type Mutation {
-  ModifyGuildModerationSettings(id: String!, raw: GuildSettingsInput!): GuildSettings!
-  ModifyGuildPermissions(id: String!, raw: [GuildPermissionsInput!]!): [GuildPermissions!]!
+  DeleteGuildEmbed(id: String!, type: String!): Boolean!
+  ModifyGuildEmbed(data: EmbedInput!, id: String!, type: String!): Embed!
+  ModifyGuildModerationSettings(data: GuildSettingsInput!, id: String!): GuildSettings!
+  ModifyGuildPermissions(data: [GuildPermissionsInput!]!, id: String!): [GuildPermissions!]!
 }
 
 type Punishment {
@@ -167,7 +177,7 @@ type Query {
   CurrentUser: User!
   CurrentUserGuilds(filter: Boolean): [AbstractGuild!]!
   Guild(id: String!): Guild!
-  GuildEmbeds(id: String!): Embed!
+  GuildEmbeds(id: String!, type: String): [Embed!]
   ping(message: String!): String!
   Punishments(after: DateTime, author_id: String, before: DateTime, type: String, user_id: String): [Punishment!]!
 }
