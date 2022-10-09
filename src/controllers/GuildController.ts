@@ -107,7 +107,7 @@ class GuildController {
 					throw new ApiError('Invalid embed type');
 				}
 
-				if(embed == null || embed == undefined) {
+				if(Object.keys(embed).length <= 0) {
 					try {
 						await this.apollo.prisma.embed.delete({
 							where: {
