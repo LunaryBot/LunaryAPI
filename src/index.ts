@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import 'reflect-metadata';
 import './tools/Logger';
+import './tools/String';
 
 import { GraphQLError } from 'graphql';
 import path from 'node:path';
