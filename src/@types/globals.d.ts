@@ -30,6 +30,17 @@ declare global {
         }
     }
 
+    interface String {
+        checkSimilarityStrings(string: string): number;
+        firstCharInLowerCase(): string;
+        isLowerCase(): boolean;
+        isUpperCase(): boolean;
+        removeAccents(): string;
+        shorten(length: number): string;
+        toTitleCase(): string;
+        wordWrap(maxWidth: number): string
+    }
+
     declare type Apollo = _Apollo;
     const logger: MyLogger;
 }
