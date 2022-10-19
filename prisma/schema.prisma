@@ -55,7 +55,7 @@ model Reason {
   id       String           @id @unique
   text     String
   guild_id String
-  type     PunishmentType[]
+  types    PunishmentType[]
   keys     String[]         @default([])
   duration Int?
   days     Int?

@@ -9,4 +9,6 @@ test/
 
 logs/
 
+prisma/migrations
+
 apollo.config.js
