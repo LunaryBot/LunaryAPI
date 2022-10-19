@@ -52,7 +52,7 @@ model Punishment {
 }
 
 model Reason {
-  id       String           @id @unique
+  id       String           @id @unique @default(cuid())
   text     String
   guild_id String
   types    PunishmentType[]
