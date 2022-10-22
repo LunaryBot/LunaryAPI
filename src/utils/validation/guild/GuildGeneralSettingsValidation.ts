@@ -30,7 +30,7 @@ function GuildGeneralSettingsValidation(newData: GuildGeneralSettings, currentDa
 		} else {
 			const indexs = newData.features.map((feature, index) => feature === 'useHTMLTranscript' && index).filter(x => typeof x == 'number') as number[];
 
-		    errors.push(...indexs.map(index => `raw.features.${index}: required premium to this feature (useHTMLTranscript)`));
+		    errors.push(...indexs.map(index => `raw.features[${index}]: required premium to this feature (useHTMLTranscript)`));
 		}
 	}
 

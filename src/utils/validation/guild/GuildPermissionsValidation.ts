@@ -28,7 +28,7 @@ function GuildPermissionsValidation(newData: TGuildPermissions[], guildId: strin
 			}
 		} finally {
 			if(isError) {
-				errors.push(`raw.${i}: BitField Invalid`);
+				errors.push(`raw[${i}]: BitField Invalid`);
 			}
 
 			return { permissions: BigInt(permissions), type, id };
