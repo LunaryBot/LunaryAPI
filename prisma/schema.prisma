@@ -47,12 +47,12 @@ model Punishment {
   flags      BigInt         @default(0)
   duration   Int?
   reason     String?
-  reason_id  String?
+  reason_id  Int?
   deleted    Boolean?       @default(false)
 }
 
 model Reason {
-  id       String           @id @unique @default(cuid())
+  id       Int              @id @unique @default(autoincrement())
   text     String
   guild_id String
   types    PunishmentType[]
