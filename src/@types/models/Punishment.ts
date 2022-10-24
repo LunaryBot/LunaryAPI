@@ -1,4 +1,4 @@
-import { Punishment as _Punishment, PunishmentType, Reason } from '@prisma/client';
+import { Punishment as _Punishment, PunishmentType, Reason as _Reason } from '@prisma/client';
 import { Field, ID, ObjectType, UseMiddleware } from 'type-graphql';
 
 import DefaultValue from '@utils/DefaultValue';
@@ -23,8 +23,8 @@ class Punishment implements Omit<_Punishment, 'author_id' | 'user_id' | 'guild_i
     @Field(type => ID)
     	id: string;
     
-    @Field(type => ReasonFormated, nullable)
-    	reason: ReasonFormated | null;
+    @Field(type => String, nullable)
+    	reason: String | null;
 
     @Field(type => String)
     	type: PunishmentType;
@@ -40,31 +40,6 @@ class Punishment implements Omit<_Punishment, 'author_id' | 'user_id' | 'guild_i
 
     @Field(type => AbstractGuild)
     	guild: AbstractGuild;
-}
-
-@ObjectType()
-class ReasonFormated implements Reason {
-    @Field(type => Number, nullable)
-    	days: number | null;
-        
-    @Field(type => Number, nullable)
-    	duration: number | null;
-
-    @Field(nullable)
-    	guild_id: string;
-
-    @Field(nullable)
-    	id: string;
-
-    @Field()
-    	text: string;
-
-    @Field(type => [String])
-    @UseMiddleware(DefaultValue([]))
-    	keys: string[];
-
-    @Field(type => [String], nullable)
-    	type: PunishmentType[];
 }
 
 export { Punishment };
