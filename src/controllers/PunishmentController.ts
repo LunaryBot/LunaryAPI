@@ -1,10 +1,10 @@
 import { Prisma, PunishmentType, Reason } from '@prisma/client';
 
-import { AbstractGuild } from '@models';
 
 import { Utils } from '@utils/Utils';
 
 import { PunishmentFilter } from '../@types';
+import { AbstractGuild } from '@models';
 import { APIGuild, APIUser } from 'discord-api-types/v10';
 
 
@@ -38,7 +38,7 @@ class PunishmentController {
 		}).then(async punishments => {
 			const users: string[] = [];
 		    const guilds: string[] = [];
-			const reasonsIds: string[] = [];
+			const reasonsIds: number[] = [];
 
 			punishments.forEach(punishment => {
 				([punishment.user_id, punishment.author_id]).forEach(user => !users.includes(user) && users.push(user));
@@ -99,6 +99,8 @@ class PunishmentController {
 
 		return punishments;
 	}
+
+	async update(punishmentId: string) {}
 
 	private where(filter: PunishmentFilter = {}) {
 		const where = {} as any;
