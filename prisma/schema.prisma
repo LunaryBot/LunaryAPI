@@ -52,14 +52,16 @@ model Punishment {
 }
 
 model Reason {
-  id       Int              @id @unique @default(autoincrement())
-  text     String
+  id       Int              @default(autoincrement())
   guild_id String
+  text     String
   types    PunishmentType[]
   keys     String[]         @default([])
   duration Int?
   days     Int?
-  Guild    Guild            @relation(fields: [guild_id], references: [id])
+  Guild    Guild?           @relation(fields: [guild_id], references: [id])
+
+  @@id([guild_id, id])
 }
 
 model User {
