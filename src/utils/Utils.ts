@@ -2,9 +2,9 @@ const az = [ ...'abcdefghijklmnopqrstuvwxyz' ];
 
 class Utils {
 	public static formatHumanPunishmentId(punishmentsCount: number): string {
-		const a = (punishmentsCount + 1) % 1000000;
+		const a = (punishmentsCount) % 1000000;
 
-		const id = az[Math.floor((punishmentsCount + 1) / 1000000)].toUpperCase() + '0'.repeat(6 - a.toString().length) + a;
+		const id = az[Math.floor((punishmentsCount) / 1000000)].toUpperCase() + '0'.repeat(6 - a.toString().length) + a;
         
 		return id;
 	}
