@@ -77,11 +77,7 @@ class PunishmentController {
 				} as any;
 
 				if(reason || punishment.reason) {
-					data.reason = {
-						text: reason?.text || punishment.reason,
-					};
-
-					if(reason?.id) data.reason.id = reason?.id;
+					data.reason = reason?.text || punishment.reason;
 				}
 
                 // @ts-ignore
