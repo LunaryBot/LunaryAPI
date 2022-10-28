@@ -1,6 +1,6 @@
-import { EmbedType, Guild, PrismaPromise, Embed as DatabaseEmbed } from '@prisma/client';
+import { EmbedType, Guild, PrismaPromise, Embed as DatabaseEmbed, Reason as DatabaseReason } from '@prisma/client';
 
-import { GuildEmbedValidation, GuildGeneralSettingsValidation, GuildPermissionsValidation } from '@validation';
+import { GuildEmbedValidation, GuildGeneralSettingsValidation, GuildPermissionsValidation, GuildReasonsValidation } from '@validation';
 
 import ApiError from '@utils/ApiError';
 import GuildFeatures from '@utils/GuildFeatures';
@@ -34,7 +34,15 @@ class GuildController {
 		return data as Embed[];
 	}
 
-	async update(guildId: string, { op, raw }: { op: 'moderation' | 'permissions' | 'embeds', raw: any }) {
+	fetchReasons(guildId: string) {
+		return this.apollo.prisma.reason.findMany({
+			where: {
+				guild_id: guildId,
+			},
+		});
+	}
+
+	async update(guildId: string, { op, raw }: { op: 'moderation' | 'permissions' | 'embeds' | 'reasons', raw: any }) {
 		switch (op) {
 			case 'moderation': {
 				const currentData = await this.apollo.prisma.guild.findUnique({
@@ -140,6 +148,56 @@ class GuildController {
 					},
 					update: data,
 				});
+			}
+
+			case 'reasons': {
+				const data = GuildReasonsValidation(raw);
+
+				const ids = data.map(({ id }) => id);
+
+				const currentData = await this.apollo.prisma.reason.findMany({
+					where: {
+						guild_id: guildId,
+					},
+				});
+				
+				const deleteReasons = currentData.filter(({ id }) => !ids.includes(id));
+
+				// console.log(ids, deleteReasons);
+
+				const args: PrismaPromise<any>[] = [];
+
+				if(deleteReasons.length) {
+					args.push(this.apollo.prisma.reason.deleteMany({
+						where: {
+							id: {
+								in: deleteReasons.map(({ id }) => id),
+							},
+							guild_id: guildId,
+						},
+					}));
+
+					deleteReasons.forEach(reason => {
+						args.push(this.apollo.controllers.punishments.updateManyReasons(reason.id, reason.text));
+					});
+				}
+
+				data.forEach(reason => {
+					args.push(this.apollo.prisma.reason.upsert({
+						where: {
+							guild_id_id: {
+								guild_id: guildId,
+								id: reason.id ?? -1,
+							},
+						},
+						create: { ...reason, guild_id: guildId },
+						update: reason,
+					}));
+				});
+
+				const response = await this.apollo.prisma.$transaction(args);
+
+				return response.filter(arg => typeof arg.count == 'undefined');
 			}
 		}
 	}
