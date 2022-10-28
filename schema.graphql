@@ -158,7 +158,7 @@ type Mutation {
   ModifyGuildEmbed(data: EmbedInput!, id: String!, type: String!): Embed!
   ModifyGuildModerationSettings(data: GuildSettingsInput!, id: String!): GuildSettings!
   ModifyGuildPermissions(data: [GuildPermissionsInput!]!, id: String!): [GuildPermissions!]!
-  ModifyGuildReasons(data: EmbedInput!, id: String!, type: String!): [Reason!]!
+  ModifyGuildReasons(data: [ReasonInput!]!, id: String!): [Reason!]!
 }
 
 type Punishment {
@@ -179,6 +179,7 @@ type Query {
   CurrentUserGuilds(filter: Boolean): [AbstractGuild!]!
   Guild(id: String!): Guild!
   GuildEmbeds(id: String!, type: String): [Embed!]
+  GuildReasons(id: String!): [Reason!]!
   ping(message: String!): String!
   Punishments(after: DateTime, author_id: String, before: DateTime, type: String, user_id: String): [Punishment!]!
 }

@@ -4,12 +4,12 @@ import { Resolver, Query, Ctx, Authorized, Arg, Mutation } from 'type-graphql';
 import ApiError from '@utils/ApiError';
 
 import { MyContext } from '../@types';
-import { EmbedInput, GuildPermissionsInput, GuildSettingsInput } from '@inputs';
-import { Embed, Guild, GuildPermissions, GuildSettings } from '@models';
+import { EmbedInput, GuildPermissionsInput, GuildSettingsInput, ReasonInput } from '@inputs';
+import { Embed, Guild, GuildPermissions, GuildSettings, Reason } from '@models';
 
 @Resolver()
 class GuildResolver {
-    @Authorized()
+    // @Authorized()
     @Query(type => Guild)
 	async Guild(
 		@Ctx() context: MyContext, 
@@ -31,6 +31,14 @@ class GuildResolver {
     	return await context.apollo.controllers.guilds.fetchEmbed(id, type);
     }
 
+	@Query(type => [Reason])
+	async GuildReasons(
+		@Ctx() context: MyContext, 
+		@Arg('id') id: string
+	) {
+		return await context.apollo.controllers.guilds.fetchReasons(id);
+	}
+
 	// @Authorized()
 	@Mutation(type => Boolean)
 	async DeleteGuildEmbed(
@@ -49,6 +57,15 @@ class GuildResolver {
 		@Arg('data', type => EmbedInput) raw: EmbedInput
 	) {
 		return await context.apollo.controllers.guilds.update(id, { op: 'embeds', raw: { ...raw, type } });
+	}
+
+	@Mutation(type => [Reason])
+	async ModifyGuildReasons(
+		@Ctx() context: MyContext, 
+		@Arg('id') id: string,
+		@Arg('data', type => [ReasonInput]) raw: ReasonInput[]
+	) {
+		return await context.apollo.controllers.guilds.update(id, { op: 'reasons', raw });
 	}
 
 	@Mutation(type => GuildSettings)
