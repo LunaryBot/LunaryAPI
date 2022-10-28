@@ -2,7 +2,7 @@ import Schema from '../Schema';
 
 const ReasonSchema = new Schema({
 	id: {
-		_type: String,
+		_type: Number,
 		nullable: true,
 	},
 	text: String,
