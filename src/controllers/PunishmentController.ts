@@ -98,6 +98,18 @@ class PunishmentController {
 
 	async update(punishmentId: string) {}
 
+	updateManyReasons(reasonId: number, newReason: string) {
+		return this.apollo.prisma.punishment.updateMany({
+			where: {
+				reason_id: reasonId,
+			},
+			data: {
+				reason: newReason,
+				reason_id: null,
+			},
+		});
+	}
+
 	private where(filter: PunishmentFilter = {}) {
 		const where = {} as any;
 
