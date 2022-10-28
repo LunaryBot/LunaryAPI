@@ -13,7 +13,7 @@ const minMuteDuration = 1 * 1000;
 
 const days = [0, 1, 7];
 
-function GuildReasonsValidation(data: (Omit<Reason, 'guild_id' | 'id'> & { id?: string })[]) {
+function GuildReasonsValidation(data: (Omit<Reason, 'guild_id' | 'id'> & { id?: number })[]) {
 	const errors: string[] = [];
 
 	const reasons = data.map((reason, index) => {
@@ -39,7 +39,7 @@ function GuildReasonsValidation(data: (Omit<Reason, 'guild_id' | 'id'> & { id?: 
 
 	if(errors.length) throw new ApiError('Invalid Raw', 400, errors);
 
-	return ReasonArray.parse(reasons);
+	return ReasonArray.parse(reasons) as any as (Omit<Reason, 'guild_id' | 'id'> & { id?: number })[];
 }
 
 export { GuildReasonsValidation };
