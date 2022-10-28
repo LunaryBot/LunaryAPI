@@ -45,4 +45,8 @@ async function main() {
 	([AuthRouter]).forEach(apollo.addRouter.bind(apollo));
 }
 
+process.on('uncaughtExceptionMonitor', (err) => {
+	logger.error(err.message, { label: 'Process', details: err.stack });
+});
+
 main();
