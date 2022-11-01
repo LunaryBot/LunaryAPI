@@ -49,7 +49,7 @@ class AuthRouter extends BaseRouter {
 
 			console.log(token); // Remover quando for para produção
 
-			res.redirect(`${process.env.WEBSITE_URL}/auth/callback?token=${token}${(req.query.state ? `&state=${req.query.state}` : '')}`);
+			res.redirect(`${process.env.WEBSITE_URL}/auth/discord?token=${token}${(req.query.state ? `&state=${req.query.state}` : '')}`);
 		});
 	}
 }
