@@ -24,15 +24,15 @@ async function main() {
 		schema,
 		csrfPrevention: true,
 		formatError: (error: GraphQLError) => {
-			const { originalError } = error;
+			const { extensions: { exception } = {} } = error;
 
 			const errorFormated = {
-				message: originalError?.message ?? 'Internal server error',
-				status: (originalError as ApiError)?.status ?? 500,
-				stacks: (originalError as ApiError)?.stacks,
+				message: error.message ?? 'Internal server error',
+				status: (exception ?? error as ApiError)?.status ?? 500,
+				stacks: (exception ?? error as ApiError)?.stacks,
 			};
 			
-			if(!(originalError instanceof ApiError) && !(error instanceof GraphQLError)) {
+			if(!(error instanceof ApiError) && !(error instanceof GraphQLError)) {
 				logger.error((error as Error).message, { label: 'Process', details: (error as Error)?.stack || undefined });
 			}
 

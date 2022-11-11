@@ -78,16 +78,16 @@ class Apollo extends ApolloServer {
 					myContext.userId = idsCache.get(token) as string;
 				}
 
-				const data = await AuthUtils.login.bind({ ...AuthUtils, apollo: this })(token);
+				try {
+					const data = await AuthUtils.login.bind({ ...AuthUtils, apollo: this })(token);
         
-				if(data?.id) {
-					idsCache.set(token, data.id);
-    
-					myContext.userId = data.id;
-				}
+					if(data?.id) {
+						idsCache.set(token, data.id);
+		
+						myContext.userId = data.id;
+					}
+				} catch (_) {}
 			}
-
-			myContext.guildId = context.req.body?.variables?.guildId || undefined;
             
 			return myContext;
 		};

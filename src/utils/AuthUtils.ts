@@ -32,7 +32,6 @@ class AuthUtils {
 
 			return data as APIUser;
 		} catch (e) {
-			console.log(e);
 			throw new ApiError('Invalid token', 401);
 		}
 	}
