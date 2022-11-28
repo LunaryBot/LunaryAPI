@@ -11,17 +11,14 @@ class Channel implements APIGuildChannel<ChannelType.GuildText> {
    
     @Field()
     	type: number;
-
-    @Field()
-    	createdAt: number;
    
     @Field()
     	name: string;
    
-    @Field()
+    @Field(nullable)
     	nsfw: boolean;
    
-    @Field()
+    @Field(nullable)
     	parent_id: string;
    
     @Field()

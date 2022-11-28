@@ -39,11 +39,10 @@ type AbstractGuild {
 }
 
 type Channel {
-  createdAt: Float!
   id: ID!
   name: String!
-  nsfw: Boolean!
-  parent_id: String!
+  nsfw: Boolean
+  parent_id: String
   position: Float!
   type: Float!
 }
