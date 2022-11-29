@@ -19,19 +19,17 @@ class GuildController {
 		});
 	}
 
-	async fetch(guildId: string) {
-		return await this.apollo.redis.get(`guilds:${guildId}`);
+	fetch(guildId: string) {
+		return this.apollo.redis.get(`guilds:${guildId}`);
 	}
 
-	async fetchEmbed(guildId: string, type?: EmbedType) {
-		const data = await this.apollo.prisma.embed.findMany({
+	fetchEmbed(guildId: string, type?: EmbedType) {
+		return this.apollo.prisma.embed.findMany({
 			where: {
 				guild_id: guildId,
 				type,
 			},
-		});
-
-		return data as Embed[];
+		}) as Promise<Embed[]>;
 	}
 
 	fetchReasons(guildId: string) {
@@ -90,20 +88,20 @@ class GuildController {
 					}));
 				}
 
-				data.forEach(permissions => {
-					args.push(this.apollo.prisma.guildPermissions.upsert({
-						where: {
-							guild_id_id: {
-								guild_id: guildId,
-								id: permissions.id,
-							},
+				data.forEach(({ id, type, permissions }) => args.push(this.apollo.prisma.guildPermissions.upsert({
+					where: {
+						guild_id_id: {
+							guild_id: guildId,
+							id,
 						},
-						create: { ...permissions, guild_id: guildId },
-						update: permissions,
-					}));
-				});
+					},
+					create: { type, permissions, id, guild_id: guildId },
+					update: { permissions },
+				})));
 
-				await this.apollo.prisma.$transaction(args);
+				await Promise.all(args);
+
+				console.log('a');
 
 				return JSON.parse(JSON.stringify(data, (k, v) => typeof v == 'bigint' ? Number(v) : v));
 			}
