@@ -65,7 +65,7 @@ class GuildController {
 			}
 
 			case 'permissions': {
-				const data = GuildPermissionsValidation(raw, guildId);
+				const data = GuildPermissionsValidation(raw);
 
 				const ids = data.map(({ id }) => id);
 

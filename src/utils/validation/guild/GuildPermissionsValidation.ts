@@ -3,32 +3,54 @@ import { GuildPermissions as _GuildPermissions } from '@prisma/client';
 import { AbstractGuildPermissions } from '@Database';
 
 import ApiError from '@utils/ApiError';
+import { DiscordPermissions } from '@utils/DiscordPermissions';
 
 type TGuildPermissions = Omit<_GuildPermissions, 'guild_id' | 'permissions'> & { permissions: number };
 
-function GuildPermissionsValidation(newData: TGuildPermissions[], guildId: string) {
-	const bitfieldTest = new AbstractGuildPermissions();
+const typeCommands = [
+	'BAN_USER', 
+	'BAN_REMOVE',
+	'KICK_USER',
+	'MUTE_USER',
+	'MUTE_REMOVE',
+	'ADV_USER',
+	'ADV_REMOVE_USER',
+	'ADV_REMOVE_ID',
+	'ADV_LIST',
+];
+
+function GuildPermissionsValidation(raw: TGuildPermissions[]) {
+	const lunaryPermissionsBitfieldTest = new AbstractGuildPermissions();
+	const discordPermissionsBitfieldTest = new DiscordPermissions();
 
 	const errors: string[] = [];
 
-	const data = newData.map(({ permissions, type, id }, i) => {
-		bitfieldTest.bitfield = BigInt(permissions);
+	const data = raw.map(({ permissions, type, id }, i) => {
+		lunaryPermissionsBitfieldTest.bitfield = BigInt(permissions);
 
 		let isError = false;
+		let messageError: string = '';
 
 		try {
-			if(AbstractGuildPermissions.resolve(bitfieldTest.toArray()) !== BigInt(permissions)) {
+			if(type == 'COMMAND' && !typeCommands.includes(id)) {
+				throw new Error('Invalid Command ID');
+			}
+
+			if((type == 'ROLE' ? lunaryPermissionsBitfieldTest : discordPermissionsBitfieldTest).resolve(lunaryPermissionsBitfieldTest.toArray()) !== BigInt(permissions)) {
 				isError = true;
 			}
 		} catch (error) {
+			isError = true;
 			if((error as Error).message.includes('BitField Invalid')) {
-				isError = true;
+				messageError = 'BitField Invalid';
+			} else if((error as Error).message.includes('Invalid Command ID')) {
+				messageError = 'Invalid Command ID';
 			} else {
 				throw error;
 			}
 		} finally {
 			if(isError) {
-				errors.push(`raw[${i}]: BitField Invalid`);
+				errors.push(`raw[${i}]: ${messageError}`);
 			}
 
 			return { permissions: BigInt(permissions), type, id };
