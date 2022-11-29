@@ -32,9 +32,10 @@ model GuildPermissions {
   type        GuildPermissionType
   guild_id    String
   permissions BigInt
-  Guild       Guild               @relation(fields: [guild_id], references: [id])
+  Guild       Guild?               @relation(fields: [guild_id], references: [id])
 
   @@id([guild_id, id])
+  @@index([guild_id, id], map: "guild_permissions")
 }
 
 model Punishment {
@@ -42,23 +43,23 @@ model Punishment {
   guild_id   String
   user_id    String
   author_id  String
-  type       PunishmentType
   created_at DateTime
   flags      BigInt         @default(0)
   duration   Int?
   reason     String?
-  reason_id  Int?
   deleted    Boolean?       @default(false)
+  type       PunishmentType
+  reason_id  Int?
 }
 
 model Reason {
-  id       Int              @default(autoincrement())
-  guild_id String
   text     String
-  types    PunishmentType[]
+  guild_id String
   keys     String[]         @default([])
   duration Int?
   days     Int?
+  types    PunishmentType[]
+  id       Int              @default(autoincrement())
   Guild    Guild?           @relation(fields: [guild_id], references: [id])
 
   @@id([guild_id, id])
