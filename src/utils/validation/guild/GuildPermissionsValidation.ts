@@ -26,7 +26,9 @@ function GuildPermissionsValidation(raw: TGuildPermissions[]) {
 	const errors: string[] = [];
 
 	const data = raw.map(({ permissions, type, id }, i) => {
-		lunaryPermissionsBitfieldTest.bitfield = BigInt(permissions);
+		const bitfield = type == 'ROLE' ? lunaryPermissionsBitfieldTest : discordPermissionsBitfieldTest;
+
+		bitfield.bitfield = BigInt(permissions);
 
 		let isError = false;
 		let messageError: string = '';
@@ -36,7 +38,7 @@ function GuildPermissionsValidation(raw: TGuildPermissions[]) {
 				throw new Error('Invalid Command ID');
 			}
 
-			if((type == 'ROLE' ? lunaryPermissionsBitfieldTest : discordPermissionsBitfieldTest).resolve(lunaryPermissionsBitfieldTest.toArray()) !== BigInt(permissions)) {
+			if(bitfield.resolve(bitfield.toArray()) !== BigInt(permissions)) {
 				isError = true;
 			}
 		} catch (error) {
