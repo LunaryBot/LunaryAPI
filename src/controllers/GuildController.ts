@@ -40,7 +40,7 @@ class GuildController {
 		});
 	}
 
-	async update(guildId: string, { op, raw }: { op: 'moderation' | 'permissions' | 'embeds' | 'reasons', raw: any }) {
+	async update(guildId: string, { op, raw }: { op: 'moderation' | 'permissions' | 'embeds' | 'reasons', raw: any }, { replacePermissions }: { replacePermissions?: boolean } = {}) {
 		switch (op) {
 			case 'moderation': {
 				const currentData = await this.apollo.prisma.guild.findUnique({
@@ -77,7 +77,7 @@ class GuildController {
 
 				const args: PrismaPromise<any>[] = [];
 
-				if(deleteIds.length) {
+				if(deleteIds.length && replacePermissions) {
 					args.push(this.apollo.prisma.guildPermissions.deleteMany({
 						where: {
 							id: {
