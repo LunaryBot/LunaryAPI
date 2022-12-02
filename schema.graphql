@@ -127,6 +127,11 @@ type Guild {
   roles: [Role!]!
 }
 
+input GuildCommandPermissionsInput {
+  id: ID!
+  permissions: Float!
+}
+
 type GuildPermissions {
   id: ID!
   permissions: Float!
@@ -154,6 +159,7 @@ input GuildSettingsInput {
 
 type Mutation {
   DeleteGuildEmbed(id: String!, type: String!): Boolean!
+  ModifyGuildCommandPermissions(data: [GuildCommandPermissionsInput!]!, id: String!): [GuildPermissions!]!
   ModifyGuildEmbed(data: EmbedInput!, id: String!, type: String!): Embed!
   ModifyGuildModerationSettings(data: GuildSettingsInput!, id: String!): GuildSettings!
   ModifyGuildPermissions(data: [GuildPermissionsInput!]!, id: String!): [GuildPermissions!]!
