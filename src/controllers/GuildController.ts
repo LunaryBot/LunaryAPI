@@ -1,4 +1,4 @@
-import { EmbedType, Guild, PrismaPromise, Embed as DatabaseEmbed, Reason as DatabaseReason } from '@prisma/client';
+import { EmbedType, Guild, PrismaPromise, Embed as DatabaseEmbed, Reason as DatabaseReason, Prisma } from '@prisma/client';
 
 import { GuildEmbedValidation, GuildGeneralSettingsValidation, GuildPermissionsValidation, GuildReasonsValidation } from '@validation';
 
@@ -95,8 +95,34 @@ class GuildController {
 							id,
 						},
 					},
-					create: { type, permissions, id, guild_id: guildId },
-					update: { permissions },
+					create: {
+						type, 
+						permissions, 
+						id,
+						Guild: {
+							connectOrCreate: {
+								where: {
+									id: guildId,
+								},
+								create: {
+									id: guildId,
+								},
+							},
+						},
+					},
+					update: { 
+						permissions,
+						Guild: {
+							connectOrCreate: {
+								where: {
+									id: guildId,
+								},
+								create: {
+									id: guildId,
+								},
+							},
+						}, 
+					},
 				})));
 
 				await Promise.all(args);
