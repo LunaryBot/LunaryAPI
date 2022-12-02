@@ -1,10 +1,10 @@
-import { AbstractGuild } from '@models';
-
 import AuthUtils from '@utils/AuthUtils';
 
+import { AbstractGuild } from '@models';
 import { APIUser, Routes, PermissionFlagsBits } from 'discord-api-types/v10';
 
 const guildKeyRegex = /^guilds:(\d{16,20})$/;
+
 class UserController {
 	public readonly apollo: Apollo;
 	constructor(apollo: Apollo) {
@@ -46,7 +46,6 @@ class UserController {
 
 			return (guilds as AbstractGuild[]).filter(guild => guildsInCache.includes(guild.id));
 		});
-
 
 		return guilds;
 	}
