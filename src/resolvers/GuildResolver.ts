@@ -4,7 +4,7 @@ import { Resolver, Query, Ctx, Authorized, Arg, Mutation } from 'type-graphql';
 import ApiError from '@utils/ApiError';
 
 import { MyContext } from '../@types';
-import { EmbedInput, GuildPermissionsInput, GuildSettingsInput, ReasonInput } from '@inputs';
+import { EmbedInput, GuildCommandPermissionsInput, GuildPermissionsInput, GuildSettingsInput, ReasonInput } from '@inputs';
 import { Embed, Guild, GuildPermissions, GuildSettings, Reason } from '@models';
 
 @Resolver()
@@ -84,6 +84,21 @@ class GuildResolver {
 		@Arg('data', type => [GuildPermissionsInput]) raw: GuildPermissionsInput[]
 	) {
     	return await context.apollo.controllers.guilds.update(id, { op: 'permissions', raw });
+	}
+
+	@Mutation(type => [GuildPermissions])
+	async ModifyGuildCommandPermissions(
+		@Ctx() context: MyContext,
+		@Arg('id') id: string, 
+		@Arg('data', type => [GuildCommandPermissionsInput]) raw: GuildCommandPermissionsInput[]
+	) {
+    	return await context.apollo.controllers.guilds.update(id, { 
+			op: 'permissions', 
+			raw: raw.map(permission => ({
+				...permission,
+				type: 'COMMAND',
+			} as GuildPermissionsInput)),
+		}, { replacePermissions: false });
 	}
 }
 
