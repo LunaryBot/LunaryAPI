@@ -12,3 +12,6 @@ logs/
 prisma/migrations
 
 apollo.config.js
+
+Dockerfile
+.dockerignore
