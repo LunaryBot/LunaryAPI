@@ -35,7 +35,6 @@ model GuildPermissions {
   Guild       Guild?               @relation(fields: [guild_id], references: [id])
 
   @@id([guild_id, id])
-  @@index([guild_id, id], map: "guild_permissions")
 }
 
 model Punishment {
@@ -68,15 +67,15 @@ model Reason {
 model User {
   id              String           @id @unique
   features        BigInt?
+  last_daily_at   DateTime?
   luas            Int?
   xp              Int?
-  last_daily_at   DateTime?
-  premium_type    UserPremiumType?
-  premium_until   DateTime?
   bio             String?
   flags           BigInt?
   inventary_using BigInt?
   inventory       BigInt?
+  premium_type    UserPremiumType?
+  premium_until   DateTime?
 }
 
 enum GuildPermissionType {
