@@ -5,7 +5,7 @@ import { AbstractGuildPermissions } from '@Database';
 import ApiError from '@utils/ApiError';
 import { DiscordPermissions } from '@utils/DiscordPermissions';
 
-type TGuildPermissions = Omit<_GuildPermissions, 'guild_id' | 'permissions'> & { permissions: number };
+type GuildPermissionsInput = Omit<_GuildPermissions, 'guild_id' | 'permissions'> & { permissions: number };
 
 const typeCommands = [
 	'BAN_USER', 
@@ -19,7 +19,7 @@ const typeCommands = [
 	'ADV_LIST',
 ];
 
-function GuildPermissionsValidation(raw: TGuildPermissions[]) {
+function GuildPermissionsValidation(raw: GuildPermissionsInput[]) {
 	const lunaryPermissionsBitfieldTest = new AbstractGuildPermissions();
 	const discordPermissionsBitfieldTest = new DiscordPermissions();
 

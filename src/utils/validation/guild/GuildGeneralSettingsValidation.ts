@@ -14,12 +14,12 @@ const GuildGeneralSettingsFeatures = GuildFeatures.resolve([
 	'useHTMLTranscript',
 ]);
 
-type GuildGeneralSettings = Partial<Pick<Guild, 'modlogs_channel' | 'punishments_channel'> & { features: Array<keyof typeof GuildFeatures.Flags> }>;
+type GuildGeneralSettingsInput = Partial<Pick<Guild, 'modlogs_channel' | 'punishments_channel'> & { features: Array<keyof typeof GuildFeatures.Flags> }>;
 
-function GuildGeneralSettingsValidation(newData: GuildGeneralSettings, currentData: Guild) {
+function GuildGeneralSettingsValidation(newData: GuildGeneralSettingsInput, currentData: Guild) {
 	const errors = [];
 
-	const data: Omit<GuildGeneralSettings, 'features'> & { features?: bigint | null } = {};
+	const data: Omit<GuildGeneralSettingsInput, 'features'> & { features?: bigint | null } = {};
 
 	if(
 		newData.features?.includes('useHTMLTranscript') && 
