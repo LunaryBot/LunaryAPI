@@ -26,3 +26,9 @@ export const GuildPermissions = {
 	lunarViewHistory: 1n << 5n,
 	lunarManageHistory: 1n << 6n,
 };
+
+export const UserFeatures = {
+	quickPunishment: 1n << 0n,
+	useGuildLocale: 1n << 1n,
+	useDiscordLocale: 1n << 2n,
+};
