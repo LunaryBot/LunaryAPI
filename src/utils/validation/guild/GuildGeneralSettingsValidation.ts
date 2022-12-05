@@ -1,12 +1,13 @@
 import { Guild } from '@prisma/client';
 
+import { GuildFeatures } from '@Database';
+
 import ApiError from '@utils/ApiError';
-import GuildFeatures from '@utils/GuildFeatures';
 import { Utils } from '@utils/Utils';
 
 const discordIdRegex = /^\d{16,20}$/;
 
-const GuildGeneralSettingsFeatures = GuildFeatures.resolve([
+const GuildGeneralSettingsFeaturesBits = GuildFeatures.resolve([
 	'mandatoryReasonToBan',
 	'mandatoryReasonToAdv',
 	'mandatoryReasonToKick',
@@ -47,7 +48,7 @@ function GuildGeneralSettingsValidation(newData: GuildGeneralSettingsInput, curr
 
 	const features = GuildFeatures.resolve((newData.features || []).filter(feature => GuildFeatures.Flags[feature] !== undefined));
 	
-	data.features = ((currentData.features || 0n) & ~GuildGeneralSettingsFeatures) | features;
+	data.features = ((currentData.features || 0n) & ~GuildGeneralSettingsFeaturesBits) | features;
 
 	return data;
 }
