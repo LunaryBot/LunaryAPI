@@ -1,9 +1,10 @@
 import { EmbedType, Guild, PrismaPromise, Embed as DatabaseEmbed, Reason as DatabaseReason, Prisma } from '@prisma/client';
 
+import { GuildFeatures } from '@Database';
+
 import { GuildEmbedValidation, GuildGeneralSettingsValidation, GuildPermissionsValidation, GuildReasonsValidation } from '@validation';
 
 import ApiError from '@utils/ApiError';
-import GuildFeatures from '@utils/GuildFeatures';
 
 import { Embed } from '@types';
 
