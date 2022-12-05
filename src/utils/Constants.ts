@@ -30,5 +30,4 @@ export const GuildPermissions = {
 export const UserFeatures = {
 	quickPunishment: 1n << 0n,
 	useGuildLocale: 1n << 1n,
-	useDiscordLocale: 1n << 2n,
 };
