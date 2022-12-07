@@ -1,4 +1,9 @@
+import { User } from '@prisma/client';
+
+import { UserFeatures } from '@Database';
+
 import AuthUtils from '@utils/AuthUtils';
+import { UserGeneralSettingsValidation } from '@utils/validation/user';
 
 import { AbstractGuild } from '@models';
 import { APIUser, Routes, PermissionFlagsBits } from 'discord-api-types/v10';
@@ -48,6 +53,40 @@ class UserController {
 		});
 
 		return guilds;
+	}
+
+	async update(userId: string, { op, raw }: { op: 'general', raw: any }) {
+		switch (op) {
+			case 'general': {
+				const currentData = await this.apollo.prisma.user.findUnique({
+					where: {
+						id: userId,
+					},
+				}) || {} as User;
+
+				const data = UserGeneralSettingsValidation(raw, currentData);
+
+				await this.apollo.prisma.user.upsert({
+					where: {
+						id: userId,
+					},
+					update: {
+						...currentData,
+						...data,
+					},
+					create: {
+						id: userId,
+						...data,
+					},
+				});
+
+				return {
+					...data,
+					features: new UserFeatures(data.features as bigint || 0n).toArray(), 
+					id: userId,
+				};
+			}
+		}
 	}
 }
 
