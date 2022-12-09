@@ -4,7 +4,7 @@ import { Field, ID, ObjectType, UseMiddleware } from 'type-graphql';
 import DefaultValue from '@utils/DefaultValue';
 
 import { AbstractGuild } from './guild';
-import { User } from './User';
+import { User } from './user';
 
 const nullable = { nullable: true };
 
