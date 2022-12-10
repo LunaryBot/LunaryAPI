@@ -15,6 +15,25 @@ export interface MyContext extends ExpressContext {
 	readonly apollo: Apollo;
 }
 
+export type InventoryItemRarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' | 'EXOTIC' | 'MYSTIC';
+
+export type InventoryItemType = 'BACKGROUND' | 'LAYOUT';
+
+export interface InventoryItem {
+	id: number;
+	type: InventoryItemType;
+
+	name: string;
+	description: string;
+
+	price: number;
+	rarity: InventoryItemRarity;
+
+	assets: {
+		image_url: string;
+	}
+}
+
 export interface PunishmentFilter {
     authorId?: string;
 	userId?: string;
