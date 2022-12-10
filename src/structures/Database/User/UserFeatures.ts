@@ -1,5 +1,5 @@
 import BitField from '../../../utils/BitField';
-import * as Constants from '../../../utils/Constants';
+import * as Constants from '../../../utils/contants/Constants';
 
 type UserFeature = keyof typeof Constants.UserFeatures;
 
