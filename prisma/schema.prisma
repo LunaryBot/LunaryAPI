@@ -72,7 +72,7 @@ model User {
   xp              Int?
   bio             String?
   flags           BigInt?
-  inventary_using BigInt?
+  inventory_using BigInt?
   inventory       BigInt?
   premium_type    UserPremiumType?
   premium_until   DateTime?
