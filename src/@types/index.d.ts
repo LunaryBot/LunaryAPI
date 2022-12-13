@@ -30,7 +30,7 @@ export interface InventoryItem {
 	rarity: InventoryItemRarity;
 
 	assets: {
-		image_url: string;
+		link: string;
 	}
 }
 
