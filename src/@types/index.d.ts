@@ -19,20 +19,22 @@ export type InventoryItemRarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEG
 
 export type InventoryItemType = 'BACKGROUND' | 'LAYOUT';
 
-export interface InventoryItem {
+interface InventoryItemBase {
 	id: number;
-	type: InventoryItemType;
 
 	name: string;
 	description: string;
 
 	price: number;
 	rarity: InventoryItemRarity;
-
-	assets: {
-		link: string;
-	}
 }
+
+interface InventoryItemAssets {
+	link: string;
+}
+
+export type InventoryItem = InventoryItemBase & { type: 'BACKGROUND', assets: InventoryItemAssets } | InventoryItemBase & { type: 'LAYOUT' }
+
 
 export interface PunishmentFilter {
     authorId?: string;
