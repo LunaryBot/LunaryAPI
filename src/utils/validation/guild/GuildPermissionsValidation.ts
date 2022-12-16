@@ -38,7 +38,7 @@ function GuildPermissionsValidation(raw: GuildPermissionsInput[]) {
 				throw new Error('Invalid Command ID');
 			}
 
-			if(bitfield.resolve(bitfield.toArray()) !== BigInt(permissions)) {
+			if(bitfield.resolve(bitfield.toArray() as string[]) !== BigInt(permissions)) {
 				isError = true;
 			}
 		} catch (error) {

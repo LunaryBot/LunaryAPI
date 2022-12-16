@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import BaseRouter from '@BaseRouter';
 
-import { URLS } from '@utils/Constants';
+import { URLS } from '@utils/contants/Constants';
 
 class AuthRouter extends BaseRouter {
 	constructor(apollo: Apollo) {
