@@ -33,6 +33,7 @@ declare global {
     interface String {
         checkSimilarityStrings(string: string): number;
         firstCharInLowerCase(): string;
+        firstCharInUpperCase(): string;
         isLowerCase(): boolean;
         isUpperCase(): boolean;
         removeAccents(): string;

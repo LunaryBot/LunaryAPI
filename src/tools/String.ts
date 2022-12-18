@@ -44,6 +44,10 @@ String.prototype.firstCharInLowerCase = function() {
 	return this.replace(/^./g, (char) => char.toLowerCase());
 };
 
+String.prototype.firstCharInUpperCase = function() {
+	return this.replace(/^./g, (char) => char.toUpperCase());
+};
+
 String.prototype.isLowerCase = function() {
 	return this.toString().toLowerCase() === this.toString();
 };
