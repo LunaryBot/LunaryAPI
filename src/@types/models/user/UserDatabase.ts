@@ -3,6 +3,8 @@ import { Field, ID, ObjectType, UseMiddleware } from 'type-graphql';
 
 import DefaultValue from '@utils/DefaultValue';
 
+import { UserInventory } from './UserInventory';
+
 const nullable = { nullable: true };
 
 @ObjectType()
@@ -32,6 +34,9 @@ class UserDatabase implements Omit<User, 'id' | 'features' | 'inventory' | 'inve
 
     @Field(type => [String])
     	flags: bigint | null;
+
+    @Field(type => UserInventory)
+    	inventory: UserInventory;
 }
 
 export { UserDatabase };
