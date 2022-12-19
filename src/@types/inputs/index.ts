@@ -1,4 +1,3 @@
 export * from './embed';
-export * from './GuildPermissionsInput';
-export * from './GuildSettingsInput';
+export * from './guild';
 export * from './ReasonInput';
