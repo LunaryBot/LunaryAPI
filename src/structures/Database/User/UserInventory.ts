@@ -7,6 +7,10 @@ class UserInventory extends BitField {
 	toItemsArray() {
 		return InventoryItems.filter(item => this.has(BigInt(item.id)));
 	}
+
+	get ids() {
+		return this.toItemsArray().map(({ id }) => id);
+	}
 }
 
 export { UserInventory };
