@@ -1,14 +1,16 @@
 import { User } from '@prisma/client';
 
-import { UserFeatures } from '@Database';
+import { UserFeatures, UserInventory } from '@Database';
 
 import AuthUtils from '@utils/AuthUtils';
 import { UserGeneralSettingsValidation } from '@utils/validation/user';
 
-import { AbstractGuild } from '@models';
+import { AbstractGuild, UserDatabase } from '@models';
 import { APIUser, Routes, PermissionFlagsBits } from 'discord-api-types/v10';
 
 const guildKeyRegex = /^guilds:(\d{16,20})$/;
+
+const defaultInventory = UserInventory.Flags.backgroundDefault | UserInventory.Flags.layoutDefault;
 
 class UserController {
 	public readonly apollo: Apollo;
@@ -66,7 +68,7 @@ class UserController {
 
 				const data = UserGeneralSettingsValidation(raw, currentData);
 
-				await this.apollo.prisma.user.upsert({
+				const newData = await this.apollo.prisma.user.upsert({
 					where: {
 						id: userId,
 					},
@@ -80,13 +82,26 @@ class UserController {
 					},
 				});
 
-				return {
-					...data,
-					features: new UserFeatures(data.features as bigint || 0n).toArray(), 
-					id: userId,
-				};
+				return this.format(newData);
 			}
 		}
+	}
+
+	format(data: User) {
+		return {
+			bio: data.bio,
+			flags: data.flags,
+			last_daily_at: data.last_daily_at,
+			luas: data.luas,
+			xp: data.xp,
+			premium_type: data.premium_type,
+			premium_until: data.premium_until,
+			features: new UserFeatures(data.features as bigint || 0n).toArray(),
+			inventory: {
+				owned: new UserInventory(data.inventory || defaultInventory).toItemsArray(),
+				using: new UserInventory(data.inventory_using || defaultInventory).ids,
+			},
+		} as UserDatabase;
 	}
 }
 
