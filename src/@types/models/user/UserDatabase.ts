@@ -13,7 +13,8 @@ class UserDatabase implements Omit<User, 'id' | 'features' | 'inventory' | 'inve
     @Field(type => [String])
     	features: string[];
 
-    @Field(type => Number, nullable)
+    @UseMiddleware(DefaultValue<number>(0))
+    @Field(type => Number)
     	luas: number | null;
 
     @Field(type => Date, nullable)
