@@ -5,7 +5,7 @@ import ApiError from '@utils/ApiError';
 
 import { MyContext } from '../@types';
 import { EmbedInput, GuildCommandPermissionsInput, GuildPermissionsInput, GuildSettingsInput, ReasonInput } from '@inputs';
-import { Embed, Guild, GuildPermissions, GuildSettings, Reason } from '@models';
+import { Embed, Guild, GuildPermissions, GuildDatabase, Reason } from '@models';
 
 @Resolver()
 class GuildResolver {
@@ -68,7 +68,7 @@ class GuildResolver {
 		return await context.apollo.controllers.guilds.update(id, { op: 'reasons', raw });
 	}
 
-	@Mutation(type => GuildSettings)
+	@Mutation(type => GuildDatabase)
 	async ModifyGuildModerationSettings(
 		@Ctx() context: MyContext, 
 		@Arg('id') id: string, 

@@ -5,7 +5,7 @@ import DefaultValue from '@utils/DefaultValue';
 const nullable = { nullable: true };
 
 @ObjectType()
-class GuildSettings {
+class GuildDatabase {
     @Field(type => ID)
     	id: string;
 
@@ -20,4 +20,4 @@ class GuildSettings {
     	features: string[];
 }
 
-export { GuildSettings };
+export { GuildDatabase };
