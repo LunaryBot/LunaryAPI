@@ -7,6 +7,8 @@ import { GraphQLError } from 'graphql';
 import path from 'node:path';
 import { buildSchema } from 'type-graphql';
 
+import { UserInventory } from '@Database';
+
 import AuthRouter from '@routers/AuthRouter';
 
 import Apollo from './structures/Apollo';
@@ -43,6 +45,12 @@ async function main() {
 	await apollo.init(Number(process.env.PORT));
 
 	([AuthRouter]).forEach(apollo.addRouter.bind(apollo));
+	apollo.controllers.users.update('452618703792766987', {
+		op: 'general',
+		raw: {
+			features: ['quickPunishment'],
+		},
+	}).then(console.log);
 }
 
 process.on('uncaughtExceptionMonitor', (err) => {
