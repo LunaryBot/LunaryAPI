@@ -34,6 +34,16 @@ class UserController {
 		return user;
 	}
 
+	async fetchDatabase(userId: string) {
+		const data = await this.apollo.prisma.user.findUnique({
+			where: {
+				id: userId,
+			},
+		}) || {} as User;
+
+		return this.format(data);
+	}
+
 	async fetchGuilds(token: string, options: { filterByHasBot?: boolean, filterPermission?: bigint } = { filterByHasBot: true, filterPermission: PermissionFlagsBits.Administrator }) {
 		token = AuthUtils.parseToken(token).access_token;
 
