@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User, Prisma } from '@prisma/client';
 
 import { UserFeatures, UserInventory } from '@Database';
 
@@ -34,14 +34,20 @@ class UserController {
 		return user;
 	}
 
-	async fetchDatabase(userId: string) {
-		const data = await this.apollo.prisma.user.findUnique({
+	async fetchDatabase(userId: string, select?: Prisma.UserSelect | null) {
+		if(select?.inventory) {
+			select.inventory = true;
+			select.inventory_using = true;
+		}
+
+		const data = (await this.apollo.prisma.user.findUnique({
 			where: {
 				id: userId,
 			},
-		}) || {} as User;
+			select,
+		}) || {}) as User;
 
-		return this.format(data);
+		return this.format(data, select?.inventory);
 	}
 
 	async fetchGuilds(token: string, options: { filterByHasBot?: boolean, filterPermission?: bigint } = { filterByHasBot: true, filterPermission: PermissionFlagsBits.Administrator }) {
@@ -97,7 +103,7 @@ class UserController {
 		}
 	}
 
-	format(data: User) {
+	format(data: User, selectInventory = false) {
 		return {
 			bio: data.bio,
 			flags: data.flags,
@@ -107,10 +113,12 @@ class UserController {
 			premium_type: data.premium_type,
 			premium_until: data.premium_until,
 			features: new UserFeatures(data.features as bigint || 0n).toArray(),
-			inventory: {
-				owned: new UserInventory(data.inventory || defaultInventory).toItemsArray(),
-				using: new UserInventory(data.inventory_using || defaultInventory).ids,
-			},
+			inventory: selectInventory
+				? {
+					owned: new UserInventory(data.inventory || defaultInventory).toItemsArray(),
+					using: new UserInventory(data.inventory_using || defaultInventory).ids,
+				}
+				: undefined,
 		} as UserDatabase;
 	}
 }
