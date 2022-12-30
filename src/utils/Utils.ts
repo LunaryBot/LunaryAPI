@@ -1,6 +1,32 @@
+import { GraphQLResolveInfo, FieldNode } from 'graphql';
+
 const az = [ ...'abcdefghijklmnopqrstuvwxyz' ];
 
+type WhereBoolean = Record<string, WhereType | Where>;
+
+type WhereType = boolean | { [name: string]: boolean | WhereBoolean };
+
+type Where = Record<string, boolean | WhereType>;
+
 class Utils {
+	public static graphqlSchemaToPrismaWhere(info: GraphQLResolveInfo, queryName: string) {
+		const selection = info.operation.selectionSet.selections.find(selection => (selection as FieldNode).name.value == queryName) as FieldNode;
+
+		const selections = selection.selectionSet?.selections as FieldNode[] || [];
+
+		console.log(this.#formatSelections(selections));
+	}
+
+	static #formatSelections(selections: FieldNode[]): Where {
+		return Object.fromEntries(
+			selections.map(selection => {
+				const subSelections = selection.selectionSet?.selections as FieldNode[] || [];
+
+				return [selection.name.value, !subSelections.length ? true : this.#formatSelections(subSelections)];
+			})
+		);
+	}
+
 	public static formatHumanPunishmentId(punishmentsCount: number): string {
 		const a = (punishmentsCount) % 1000000;
 
