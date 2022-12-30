@@ -9,7 +9,7 @@ type WhereType = boolean | { [name: string]: boolean | WhereBoolean };
 type Where = Record<string, boolean | WhereType>;
 
 class Utils {
-	public static graphqlSchemaToPrismaWhere(info: GraphQLResolveInfo, queryName: string) {
+	public static graphqlSchemaToPrismaSelect(info: GraphQLResolveInfo, queryName: string) {
 		const selection = info.operation.selectionSet.selections.find(selection => (selection as FieldNode).name.value == queryName) as FieldNode;
 
 		const selections = selection.selectionSet?.selections as FieldNode[] || [];
