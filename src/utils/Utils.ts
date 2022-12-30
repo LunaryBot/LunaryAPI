@@ -14,7 +14,7 @@ class Utils {
 
 		const selections = selection.selectionSet?.selections as FieldNode[] || [];
 
-		console.log(this.#formatSelections(selections));
+		return this.#formatSelections(selections);
 	}
 
 	static #formatSelections(selections: FieldNode[]): Where {
