@@ -22,11 +22,8 @@ class UserResolver {
 		@Info() info: GraphQLResolveInfo
     ) {
     	const select = Utils.graphqlSchemaToPrismaSelect(info, 'CurrentUserDatabase');
-    	console.log(select);
 
     	const data = await context.apollo.controllers.users.fetchDatabase(context.userId as string, select);
-
-    	console.log(data);
 
     	return data;
     }

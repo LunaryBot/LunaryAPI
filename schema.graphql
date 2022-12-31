@@ -132,6 +132,18 @@ input GuildCommandPermissionsInput {
   permissions: Float!
 }
 
+type GuildDatabase {
+  embeds: Embed!
+  features: [String!]!
+  id: ID!
+  modlogs_channel: String
+  permissions: [GuildPermissions!]!
+  premium_type: String
+  premium_until: DateTime
+  punishments_channel: String
+  reasons: Reason!
+}
+
 type GuildPermissions {
   id: ID!
   permissions: Float!
@@ -144,24 +156,31 @@ input GuildPermissionsInput {
   type: String!
 }
 
-type GuildSettings {
-  features: [String!]!
-  id: ID!
-  modlogs_channel: String
-  punishments_channel: String
-}
-
 input GuildSettingsInput {
   features: [String!]
   modlogs_channel: String
   punishments_channel: String
 }
 
+type InventoryItem {
+  assets: InventoryItemAssets!
+  description: String!
+  id: Float!
+  name: String!
+  price: Float!
+  rarity: String!
+  type: String!
+}
+
+type InventoryItemAssets {
+  link: String!
+}
+
 type Mutation {
   DeleteGuildEmbed(id: String!, type: String!): Boolean!
   ModifyGuildCommandPermissions(data: [GuildCommandPermissionsInput!]!, id: String!): [GuildPermissions!]!
   ModifyGuildEmbed(data: EmbedInput!, id: String!, type: String!): Embed!
-  ModifyGuildModerationSettings(data: GuildSettingsInput!, id: String!): GuildSettings!
+  ModifyGuildModerationSettings(data: GuildSettingsInput!, id: String!): GuildDatabase!
   ModifyGuildPermissions(data: [GuildPermissionsInput!]!, id: String!): [GuildPermissions!]!
   ModifyGuildReasons(data: [ReasonInput!]!, id: String!): [Reason!]!
 }
@@ -181,8 +200,10 @@ type Punishment {
 
 type Query {
   CurrentUser: User!
+  CurrentUserDatabase: UserDatabase!
   CurrentUserGuilds(filter: Boolean): [AbstractGuild!]!
   Guild(id: String!): Guild!
+  GuildDatabase(id: String!): GuildDatabase!
   GuildEmbeds(id: String!, type: String): [Embed!]
   GuildReasons(id: String!): [Reason!]!
   ping(message: String!): String!
@@ -233,4 +254,21 @@ type User {
   public_flags: Float!
   username: String!
   verified: Boolean
+}
+
+type UserDatabase {
+  bio: String
+  features: [String!]!
+  flags: [String!]!
+  inventory: UserInventory!
+  last_daily_at: DateTime
+  luas: Float!
+  premium_type: String
+  premium_until: DateTime
+  xp: Float!
+}
+
+type UserInventory {
+  owned: [InventoryItem!]!
+  using: [Float!]!
 }
