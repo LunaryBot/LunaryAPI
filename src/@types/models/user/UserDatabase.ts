@@ -27,17 +27,17 @@ class UserDatabase implements Omit<User, 'id' | 'features' | 'inventory' | 'inve
     @Field(type => Number)
     	xp: number;
 
-    @Field(type => String, nullable)
-    	premium_type: UserPremiumType | null;
-
-    @Field(type => Date, nullable)
-    	premium_until: Date | null;
-
     @Field(type => [String])
     	flags: bigint | null;
 
     @Field(type => UserInventory)
     	inventory: UserInventory;
+
+    @Field(type => String, nullable)
+    	premium_type: UserPremiumType | null;
+
+    @Field(type => Date, nullable)
+    	premium_until: Date | null;
 }
 
 export { UserDatabase };
