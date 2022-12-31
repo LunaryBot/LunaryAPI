@@ -45,12 +45,6 @@ async function main() {
 	await apollo.init(Number(process.env.PORT));
 
 	([AuthRouter]).forEach(apollo.addRouter.bind(apollo));
-	apollo.controllers.users.update('452618703792766987', {
-		op: 'general',
-		raw: {
-			features: ['quickPunishment'],
-		},
-	}).then(console.log);
 }
 
 process.on('uncaughtExceptionMonitor', (err) => {
