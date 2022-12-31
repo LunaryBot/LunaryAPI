@@ -1,7 +1,9 @@
 import { EmbedType } from '@prisma/client';
-import { Resolver, Query, Ctx, Authorized, Arg, Mutation } from 'type-graphql';
+import { FieldNode, GraphQLResolveInfo, SelectionNode } from 'graphql';
+import { Resolver, Query, Ctx, Authorized, Arg, Mutation, Info } from 'type-graphql';
 
 import ApiError from '@utils/ApiError';
+import { Utils } from '@utils/Utils';
 
 import { MyContext } from '../@types';
 import { EmbedInput, GuildCommandPermissionsInput, GuildPermissionsInput, GuildSettingsInput, ReasonInput } from '@inputs';
@@ -18,26 +20,20 @@ class GuildResolver {
 		return await context.apollo.controllers.guilds.fetch(id);
 	}
 
-	@Query(type => [Embed], { defaultValue: [] })
-    async GuildEmbeds(
-		@Ctx() context: MyContext, 
-		@Arg('id') id: string, 
-		@Arg('type', { nullable: true }) type?: EmbedType
-    ) {
-    	if(type && !EmbedType[type]) {
-    		throw new ApiError('Invalid type', 400);
-    	}
-		
-    	return await context.apollo.controllers.guilds.fetchEmbed(id, type);
-    }
-
-	@Query(type => [Reason])
-	async GuildReasons(
-		@Ctx() context: MyContext, 
+	@Query(type => GuildDatabase)
+    async GuildDatabase(
+		@Ctx() context: MyContext,
+		@Info() info: GraphQLResolveInfo,
 		@Arg('id') id: string
-	) {
-		return await context.apollo.controllers.guilds.fetchReasons(id);
-	}
+    ) {
+    	const select = Utils.graphqlSchemaToPrismaSelect(info, 'GuildDatabase');
+
+    	const data = await context.apollo.controllers.guilds.fetchDatabase(id, select);
+
+    	console.log(data);
+
+    	return data;
+    }
 
 	// @Authorized()
 	@Mutation(type => Boolean)
