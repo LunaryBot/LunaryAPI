@@ -17,7 +17,7 @@ type GuildSelect = Prisma.GuildSelect & {
 
 interface FullGuildDatabase extends Guild {
 	embeds?: Embed[],
-	permissions?: GuildPermissions,
+	permissions?: GuildPermissions[],
 	reasons?: Reason[],
 }
 
@@ -40,6 +40,14 @@ class GuildController {
 	}
 
 	async fetchDatabase(guildId: string, select?: GuildSelect | null) {
+		const selectEmbeds = !!select?.embeds;
+		const selectPermissions = !!select?.permissions;
+		const selectReasons = !!select?.reasons;
+
+		delete select?.embeds;
+		delete select?.permissions;
+		delete select?.reasons;
+
 		const data = (Object.keys(select || {}).find(key => !guildDatabaseSpecialKeys.includes(key))
 			? await this.apollo.prisma.guild.findUnique({
 				where: {
@@ -49,7 +57,7 @@ class GuildController {
 			})
 			: undefined) as FullGuildDatabase || {} as FullGuildDatabase;
 
-		if(select?.embeds) {
+		if(selectEmbeds) {
 			data.embeds = await this.apollo.prisma.embed.findMany({
 				where: {
 					guild_id: guildId,
@@ -57,8 +65,16 @@ class GuildController {
 			}) as Embed[];
 		}
 
-		if(select?.reasons) {
+		if(selectReasons) {
 			data.reasons = await this.apollo.prisma.reason.findMany({
+				where: {
+					guild_id: guildId,
+				},
+			});
+		}
+
+		if(selectPermissions) {
+			data.permissions = await this.apollo.prisma.guildPermissions.findMany({
 				where: {
 					guild_id: guildId,
 				},
@@ -276,6 +292,11 @@ class GuildController {
 			features: data.features ? new GuildFeatures(data.features).toArray() : [],
 			modlogs_channel: data.modlogs_channel,
 			punishments_channel: data.punishments_channel,
+			embeds: data.embeds || [],
+			permissions: data.permissions?.map(permission => ({ ...permission, permissions: Number(permission.permissions) })) as any || [],
+			reasons: data.reasons || [],
+			premium_type: data.premium_type,
+			premium_until: data.premium_until,
 		} as GuildDatabase;
 	}
 }
