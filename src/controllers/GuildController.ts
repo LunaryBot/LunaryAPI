@@ -1,4 +1,4 @@
-import { EmbedType, Guild, PrismaPromise, Embed as DatabaseEmbed, Reason as DatabaseReason, Prisma } from '@prisma/client';
+import { EmbedType, Guild, PrismaPromise, Embed as DatabaseEmbed, Reason, Prisma, GuildPermissions } from '@prisma/client';
 
 import { GuildFeatures } from '@Database';
 
@@ -6,7 +6,22 @@ import { GuildEmbedValidation, GuildGeneralSettingsValidation, GuildPermissionsV
 
 import ApiError from '@utils/ApiError';
 
+import { GuildDatabase } from '@models';
 import { Embed } from '@types';
+
+type GuildSelect = Prisma.GuildSelect & {
+	embeds?: boolean,
+	permissions?: boolean,
+	reasons?: boolean,
+}
+
+interface FullGuildDatabase extends Guild {
+	embeds?: Embed[],
+	permissions?: GuildPermissions,
+	reasons?: Reason[],
+}
+
+const guildDatabaseSpecialKeys = ['embeds', 'permissions', 'reaons'];
 
 const embedTypes = Object.keys(EmbedType);
 
@@ -22,6 +37,35 @@ class GuildController {
 
 	fetch(guildId: string) {
 		return this.apollo.redis.get(`guilds:${guildId}`);
+	}
+
+	async fetchDatabase(guildId: string, select?: GuildSelect | null) {
+		const data = (Object.keys(select || {}).find(key => !guildDatabaseSpecialKeys.includes(key))
+			? await this.apollo.prisma.guild.findUnique({
+				where: {
+					id: guildId,
+				},
+				select,
+			})
+			: undefined) as FullGuildDatabase || {} as FullGuildDatabase;
+
+		if(select?.embeds) {
+			data.embeds = await this.apollo.prisma.embed.findMany({
+				where: {
+					guild_id: guildId,
+				},
+			}) as Embed[];
+		}
+
+		if(select?.reasons) {
+			data.reasons = await this.apollo.prisma.reason.findMany({
+				where: {
+					guild_id: guildId,
+				},
+			});
+		}
+
+		return this.format(data);
 	}
 
 	fetchEmbed(guildId: string, type?: EmbedType) {
@@ -225,6 +269,14 @@ class GuildController {
 				return response.filter(arg => typeof arg.count == 'undefined');
 			}
 		}
+	}
+
+	format(data: FullGuildDatabase) {
+		return {
+			features: data.features ? new GuildFeatures(data.features).toArray() : [],
+			modlogs_channel: data.modlogs_channel,
+			punishments_channel: data.punishments_channel,
+		} as GuildDatabase;
 	}
 }
 
