@@ -11,9 +11,6 @@ const nullable = { nullable: true };
 
 @ObjectType()
 class GuildDatabase {
-    @Field(type => ID)
-    	id: string;
-
     @Field(nullable)
     	modlogs_channel: string;
 
@@ -25,7 +22,7 @@ class GuildDatabase {
     	features: string[];
 
     @UseMiddleware(DefaultValue<Embed[]>([]))
-    @Field(type => Embed)
+    @Field(type => [Embed])
     	embeds: Embed[];
 
     @UseMiddleware(DefaultValue<GuildPermissions[]>([]))

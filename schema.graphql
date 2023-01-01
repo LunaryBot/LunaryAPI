@@ -133,9 +133,8 @@ input GuildCommandPermissionsInput {
 }
 
 type GuildDatabase {
-  embeds: Embed!
+  embeds: [Embed!]!
   features: [String!]!
-  id: ID!
   modlogs_channel: String
   permissions: [GuildPermissions!]!
   premium_type: String
@@ -204,8 +203,6 @@ type Query {
   CurrentUserGuilds(filter: Boolean): [AbstractGuild!]!
   Guild(id: String!): Guild!
   GuildDatabase(id: String!): GuildDatabase!
-  GuildEmbeds(id: String!, type: String): [Embed!]
-  GuildReasons(id: String!): [Reason!]!
   ping(message: String!): String!
   Punishments(after: DateTime, author_id: String, before: DateTime, type: String, user_id: String): [Punishment!]!
 }
