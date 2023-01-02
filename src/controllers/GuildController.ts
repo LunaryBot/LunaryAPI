@@ -39,7 +39,7 @@ class GuildController {
 		return this.apollo.redis.get(`guilds:${guildId}`);
 	}
 
-	async fetchDatabase(guildId: string, select?: GuildSelect | null) {
+	async fetchDatabase(guildId: string, select?: GuildSelect | null, _data?: FullGuildDatabase) {
 		const selectEmbeds = !!select?.embeds;
 		const selectPermissions = !!select?.permissions;
 		const selectReasons = !!select?.reasons;
@@ -48,7 +48,7 @@ class GuildController {
 		delete select?.permissions;
 		delete select?.reasons;
 
-		const data = (Object.keys(select || {}).find(key => !guildDatabaseSpecialKeys.includes(key))
+		const data = (Object.keys(select || {}).length > 0
 			? await this.apollo.prisma.guild.findUnique({
 				where: {
 					id: guildId,
@@ -81,7 +81,7 @@ class GuildController {
 			});
 		}
 
-		return this.format(data);
+		return this.format({ ...data, ...(_data || {}) });
 	}
 
 	fetchEmbed(guildId: string, type?: EmbedType) {
@@ -101,7 +101,7 @@ class GuildController {
 		});
 	}
 
-	async update(guildId: string, { op, raw }: { op: 'moderation' | 'permissions' | 'embeds' | 'reasons', raw: any }, { replacePermissions }: { replacePermissions?: boolean } = {}) {
+	async update(guildId: string, { op, raw }: { op: 'moderation' | 'permissions' | 'embeds' | 'reasons', raw: any }, select: GuildSelect | undefined, { replacePermissions }: { replacePermissions?: boolean } = {}) {
 		switch (op) {
 			case 'moderation': {
 				const currentData = await this.apollo.prisma.guild.findUnique({
@@ -112,15 +112,16 @@ class GuildController {
 
 				const data = GuildGeneralSettingsValidation(raw, currentData);
 
-				await this.apollo.prisma.guild.upsert({
+				const newData = await this.apollo.prisma.guild.upsert({
 					where: {
 						id: guildId,
 					},
 					create: { ...data, id: guildId },
 					update: data,
+					select: Object.fromEntries(Object.entries(select || {}).filter(([key]) => !guildDatabaseSpecialKeys.includes(key)).map(([key, value]) => ([key, value]))),
 				});
 
-				return { ...data, features: new GuildFeatures(data.features as bigint || 0n).toArray(), id: guildId };
+				return this.fetchDatabase(guildId, Object.fromEntries(Object.entries(select || {}).filter(([key]) => guildDatabaseSpecialKeys.includes(key)).map(([key, value]) => ([key, value]))), newData as FullGuildDatabase);
 			}
 
 			case 'permissions': {
