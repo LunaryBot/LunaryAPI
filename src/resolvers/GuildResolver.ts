@@ -28,73 +28,87 @@ class GuildResolver {
     ) {
     	const select = Utils.graphqlSchemaToPrismaSelect(info, 'GuildDatabase');
 
-    	const data = await context.apollo.controllers.guilds.fetchDatabase(id, select);
-
-    	console.log(data);
-
-    	return data;
+    	return await context.apollo.controllers.guilds.fetchDatabase(id, select);
     }
 
 	// @Authorized()
 	@Mutation(type => Boolean)
 	async DeleteGuildEmbed(
 		@Ctx() context: MyContext, 
+		@Info() info: GraphQLResolveInfo,
 		@Arg('id') id: string, 
 		@Arg('type') type: EmbedType
 	) {
-		return await context.apollo.controllers.guilds.update(id, { op: 'embeds', raw: { type } });
+		const select = Utils.graphqlSchemaToPrismaSelect(info, 'DeleteGuildEmbed');
+
+		return await context.apollo.controllers.guilds.update(id, { op: 'embeds', raw: { type } }, select);
 	}
 
 	@Mutation(type => Embed)
 	async ModifyGuildEmbed(
 		@Ctx() context: MyContext, 
+		@Info() info: GraphQLResolveInfo,
 		@Arg('id') id: string, 
 		@Arg('type') type: EmbedType, 
 		@Arg('data', type => EmbedInput) raw: EmbedInput
 	) {
-		return await context.apollo.controllers.guilds.update(id, { op: 'embeds', raw: { ...raw, type } });
+		const select = Utils.graphqlSchemaToPrismaSelect(info, 'ModifyGuildEmbed');
+
+		return await context.apollo.controllers.guilds.update(id, { op: 'embeds', raw: { ...raw, type } }, select);
 	}
 
 	@Mutation(type => [Reason])
 	async ModifyGuildReasons(
 		@Ctx() context: MyContext, 
+		@Info() info: GraphQLResolveInfo,
 		@Arg('id') id: string,
 		@Arg('data', type => [ReasonInput]) raw: ReasonInput[]
 	) {
-		return await context.apollo.controllers.guilds.update(id, { op: 'reasons', raw });
+		const select = Utils.graphqlSchemaToPrismaSelect(info, 'ModifyGuildReasons');
+
+		return await context.apollo.controllers.guilds.update(id, { op: 'reasons', raw }, select);
 	}
 
 	@Mutation(type => GuildDatabase)
 	async ModifyGuildModerationSettings(
-		@Ctx() context: MyContext, 
+		@Ctx() context: MyContext,
+		@Info() info: GraphQLResolveInfo,
 		@Arg('id') id: string, 
 		@Arg('data') raw: GuildSettingsInput
 	) {
-    	return await context.apollo.controllers.guilds.update(id, { op: 'moderation', raw });
+		const select = Utils.graphqlSchemaToPrismaSelect(info, 'ModifyGuildModerationSettings');
+
+    	return await context.apollo.controllers.guilds.update(id, { op: 'moderation', raw }, select);
 	}
 
 	@Mutation(type => [GuildPermissions])
 	async ModifyGuildPermissions(
 		@Ctx() context: MyContext, 
-		@Arg('id') id: string, 
+		@Info() info: GraphQLResolveInfo,
+		@Arg('id') id: string,
 		@Arg('data', type => [GuildPermissionsInput]) raw: GuildPermissionsInput[]
 	) {
-    	return await context.apollo.controllers.guilds.update(id, { op: 'permissions', raw });
+		const select = Utils.graphqlSchemaToPrismaSelect(info, 'ModifyGuildPermissions');
+
+    	return await context.apollo.controllers.guilds.update(id, { op: 'permissions', raw }, select);
 	}
 
 	@Mutation(type => [GuildPermissions])
 	async ModifyGuildCommandPermissions(
 		@Ctx() context: MyContext,
+		@Info() info: GraphQLResolveInfo,
 		@Arg('id') id: string, 
 		@Arg('data', type => [GuildCommandPermissionsInput]) raw: GuildCommandPermissionsInput[]
 	) {
+		const select = Utils.graphqlSchemaToPrismaSelect(info, 'ModifyGuildCommandPermissions');
+
     	return await context.apollo.controllers.guilds.update(id, { 
 			op: 'permissions', 
 			raw: raw.map(permission => ({
 				...permission,
 				type: 'COMMAND',
 			} as GuildPermissionsInput)),
-		}, { replacePermissions: false });
+		}, select, { replacePermissions: false });
 	}
 }
 
