@@ -220,7 +220,7 @@ class GuildController {
 
 				const data = GuildEmbedValidation(embed);
 
-				return await this.apollo.prisma.embed.upsert({
+				await this.apollo.prisma.embed.upsert({
 					where: {
 						guild_id_type: {
 							guild_id: guildId,
@@ -234,6 +234,8 @@ class GuildController {
 					},
 					update: data,
 				});
+
+				return this.fetchDatabase(guildId, select);
 			}
 
 			case 'reasons': {

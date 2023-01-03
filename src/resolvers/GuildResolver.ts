@@ -44,7 +44,7 @@ class GuildResolver {
 		return await context.apollo.controllers.guilds.update(id, { op: 'embeds', raw: { type } }, select);
 	}
 
-	@Mutation(type => Embed)
+	@Mutation(type => GuildDatabase)
 	async ModifyGuildEmbed(
 		@Ctx() context: MyContext, 
 		@Info() info: GraphQLResolveInfo,
