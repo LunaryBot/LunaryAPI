@@ -187,11 +187,11 @@ class GuildController {
 					},
 				})));
 
-				await Promise.all(args);
+				const newData = await Promise.all(args);
 
-				console.log('a');
+				console.log(newData);
 
-				return JSON.parse(JSON.stringify(data, (k, v) => typeof v == 'bigint' ? Number(v) : v));
+				return JSON.parse(JSON.stringify(newData, (k, v) => typeof v == 'bigint' ? Number(v) : v));
 			}
 
 			case 'embeds': {

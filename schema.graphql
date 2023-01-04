@@ -178,7 +178,7 @@ type InventoryItemAssets {
 type Mutation {
   DeleteGuildEmbed(id: String!, type: String!): Boolean!
   ModifyGuildCommandPermissions(data: [GuildCommandPermissionsInput!]!, id: String!): [GuildPermissions!]!
-  ModifyGuildEmbed(data: EmbedInput!, id: String!, type: String!): Embed!
+  ModifyGuildEmbed(data: EmbedInput!, id: String!, type: String!): GuildDatabase!
   ModifyGuildModerationSettings(data: GuildSettingsInput!, id: String!): GuildDatabase!
   ModifyGuildPermissions(data: [GuildPermissionsInput!]!, id: String!): [GuildPermissions!]!
   ModifyGuildReasons(data: [ReasonInput!]!, id: String!): [Reason!]!
