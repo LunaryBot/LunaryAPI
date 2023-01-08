@@ -287,7 +287,7 @@ class GuildController {
 			modlogs_channel: data.modlogs_channel,
 			punishments_channel: data.punishments_channel,
 			embeds: data.embeds || [],
-			permissions: data.permissions?.map(permission => ({ ...permission, permissions: Number(permission.permissions) })) as any || [],
+			permissions: data.permissions ? JSON.parse(JSON.stringify(data.permissions, (k, v) => typeof v == 'bigint' ? Number(v) : v)) : [],
 			reasons: data.reasons || [],
 			premium_type: data.premium_type,
 			premium_until: data.premium_until,
