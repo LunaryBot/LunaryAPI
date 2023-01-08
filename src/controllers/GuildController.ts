@@ -150,6 +150,15 @@ class GuildController {
 					}));
 				}
 
+				const connectOrCreate = {
+					where: {
+						id: guildId,
+					},
+					create: {
+						id: guildId,
+					},
+				};
+
 				data.forEach(({ id, type, permissions }) => args.push(this.apollo.prisma.guildPermissions.upsert({
 					where: {
 						guild_id_id: {
@@ -161,29 +170,11 @@ class GuildController {
 						type, 
 						permissions, 
 						id,
-						Guild: {
-							connectOrCreate: {
-								where: {
-									id: guildId,
-								},
-								create: {
-									id: guildId,
-								},
-							},
-						},
+						Guild: { connectOrCreate },
 					},
 					update: { 
 						permissions,
-						Guild: {
-							connectOrCreate: {
-								where: {
-									id: guildId,
-								},
-								create: {
-									id: guildId,
-								},
-							},
-						}, 
+						Guild: { connectOrCreate }, 
 					},
 				})));
 
