@@ -182,7 +182,7 @@ class GuildController {
 
 				console.log(newData);
 
-				return JSON.parse(JSON.stringify(newData, (k, v) => typeof v == 'bigint' ? Number(v) : v));
+				return this.fetchDatabase(guildId, Object.fromEntries(Object.entries(select || {}).filter(([key]) => key !== 'permissions').map(([key, value]) => ([key, value]))), { permissions: JSON.parse(JSON.stringify(newData, (k, v) => typeof v == 'bigint' ? Number(v) : v)) } as FullGuildDatabase);
 			}
 
 			case 'embeds': {
@@ -241,8 +241,6 @@ class GuildController {
 				});
 				
 				const deleteReasons = currentData.filter(({ id }) => !ids.includes(id));
-
-				// console.log(ids, deleteReasons);
 
 				const args: PrismaPromise<any>[] = [];
 
