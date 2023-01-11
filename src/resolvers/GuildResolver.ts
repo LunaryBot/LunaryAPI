@@ -81,7 +81,7 @@ class GuildResolver {
     	return await context.apollo.controllers.guilds.update(id, { op: 'moderation', raw }, select);
 	}
 
-	@Mutation(type => [GuildPermissions])
+	@Mutation(type => GuildDatabase)
 	async ModifyGuildPermissions(
 		@Ctx() context: MyContext, 
 		@Info() info: GraphQLResolveInfo,
