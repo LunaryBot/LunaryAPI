@@ -140,7 +140,7 @@ type GuildDatabase {
   premium_type: String
   premium_until: DateTime
   punishments_channel: String
-  reasons: Reason!
+  reasons: [Reason!]!
 }
 
 type GuildPermissions {
@@ -180,8 +180,8 @@ type Mutation {
   ModifyGuildCommandPermissions(data: [GuildCommandPermissionsInput!]!, id: String!): [GuildPermissions!]!
   ModifyGuildEmbed(data: EmbedInput!, id: String!, type: String!): GuildDatabase!
   ModifyGuildModerationSettings(data: GuildSettingsInput!, id: String!): GuildDatabase!
-  ModifyGuildPermissions(data: [GuildPermissionsInput!]!, id: String!): [GuildPermissions!]!
-  ModifyGuildReasons(data: [ReasonInput!]!, id: String!): [Reason!]!
+  ModifyGuildPermissions(data: [GuildPermissionsInput!]!, id: String!): GuildDatabase!
+  ModifyGuildReasons(data: [ReasonInput!]!, id: String!): GuildDatabase!
 }
 
 type Punishment {

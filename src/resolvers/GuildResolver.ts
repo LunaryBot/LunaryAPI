@@ -57,7 +57,7 @@ class GuildResolver {
 		return await context.apollo.controllers.guilds.update(id, { op: 'embeds', raw: { ...raw, type } }, select);
 	}
 
-	@Mutation(type => [Reason])
+	@Mutation(type => GuildDatabase)
 	async ModifyGuildReasons(
 		@Ctx() context: MyContext, 
 		@Info() info: GraphQLResolveInfo,
@@ -66,7 +66,10 @@ class GuildResolver {
 	) {
 		const select = Utils.graphqlSchemaToPrismaSelect(info, 'ModifyGuildReasons');
 
-		return await context.apollo.controllers.guilds.update(id, { op: 'reasons', raw }, select);
+		const d = await context.apollo.controllers.guilds.update(id, { op: 'reasons', raw }, select);
+		console.log(d);
+
+		return d;
 	}
 
 	@Mutation(type => GuildDatabase)

@@ -274,7 +274,7 @@ class GuildController {
 
 				const response = await this.apollo.prisma.$transaction(args);
 
-				return response.filter(arg => typeof arg.count == 'undefined');
+				return this.fetchDatabase(guildId, Object.fromEntries(Object.entries(select || {}).filter(([key]) => key !== 'reasons').map(([key, value]) => ([key, value]))), { reasons: response.filter(arg => typeof arg.count == 'undefined') } as FullGuildDatabase);
 			}
 		}
 	}
