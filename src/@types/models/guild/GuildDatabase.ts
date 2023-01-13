@@ -30,7 +30,7 @@ class GuildDatabase {
     	permissions: GuildPermissions[];
 
     @UseMiddleware(DefaultValue<Reason[]>([]))
-    @Field(type => Reason)
+    @Field(type => [Reason])
     	reasons: Reason[];
 
     @Field(type => String, nullable)
