@@ -17,20 +17,20 @@ class GuildDatabase {
     @Field(nullable)
     	punishments_channel: string;
 
-    @UseMiddleware(DefaultValue<string[]>([]))
     @Field(type => [String])
+    @UseMiddleware(DefaultValue<string[]>([]))
     	features: string[];
 
-    @UseMiddleware(DefaultValue<Embed[]>([]))
     @Field(type => [Embed])
+    @UseMiddleware(DefaultValue<Embed[]>([]))
     	embeds: Embed[];
 
-    @UseMiddleware(DefaultValue<GuildPermissions[]>([]))
     @Field(type => [GuildPermissions])
+    @UseMiddleware(DefaultValue<GuildPermissions[]>([]))
     	permissions: GuildPermissions[];
 
-    @UseMiddleware(DefaultValue<Reason[]>([]))
     @Field(type => [Reason])
+    @UseMiddleware(DefaultValue<Reason[]>([]))
     	reasons: Reason[];
 
     @Field(type => String, nullable)
