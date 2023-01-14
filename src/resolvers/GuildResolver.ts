@@ -6,7 +6,7 @@ import ApiError from '@utils/ApiError';
 import { Utils } from '@utils/Utils';
 
 import { MyContext } from '../@types';
-import { EmbedInput, GuildCommandPermissionsInput, GuildPermissionsInput, GuildSettingsInput, ReasonInput } from '@inputs';
+import { EmbedInput, GuildCommandPermissionsInput, GuildPermissionsInput, GuildDatabaseInput, ReasonInput } from '@inputs';
 import { Embed, Guild, GuildPermissions, GuildDatabase, Reason } from '@models';
 
 @Resolver()
@@ -77,7 +77,7 @@ class GuildResolver {
 		@Ctx() context: MyContext,
 		@Info() info: GraphQLResolveInfo,
 		@Arg('id') id: string, 
-		@Arg('data') raw: GuildSettingsInput
+		@Arg('data') raw: GuildDatabaseInput
 	) {
 		const select = Utils.graphqlSchemaToPrismaSelect(info, 'ModifyGuildModerationSettings');
 
