@@ -64,6 +64,15 @@ model Reason {
   @@id([guild_id, id])
 }
 
+model ShopItem {
+  id          BigInt          @id
+  name        String
+  description String
+  type        ShopItemType
+  price       Int
+  rarity      ShopItemRarity
+}
+
 model User {
   id              String           @id @unique
   features        BigInt?
@@ -72,8 +81,8 @@ model User {
   xp              Int?
   bio             String?
   flags           BigInt?
-  inventory_using BigInt?
-  inventory       BigInt?
+  inventory       Int[]
+  inventory_using Json?
   premium_type    UserPremiumType?
   premium_until   DateTime?
 }
@@ -94,6 +103,21 @@ enum PunishmentType {
   MUTE
   KICK
   ADV
+}
+
+enum ShopItemRarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+  EXOTIC
+  MYSTIC
+}
+
+enum ShopItemType {
+  BACKGROUND
+  LAYOUT
 }
 
 enum UserPremiumType {
