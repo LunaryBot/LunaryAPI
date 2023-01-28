@@ -1,12 +1,10 @@
 import { Prisma, PunishmentType, Reason } from '@prisma/client';
 
-
 import { Utils } from '@utils/Utils';
 
 import { PunishmentFilter } from '../@types';
 import { AbstractGuild } from '@models';
 import { APIGuild, APIUser } from 'discord-api-types/v10';
-
 
 const punishmentTypes = Object.keys(PunishmentType);
 
