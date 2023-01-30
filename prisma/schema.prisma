@@ -81,7 +81,7 @@ model User {
   xp              Int?
   bio             String?
   flags           BigInt?
-  inventory       Int[]
+  inventory       BigInt[]
   inventory_using Json?
   premium_type    UserPremiumType?
   premium_until   DateTime?
