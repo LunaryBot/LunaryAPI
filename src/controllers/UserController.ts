@@ -35,9 +35,11 @@ class UserController {
 	}
 
 	async fetchDatabase(userId: string, select?: Prisma.UserSelect | null) {
+		console.log(select);
 		if(select?.inventory) {
 			select.inventory = true;
 			select.inventory_using = true;
+			console.log(select);
 		}
 
 		const data = (await this.apollo.prisma.user.findUnique({
@@ -89,7 +91,7 @@ class UserController {
 						id: userId,
 					},
 					update: {
-						...currentData,
+						...currentData as any,
 						...data,
 					},
 					create: {
@@ -104,6 +106,9 @@ class UserController {
 	}
 
 	format(data: User, selectInventory = false) {
+		const inventory = (data.inventory || []) as bigint[];
+		const inventoryUsing = Object.values(data.inventory_using as any || {}) as bigint[];
+
 		return {
 			bio: data.bio,
 			flags: data.flags,
@@ -115,8 +120,8 @@ class UserController {
 			features: new UserFeatures(data.features as bigint || 0n).toArray(),
 			inventory: selectInventory
 				? {
-					owned: new UserInventory(data.inventory || defaultInventory).toItemsArray(),
-					using: new UserInventory(data.inventory_using || defaultInventory).ids,
+					owned: new UserInventory(inventory.length ? inventory : defaultInventory).toItemsArray(),
+					using: new UserInventory(inventoryUsing.length ?  inventoryUsing : defaultInventory).ids,
 				}
 				: undefined,
 		} as UserDatabase;

@@ -143,6 +143,15 @@ type GuildDatabase {
   reasons: [Reason!]!
 }
 
+input GuildDatabaseInput {
+  embeds: [EmbedInput!]!
+  features: [String!]
+  modlogs_channel: String
+  permissions: [GuildPermissionsInput!]!
+  punishments_channel: String
+  reasons: [ReasonInput!]!
+}
+
 type GuildPermissions {
   id: ID!
   permissions: Float!
@@ -153,12 +162,6 @@ input GuildPermissionsInput {
   id: ID!
   permissions: Float!
   type: String!
-}
-
-input GuildSettingsInput {
-  features: [String!]
-  modlogs_channel: String
-  punishments_channel: String
 }
 
 type InventoryItem {
@@ -179,7 +182,7 @@ type Mutation {
   DeleteGuildEmbed(id: String!, type: String!): Boolean!
   ModifyGuildCommandPermissions(data: [GuildCommandPermissionsInput!]!, id: String!): [GuildPermissions!]!
   ModifyGuildEmbed(data: EmbedInput!, id: String!, type: String!): GuildDatabase!
-  ModifyGuildModerationSettings(data: GuildSettingsInput!, id: String!): GuildDatabase!
+  ModifyGuildModerationSettings(data: GuildDatabaseInput!, id: String!): GuildDatabase!
   ModifyGuildPermissions(data: [GuildPermissionsInput!]!, id: String!): GuildDatabase!
   ModifyGuildReasons(data: [ReasonInput!]!, id: String!): GuildDatabase!
 }
