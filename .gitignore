@@ -15,3 +15,5 @@ apollo.config.js
 
 Dockerfile
 .dockerignore
+
+shopConfig.json
