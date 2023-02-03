@@ -2,7 +2,7 @@ import Sydb, { ObjectReference } from 'sydb';
 
 import { setTimeToTrigger } from '../utils/setTimeToTrigger';
 
-const dateString = (date: Date) => `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+const dateString = (date: Date) => `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`;
 
 class ShopController {
 	public readonly apollo: Apollo;
@@ -33,8 +33,10 @@ class ShopController {
 
 	update(starting: boolean = false) {
 		const now = new Date();
+		const utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+
 		const { lastUpdated } = this;
-		const lastUpdatedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+		const lastUpdatedDate = new Date(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(), 0, 0, 0);
 		const nextUpdateDate = new Date(lastUpdatedDate); nextUpdateDate.setDate(lastUpdatedDate.getDate() + 1);
 
 		const isLateUpdate = !lastUpdated || starting && dateString(lastUpdated) !== dateString(lastUpdatedDate);
@@ -44,13 +46,14 @@ class ShopController {
 				logger.warn(`Late Update, last update on ${dateString(lastUpdated)} not ${dateString(lastUpdatedDate)}`, { label: 'ShopController' });
 			}
 
-			this.lastUpdated = now;
+			this.lastUpdated = utc;
 			this.updateShopItems();
 		}
 
 		setTimeToTrigger(this.update.bind(this), nextUpdateDate);
 
-		logger.info(`Shop Updated, next update on ${nextUpdateDate.toISOString()}`, { label: 'ShopController' });
+		logger.info(`Shop Updated, next update on ${nextUpdateDate.toString()}`, { label: 'ShopController' });
+		console.log(nextUpdateDate.getTime() - utc.getTime());
 	}
 
 	updateShopItems() {
