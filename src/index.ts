@@ -45,6 +45,8 @@ async function main() {
 	await apollo.init(Number(process.env.PORT));
 
 	([AuthRouter]).forEach(apollo.addRouter.bind(apollo));
+
+	apollo.controllers.shop.update(true);
 }
 
 process.on('uncaughtExceptionMonitor', (err) => {

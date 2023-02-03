@@ -10,6 +10,7 @@ import BaseRouter from '@BaseRouter';
 
 import GuildController from '@controllers/GuildController';
 import PunishmentController from '@controllers/PunishmentController';
+import ShopController from '@controllers/ShopController';
 import UserController from '@controllers/UserController';
 
 import AuthUtils from '@utils/AuthUtils';
@@ -41,6 +42,7 @@ class Apollo extends ApolloServer {
 		users: new UserController(this),
 		guilds: new GuildController(this),
 		punishments: new PunishmentController(this),
+		shop: new ShopController(this),
 	};
 
 	public idsCache: Map<string, string>;
