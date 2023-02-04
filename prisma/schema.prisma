@@ -65,12 +65,17 @@ model Reason {
 }
 
 model ShopItem {
-  id          BigInt          @id
-  name        String
-  description String
-  type        ShopItemType
-  price       Int
-  rarity      ShopItemRarity
+  id              Int             @id @default(autoincrement())
+  name            String
+  description     String
+  type            ShopItemType
+  price           Int
+  rarity          ShopItemRarity
+
+  last_appearance DateTime?
+  enabled         Boolean         @default(true)
+
+  assets      Json?
 }
 
 model User {
