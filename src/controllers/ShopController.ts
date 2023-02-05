@@ -70,6 +70,8 @@ class ShopController {
 
 		const isLateUpdate = !lastUpdated || starting && dateString(lastUpdated) !== dateString(lastUpdatedDate);
 
+		let updated = false;
+
 		if(!starting || isLateUpdate || !this.dailyItemsIds) {
 			if(isLateUpdate && lastUpdated) {
 				logger.warn(`Late Update, last update on ${dateString(lastUpdated)} not ${dateString(lastUpdatedDate)}`, { label: 'ShopController' });
@@ -80,12 +82,17 @@ class ShopController {
 			this.lastUpdated = utc;
 
 			await this.updateShopItems();
-			logger.info(`Shop Updated, next roll on ${nextUpdateDate.toString()}`, { label: 'ShopController' });
+
+			updated = true;
 		}
 		
 		if(!this.dailyItems?.length) await this.getDailyItems();
 
 		setTimeToTrigger(this.update.bind(this), nextUpdateDate);
+
+		console.log(nextUpdateDate.getTime() - utc.getTime());
+
+		logger.info(`Shop ${updated ? 'Updated' : 'is Ok'}, next roll on ${nextUpdateDate.toString()}`, { label: 'ShopController' });
 	}
 
 	async updateShopItems() {
