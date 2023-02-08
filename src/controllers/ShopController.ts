@@ -46,7 +46,7 @@ class ShopController {
 		this._lastUpdated.set(value ? dateString(value) : null);
 	}
 
-	async getDailyItems(): Promise<ShopItem[]> {
+	async _getDailyItems(): Promise<ShopItem[]> {
 		const items = await this.apollo.prisma.shopItem.findMany({
 			where: {
 				id: {
@@ -86,11 +86,9 @@ class ShopController {
 			updated = true;
 		}
 		
-		if(!this.dailyItems?.length) await this.getDailyItems();
+		if(!this.dailyItems?.length) await this._getDailyItems();
 
 		setTimeToTrigger(this.update.bind(this), nextUpdateDate);
-
-		console.log(nextUpdateDate.getTime() - utc.getTime());
 
 		logger.info(`Shop ${updated ? 'Updated' : 'is Ok'}, next roll on ${nextUpdateDate.toString()}`, { label: 'ShopController' });
 	}

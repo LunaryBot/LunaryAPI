@@ -46,6 +46,21 @@ async function main() {
 
 	([AuthRouter]).forEach(apollo.addRouter.bind(apollo));
 
+	// await apollo.prisma.shopItem.createMany({
+	// 	data: [
+	// 		{
+	// 			type: 'BACKGROUND',
+	// 			name: '"Noot Noot"',
+	// 			description: 'Pingu is scared',
+	// 			price: 20000,
+	// 			rarity: 'RARE',
+	// 			assets: {
+	// 				link: 'https://imgur.com/XQ04JDV.png',
+	// 			},
+	// 		},
+	// 	],
+	// });
+
 	await apollo.controllers.shop.update(true);
 }
 
