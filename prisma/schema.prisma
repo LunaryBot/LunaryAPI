@@ -86,8 +86,8 @@ model User {
   xp              Int?
   bio             String?
   flags           BigInt?
-  inventory       BigInt[]
-  inventory_using Json?
+  inventory_using Json            @default("{ \"background\": 0, \"layout\": 1 }")
+  inventory       Int[]
   premium_type    UserPremiumType?
   premium_until   DateTime?
 }
