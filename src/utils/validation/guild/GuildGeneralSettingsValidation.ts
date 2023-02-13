@@ -7,14 +7,6 @@ import { Utils } from '@utils/Utils';
 
 const discordIdRegex = /^\d{16,20}$/;
 
-const GuildGeneralSettingsFeaturesBits = GuildFeatures.resolve([
-	'mandatoryReasonToBan',
-	'mandatoryReasonToAdv',
-	'mandatoryReasonToKick',
-	'mandatoryReasonToMute',
-	'useHTMLTranscript',
-]);
-
 type GuildGeneralSettingsInput = Partial<Pick<Guild, 'modlogs_channel' | 'punishments_channel'> & { features: Array<keyof typeof GuildFeatures.Flags> }>;
 
 function GuildGeneralSettingsValidation(newData: GuildGeneralSettingsInput, currentData: Guild) {
@@ -48,7 +40,7 @@ function GuildGeneralSettingsValidation(newData: GuildGeneralSettingsInput, curr
 
 	const features = GuildFeatures.resolve((newData.features || []).filter(feature => GuildFeatures.Flags[feature] !== undefined));
 	
-	data.features = ((currentData.features || 0n) & ~GuildGeneralSettingsFeaturesBits) | features;
+	data.features = features;
 
 	return data;
 }
