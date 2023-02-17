@@ -20,15 +20,15 @@ class GuildDatabaseInput {
     @UseMiddleware(DefaultValue<string[]>([]))
     	features: string[];
 
-    @Field(type => [EmbedInput])
+    @Field(type => [EmbedInput], nullable)
     @UseMiddleware(DefaultValue<EmbedInput[]>([]))
     	embeds: EmbedInput[];
 
-    @Field(type => [GuildPermissionsInput])
+    @Field(type => [GuildPermissionsInput], nullable)
     @UseMiddleware(DefaultValue<GuildDatabaseInput[]>([]))
     	permissions: GuildPermissionsInput[];
 
-    @Field(type => [ReasonInput])
+    @Field(type => [ReasonInput], nullable)
     @UseMiddleware(DefaultValue<ReasonInput[]>([]))
     	reasons: ReasonInput[];
 }
