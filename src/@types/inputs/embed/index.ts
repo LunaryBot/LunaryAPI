@@ -1,3 +1,4 @@
+import { EmbedType } from '@prisma/client';
 import { Field, InputType } from 'type-graphql';
 
 import { EmbedAuthorInput } from './EmbedAuthor';
@@ -42,6 +43,9 @@ class _EmbedInput {
 
 @InputType()
 class EmbedInput {
+	@Field(type => String, nullable)
+    	type: EmbedType;
+
     @Field(type => String, nullable)
     	content?: string;
 
