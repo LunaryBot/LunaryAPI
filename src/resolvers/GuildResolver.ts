@@ -73,6 +73,18 @@ class GuildResolver {
 	}
 
 	@Mutation(type => GuildDatabase)
+	async ModifyGuildDatabase(
+		@Ctx() context: MyContext,
+		@Info() info: GraphQLResolveInfo,
+		@Arg('id') id: string, 
+		@Arg('data') raw: GuildDatabaseInput
+	) {
+		const select = Utils.graphqlSchemaToPrismaSelect(info, 'ModifyGuildDatabase');
+
+    	return await context.apollo.controllers.guilds._update(id, raw, select);
+	}
+
+	@Mutation(type => GuildDatabase)
 	async ModifyGuildModerationSettings(
 		@Ctx() context: MyContext,
 		@Info() info: GraphQLResolveInfo,
