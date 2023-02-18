@@ -102,7 +102,7 @@ class GuildController {
 		});
 	}
 
-	async _update(guildId: string, raw: GuildDatabaseInput, select: GuildSelect | undefined = undefined, options: { replacePermissions?: boolean } = {}) {
+	async _update(guildId: string, raw: GuildDatabaseInput, select: GuildSelect | undefined = undefined, options: { replacePermissions?: boolean, replaceEmebeds?: boolean } = {}) {
 		let returnData = {} as FullGuildDatabase;
 		
 		if(Object.keys(raw).find(key => !guildDatabaseSpecialKeys.includes(key))) {
@@ -199,7 +199,7 @@ class GuildController {
 				},
 			}).then(embeds => embeds.map(embed => embed.type));
 
-			const deleteEmbeds: EmbedType[] = embedTypes.filter(type => !raw.embeds.find(({ type: _type }) => type === _type));
+			const deleteEmbeds: EmbedType[] = options.replaceEmebeds !== false ? embedTypes.filter(type => !raw.embeds.find(({ type: _type }) => type === _type)) : [];
 
 			const args: PrismaPromise<any>[] = [];
 
