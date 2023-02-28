@@ -1,8 +1,13 @@
 import { ShopItem, ShopItemRarity } from '@prisma/client';
+import ontime, { ontime as _ontime } from 'ontime';
 import Sydb, { ObjectReference } from 'sydb';
 
 import { getRandom } from '../utils/getRandom';
 import { setTimeToTrigger } from '../utils/setTimeToTrigger';
+
+const interval = 1 * 1000 * 60 * 60 * 24;
+
+const updateTime = [13, 22, 0] as const; // h, m, s
 
 const dateString = (date: Date) => `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`;
 
@@ -29,7 +34,7 @@ class ShopController {
 	get lastUpdated(): Date | null {
 		const lastUpdated = this._lastUpdated.get();
 
-		return lastUpdated ? new Date(lastUpdated as string) : null;
+		return lastUpdated ? new Date(lastUpdated as number) : null;
 	}
 
 	get dailyItemsIds(): bigint[] | null {
@@ -43,7 +48,7 @@ class ShopController {
 	}
 
 	set lastUpdated(value: Date | null) {
-		this._lastUpdated.set(value ? dateString(value) : null);
+		this._lastUpdated.set(value?.toISOString() || null);
 	}
 
 	async _getDailyItems(): Promise<ShopItem[]> {
@@ -60,37 +65,71 @@ class ShopController {
 		return items;
 	}
 
-	async update(starting: boolean = false) {
+	setTimeToTrigger(triggerIn: Date) {
 		const now = new Date();
-		const utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
 
+		console.log(now);
+
+		const time = triggerIn.getTime() - now.getTime();
+	
+		console.log(time);
+
+		if(time > 0) {
+			setTimeout(() => {
+				this.update();
+			}, triggerIn.getTime() - now.getTime());
+		}
+	};
+
+	async init() {
 		const { lastUpdated } = this;
-		const lastUpdatedDate = new Date(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(), 0, 0, 0);
-		const nextUpdateDate = new Date(lastUpdatedDate); nextUpdateDate.setDate(lastUpdatedDate.getDate() + 1);
 
-		const isLateUpdate = !lastUpdated || starting && dateString(lastUpdated) !== dateString(lastUpdatedDate);
+		const lastUpdatedDate = new Date();
+		lastUpdatedDate.setUTCHours(...updateTime, 0);
+
+		const nextUpdateDate = new Date(lastUpdatedDate.getTime() + interval);
+		nextUpdateDate.setUTCHours(...updateTime, 0);
+
+		const isLateUpdate = !lastUpdated || nextUpdateDate.getTime() - lastUpdated.getTime() !== interval;
 
 		let updated = false;
 
-		if(!starting || isLateUpdate || !this.dailyItemsIds) {
+		if(isLateUpdate || !this.dailyItemsIds) {
 			if(isLateUpdate && lastUpdated) {
-				logger.warn(`Late Update, last update on ${dateString(lastUpdated)} not ${dateString(lastUpdatedDate)}`, { label: 'ShopController' });
+				logger.warn(`Late Update, last update on ${lastUpdated.toString()} not ${lastUpdatedDate.toString()}`, { label: 'ShopController' });
 			} else if(!this.dailyItemsIds) {
 				logger.warn('Items from the last roll were not saved', { label: 'ShopController' });
 			}
 
-			this.lastUpdated = utc;
-
-			await this.updateShopItems();
+			this.update();
 
 			updated = true;
+		} else {
+			logger.info(`Shop is Ok, next roll on ${nextUpdateDate.toString()}`, { label: 'ShopController' });
 		}
-		
+
 		if(!this.dailyItems?.length) await this._getDailyItems();
 
-		setTimeToTrigger(this.update.bind(this), nextUpdateDate);
+		(ontime as any as typeof _ontime)({
+			utc: true,
+			cycle: [updateTime.map(x => `${x < 10 ? '0' : ''}${x}`).join(':')],
+		}, () => {
+			this.update();
+		});
+	}
 
-		logger.info(`Shop ${updated ? 'Updated' : 'is Ok'}, next roll on ${nextUpdateDate.toString()}`, { label: 'ShopController' });
+	async update() {
+		const updatedDate = new Date();
+		updatedDate.setUTCHours(...updateTime, 0);
+
+		const nextUpdateDate = new Date(updatedDate.getTime() + interval);
+		nextUpdateDate.setUTCHours(...updateTime, 0);
+
+		await this.updateShopItems();
+
+		this.lastUpdated = updatedDate;
+
+		logger.info(`Shop Updated, next roll on ${nextUpdateDate.toString()}`, { label: 'ShopController' });
 	}
 
 	async updateShopItems() {

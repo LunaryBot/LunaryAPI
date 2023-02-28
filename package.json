@@ -35,6 +35,7 @@
 		"graphql": "15.3.0",
 		"ioredis": "^5.2.2",
 		"jsonwebtoken": "^8.5.1",
+		"ontime": "^0.1.1",
 		"reflect-metadata": "^0.1.13",
 		"sydb": "^2.0.1",
 		"type-graphql": "^1.1.1",
@@ -44,6 +45,7 @@
 	"devDependencies": {
 		"@types/jest": "^27.5.1",
 		"@types/jsonwebtoken": "^8.5.8",
+		"@types/ontime": "^0.0.1",
 		"@types/ws": "^8.5.3",
 		"@typescript-eslint/eslint-plugin": "^5.30.5",
 		"@typescript-eslint/parser": "^5.30.5",

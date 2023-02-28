@@ -61,7 +61,7 @@ async function main() {
 	// 	],
 	// });
 
-	await apollo.controllers.shop.update(true);
+	await apollo.controllers.shop.init();
 }
 
 process.on('uncaughtExceptionMonitor', (err) => {
