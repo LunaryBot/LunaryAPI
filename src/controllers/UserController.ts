@@ -106,7 +106,7 @@ class UserController {
 	}
 
 	format(data: User, selectInventory = false) {
-		const inventory = (data.inventory || []) as bigint[];
+		const inventory = (data.inventory || []) as number[];
 		const inventoryUsing = Object.values(data.inventory_using as any || {}) as bigint[];
 
 		return {
@@ -120,7 +120,7 @@ class UserController {
 			features: new UserFeatures(data.features as bigint || 0n).toArray(),
 			inventory: selectInventory
 				? {
-					owned: new UserInventory(inventory.length ? inventory : defaultInventory).toItemsArray(),
+					// owned: new UserInventory(inventory.length ? inventory : defaultInventory).toItemsArray(),
 					using: new UserInventory(inventoryUsing.length ?  inventoryUsing : defaultInventory).ids,
 				}
 				: undefined,

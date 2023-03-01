@@ -114,6 +114,7 @@ input EmbedImageInput {
 input EmbedInput {
   content: String
   embeds: [_EmbedInput!]
+  type: String
 }
 
 type Guild {
@@ -144,12 +145,12 @@ type GuildDatabase {
 }
 
 input GuildDatabaseInput {
-  embeds: [EmbedInput!]!
+  embeds: [EmbedInput!]
   features: [String!]
   modlogs_channel: String
-  permissions: [GuildPermissionsInput!]!
+  permissions: [GuildPermissionsInput!]
   punishments_channel: String
-  reasons: [ReasonInput!]!
+  reasons: [ReasonInput!]
 }
 
 type GuildPermissions {
@@ -164,23 +165,14 @@ input GuildPermissionsInput {
   type: String!
 }
 
-type InventoryItem {
-  assets: InventoryItemAssets!
-  description: String!
-  id: Float!
-  name: String!
-  price: Float!
-  rarity: String!
-  type: String!
-}
-
-type InventoryItemAssets {
+type ItemAssets {
   link: String!
 }
 
 type Mutation {
   DeleteGuildEmbed(id: String!, type: String!): Boolean!
   ModifyGuildCommandPermissions(data: [GuildCommandPermissionsInput!]!, id: String!): [GuildPermissions!]!
+  ModifyGuildDatabase(data: GuildDatabaseInput!, id: String!): GuildDatabase!
   ModifyGuildEmbed(data: EmbedInput!, id: String!, type: String!): GuildDatabase!
   ModifyGuildModerationSettings(data: GuildDatabaseInput!, id: String!): GuildDatabase!
   ModifyGuildPermissions(data: [GuildPermissionsInput!]!, id: String!): GuildDatabase!
@@ -240,6 +232,16 @@ type Role {
   position: Float!
 }
 
+type ShopItem {
+  assets: ItemAssets!
+  description: String!
+  id: Float!
+  name: String!
+  price: Float!
+  rarity: String!
+  type: String!
+}
+
 type User {
   accent_color: Float
   avatar: String!
@@ -269,6 +271,6 @@ type UserDatabase {
 }
 
 type UserInventory {
-  owned: [InventoryItem!]!
+  owned: [ShopItem!]!
   using: [Float!]!
 }
