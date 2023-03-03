@@ -259,18 +259,19 @@ type User {
 }
 
 type UserDatabase {
-  bio: String
   features: [String!]!
   flags: [String!]!
-  inventory: UserInventory!
+  inventory: [ShopItem!]!
   last_daily_at: DateTime
   luas: Float!
   premium_type: String
   premium_until: DateTime
+  profile: UserProfile!
   xp: Float!
 }
 
-type UserInventory {
-  owned: [ShopItem!]!
-  using: [Float!]!
+type UserProfile {
+  background: Float!
+  bio: String
+  layout: Float!
 }

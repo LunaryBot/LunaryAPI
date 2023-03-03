@@ -3,12 +3,27 @@ import { Field, ID, ObjectType, UseMiddleware } from 'type-graphql';
 
 import DefaultValue from '@utils/DefaultValue';
 
+import { ShopItem } from '../Shop';
 import { UserInventory } from './UserInventory';
 
 const nullable = { nullable: true };
 
 @ObjectType()
-class UserDatabase implements Omit<User, 'id' | 'features' | 'inventory' | 'inventory_using' | 'flags'> {
+class UserProfile {
+    @Field(type => String, nullable)
+    	bio: string | null;
+
+    @UseMiddleware(DefaultValue<number>(0))
+    @Field(type => Number)
+    	background: number;
+
+    @UseMiddleware(DefaultValue<number>(0))
+    @Field(type => Number)
+    	layout: number;
+}
+
+@ObjectType()
+class UserDatabase {
     @UseMiddleware(DefaultValue<string[]>([]))
     @Field(type => [String])
     	features: string[];
@@ -20,18 +35,19 @@ class UserDatabase implements Omit<User, 'id' | 'features' | 'inventory' | 'inve
     @Field(type => Date, nullable)
     	last_daily_at: Date | null;
 
-    @Field(type => String, nullable)
-    	bio: string | null;
+    @Field(type => UserProfile)
+    	profile: UserProfile;
 
     @UseMiddleware(DefaultValue<number>(0))
     @Field(type => Number)
     	xp: number;
 
     @Field(type => [String])
-    	flags: bigint | null;
+    	flags: string[] | null;
 
-    @Field(type => UserInventory)
-    	inventory: UserInventory;
+    @UseMiddleware(DefaultValue<ShopItem[]>([]))
+    @Field(type => [ShopItem])
+    	inventory: ShopItem[];
 
     @Field(type => String, nullable)
     	premium_type: UserPremiumType | null;

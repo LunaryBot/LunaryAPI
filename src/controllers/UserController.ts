@@ -5,7 +5,7 @@ import { UserFeatures, UserInventory } from '@Database';
 import AuthUtils from '@utils/AuthUtils';
 import { UserGeneralSettingsValidation } from '@utils/validation/user';
 
-import { AbstractGuild, UserDatabase } from '@models';
+import { AbstractGuild, UserDatabase, ShopItem } from '@models';
 import { APIUser, Routes, PermissionFlagsBits } from 'discord-api-types/v10';
 
 const guildKeyRegex = /^guilds:(\d{16,20})$/;
@@ -35,10 +35,15 @@ class UserController {
 	}
 
 	async fetchDatabase(userId: string, select?: Prisma.UserSelect | null) {
-		console.log(select);
+		if(select?.profile) {
+			select.profile = true;
+			select.bio = true;
+
+			delete select.profile;
+		}
+
 		if(select?.inventory) {
 			select.inventory = true;
-			select.inventory_using = true;
 			console.log(select);
 		}
 
@@ -49,7 +54,7 @@ class UserController {
 			select,
 		}) || {}) as User;
 
-		return this.format(data, select?.inventory);
+		return await this.format(data, select?.inventory);
 	}
 
 	async fetchGuilds(token: string, options: { filterByHasBot?: boolean, filterPermission?: bigint } = { filterByHasBot: true, filterPermission: PermissionFlagsBits.Administrator }) {
@@ -100,17 +105,13 @@ class UserController {
 					},
 				});
 
-				return this.format(newData);
+				return await this.format(newData);
 			}
 		}
 	}
 
-	format(data: User, selectInventory = false) {
-		const inventory = (data.inventory || []) as number[];
-		const inventoryUsing = Object.values(data.inventory_using as any || {}) as bigint[];
-
+	async format(data: User, selectInventory = false) {
 		return {
-			bio: data.bio,
 			flags: data.flags,
 			last_daily_at: data.last_daily_at,
 			luas: data.luas,
@@ -118,13 +119,25 @@ class UserController {
 			premium_type: data.premium_type,
 			premium_until: data.premium_until,
 			features: new UserFeatures(data.features as bigint || 0n).toArray(),
-			inventory: selectInventory
-				? {
-					// owned: new UserInventory(inventory.length ? inventory : defaultInventory).toItemsArray(),
-					using: new UserInventory(inventoryUsing.length ?  inventoryUsing : defaultInventory).ids,
-				}
-				: undefined,
+			inventory: selectInventory ? await this.getItemsFromUserInventory(data.inventory) : undefined,
+			profile: {
+				background: (data.profile as any)?.background || 0,
+				layout: (data.profile as any)?.layout || 1,
+				bio: data.bio,
+			},
 		} as UserDatabase;
+	}
+
+	async getItemsFromUserInventory(userInventory: number[]): Promise<ShopItem[]> {
+		const items = await this.apollo.prisma.shopItem.findMany({
+			where: {
+				id: {
+					in: [0, 1, ...userInventory],
+				},
+			},
+		});
+
+		return items as any as ShopItem[];
 	}
 }
 
