@@ -2,12 +2,16 @@ import { ShopItem, ShopItemRarity } from '@prisma/client';
 import ontime, { ontime as _ontime } from 'ontime';
 import Sydb, { ObjectReference } from 'sydb';
 
+import ApiError from '@utils/ApiError';
+
 import { getRandom } from '../utils/getRandom';
 import { setTimeToTrigger } from '../utils/setTimeToTrigger';
 
 const interval = 1 * 1000 * 60 * 60 * 24;
 
 const updateTime = [13, 22, 0] as const; // h, m, s
+
+const defaultItems = [0, 1];
 
 const dateString = (date: Date) => `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`;
 
@@ -37,18 +41,74 @@ class ShopController {
 		return lastUpdated ? new Date(lastUpdated as number) : null;
 	}
 
-	get dailyItemsIds(): bigint[] | null {
+	get dailyItemsIds(): number[] | null {
 		const dailyItems = this._dailyItems.get() as number[];
 		
-		return dailyItems?.length ? dailyItems.map(item => BigInt(item)) : null;
+		return dailyItems?.length ? dailyItems : null;
 	}
 
-	set dailyItemsIds(value: bigint[] | null) {
-		this._dailyItems.set(value?.length ? value.map(item => Number(item)) : null);
+	set dailyItemsIds(value: number[] | null) {
+		this._dailyItems.set(value?.length ? value : null);
 	}
 
 	set lastUpdated(value: Date | null) {
 		this._lastUpdated.set(value?.toISOString() || null);
+	}
+
+	async buyItem(userId: string, itemId: number): Promise<{ luas: number, inventory: number[] }> {
+		if(defaultItems.includes(itemId)) {
+			throw new ApiError('Item already in inventory', 403);
+		}
+
+		if(!this.dailyItemsIds?.includes(itemId)) {
+			throw new ApiError('Item not available', 404);
+		}
+
+		const userDatabase = await this.apollo.prisma.user.findUnique({
+			where: {
+				id: userId,
+			},
+			select: {
+				luas: true,
+				inventory: true,
+			},
+		}).then(data => ({ 
+			luas: data?.luas ?? 0, 
+			inventory: data?.inventory || [],
+		}));
+
+		if(userDatabase.inventory.includes(itemId)) {
+			throw new ApiError('Item already in inventory', 403);
+		}
+
+		const item = (this.dailyItems.length ? this.dailyItems : await this._getDailyItems()).find(item => item.id == itemId) as ShopItem;
+
+		console.log(item);
+
+		if(userDatabase.luas < item.price) {
+			throw new ApiError('Insufficient funds', 403);
+		}
+
+		const newDatabase = await this.apollo.prisma.user.upsert({
+			where: {
+				id: userId,
+			},
+			create: {
+				id: userId,
+				luas: userDatabase.luas - item.price,
+				inventory: [...userDatabase.inventory, itemId],
+			},
+			update: {
+				luas: userDatabase.luas - item.price,
+				inventory: [...userDatabase.inventory, itemId],
+			},
+			select: {
+				luas: true,
+				inventory: true,
+			},
+		});
+
+		return { ...newDatabase, luas: newDatabase.luas ?? 0 };
 	}
 
 	async _getDailyItems(): Promise<ShopItem[]> {
@@ -64,22 +124,6 @@ class ShopController {
 		
 		return items;
 	}
-
-	setTimeToTrigger(triggerIn: Date) {
-		const now = new Date();
-
-		console.log(now);
-
-		const time = triggerIn.getTime() - now.getTime();
-	
-		console.log(time);
-
-		if(time > 0) {
-			setTimeout(() => {
-				this.update();
-			}, triggerIn.getTime() - now.getTime());
-		}
-	};
 
 	async init() {
 		const { lastUpdated } = this;
@@ -160,7 +204,7 @@ class ShopController {
 			chance: chances[item.rarity.toLowerCase() as keyof typeof chances],
 		})), 2) as ShopItem[];
 		
-		const ids = dailyItems.map(item => BigInt(item.id));
+		const ids = dailyItems.map(item => item.id);
 
 		this.dailyItemsIds = ids;
 		this.dailyItems = dailyItems;
@@ -168,7 +212,7 @@ class ShopController {
 		await this.apollo.prisma.shopItem.updateMany({
 			where: {
 				id: {
-					in: ids.map(id => Number(id)),
+					in: ids,
 				},
 			},
 			data: {
