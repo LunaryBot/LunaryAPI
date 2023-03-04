@@ -1,19 +1,16 @@
 import { ShopItem, ShopItemRarity } from '@prisma/client';
 import ontime, { ontime as _ontime } from 'ontime';
-import Sydb, { ObjectReference } from 'sydb';
+import Sydb from 'sydb';
 
 import ApiError from '@utils/ApiError';
 
 import { getRandom } from '../utils/getRandom';
-import { setTimeToTrigger } from '../utils/setTimeToTrigger';
 
 const interval = 1 * 1000 * 60 * 60 * 24;
 
-const updateTime = [13, 22, 0] as const; // h, m, s
+const updateTime = [0, 0, 0] as const; // h, m, s
 
 const defaultItems = [0, 1];
-
-const dateString = (date: Date) => `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`;
 
 class ShopController {
 	public readonly apollo: Apollo;
